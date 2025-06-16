@@ -1,0 +1,17 @@
+# OS files
+.DS_Store
+
+# IDE Configuration
+.vscode/
+*.user
+*.code-workspace
+
+# Doc generation
+html/
+latex/
+
+# Binaries
+build/
+
+# Auto generated files
+qwlanman_global.h
