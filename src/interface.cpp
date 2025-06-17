@@ -52,6 +52,45 @@ bool Interface::isUp() const
     return m_isUp;
 }
 
+bool Interface::operator==(const Interface &other) const
+{
+    return m_uid == other.m_uid;
+}
+
+bool Interface::operator!=(const Interface &other) const
+{
+    return !(*this == other);
+}
+
+bool Interface::operator<(const Interface &other) const
+{
+    return m_uid < other.m_uid;
+}
+
+bool Interface::operator>(const Interface &other) const
+{
+    return m_uid > other.m_uid;
+}
+
+bool Interface::operator<=(const Interface &other) const
+{
+    return !(*this > other);
+}
+
+bool Interface::operator>=(const Interface &other) const
+{
+    return !(*this < other);
+}
+
+/*****************************/
+/* Qt custom related methods */
+/*****************************/
+
+size_t qHash(const Interface &key, uint seed)
+{
+    return qHash(key.getUid(), seed);
+}
+
 /*****************************/
 /* End namespace             */
 /*****************************/

@@ -1,11 +1,8 @@
 #ifndef QWLANMAN_INTERFACE_H
 #define QWLANMAN_INTERFACE_H
 
-#include <QHash>
 #include <QObject>
 #include <QUuid>
-
-#include "qwlanmanager/network.h"
 
 /*****************************/
 /* Namespace instructions    */
@@ -31,9 +28,6 @@ class Interface
     Q_PROPERTY(bool isUp READ isUp)
 
 public:
-    using MapNetworks = QHash<QString, Network>; /**< Key is network BSSID */
-
-public:
     Interface();
 
 public:
@@ -44,7 +38,13 @@ public:
     const QString& getDescription() const;
     bool isUp() const;
 
-    const MapNetworks& getMapNetworks() const;
+public:
+    bool operator==(const Interface &other) const;
+    bool operator!=(const Interface &other) const;
+    bool operator<(const Interface &other) const;
+    bool operator>(const Interface &other) const;
+    bool operator<=(const Interface &other) const;
+    bool operator>=(const Interface &other) const;
 
 private:
     QUuid m_uid;
@@ -53,9 +53,19 @@ private:
     QString m_friendlyName;
     QString m_description;
     bool m_isUp;
-
-    MapNetworks m_mapNets;
 };
+
+/*****************************/
+/* Qt custom related methods */
+/*****************************/
+size_t qHash(const Interface &key, uint seed = 0);
+
+/*****************************/
+/* Alias for related types   */
+/*****************************/
+
+using ListInterfaces = QList<Interface>;
+using MapInterfaces = QHash<QString, Interface>; /**< Key is interface UID */
 
 /*****************************/
 /* End namespaces            */
