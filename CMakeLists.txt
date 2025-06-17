@@ -79,6 +79,7 @@ set(PROJECT_LINKING_LIB
 ### Public interface
 set(PROJECT_HEADERS_PUBLIC
     interface.h
+    manager.h
     network.h
     qwlantypes.h
 )
@@ -86,15 +87,22 @@ list(TRANSFORM PROJECT_HEADERS_PUBLIC PREPEND "${PROJECT_DIR_PUBLIC_HEADERS}/")
 
 ### Private
 set(PROJECT_HEADERS_PRIVATE
+    factorybackend.h
+    manager_priv.h
 
+    backend/enginemock.h
 )
 list(TRANSFORM PROJECT_HEADERS_PRIVATE PREPEND "${PROJECT_DIR_PRIV_SOURCES}/")
 
 set(PROJECT_SOURCES
+    factorybackend.cpp
     interface.cpp
+    manager.cpp
+    manager_priv.cpp
     network.cpp
     qwlantypes.cpp
 
+    backend/enginemock.cpp
 )
 list(TRANSFORM PROJECT_SOURCES PREPEND "${PROJECT_DIR_PRIV_SOURCES}/")
 
