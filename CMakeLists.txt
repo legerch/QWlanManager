@@ -78,7 +78,9 @@ set(PROJECT_LINKING_LIB
 ## Set library files
 ### Public interface
 set(PROJECT_HEADERS_PUBLIC
-
+    interface.h
+    network.h
+    qwlantypes.h
 )
 list(TRANSFORM PROJECT_HEADERS_PUBLIC PREPEND "${PROJECT_DIR_PUBLIC_HEADERS}/")
 
@@ -89,6 +91,9 @@ set(PROJECT_HEADERS_PRIVATE
 list(TRANSFORM PROJECT_HEADERS_PRIVATE PREPEND "${PROJECT_DIR_PRIV_SOURCES}/")
 
 set(PROJECT_SOURCES
+    interface.cpp
+    network.cpp
+    qwlantypes.cpp
 
 )
 list(TRANSFORM PROJECT_SOURCES PREPEND "${PROJECT_DIR_PRIV_SOURCES}/")
