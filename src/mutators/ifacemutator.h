@@ -22,6 +22,7 @@ public:
 public:
     void setUid(const QUuid& uid);
     void setHwAddress(const QString& hwAddr);
+    void setHwAddress(const uchar *buffer, int lenBuffer);
     void setName(const QString& name);
     void setDescription(const QString& desc);
     void setIsUp(bool isUp);

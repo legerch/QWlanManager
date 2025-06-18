@@ -35,6 +35,24 @@ void IfaceMutator::setHwAddress(const QString &hwAddr)
     m_iface->m_hwAddress = hwAddr;
 }
 
+void IfaceMutator::setHwAddress(const uchar *buffer, int lenBuffer)
+{
+    QString hwAddress;
+
+    /* Format HW address */
+    for(int i = 0; i < lenBuffer; ++i){
+        if(i){
+            hwAddress.append(":");
+        }
+
+        const QString strHex = QString("%1").arg(buffer[i], 2, 16, QChar('0'));
+        hwAddress.append(strHex.toUpper());
+    }
+
+    /* Set HW address */
+    setHwAddress(hwAddress);
+}
+
 void IfaceMutator::setName(const QString &name)
 {
     m_iface->m_name = name;

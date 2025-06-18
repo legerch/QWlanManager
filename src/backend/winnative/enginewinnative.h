@@ -1,5 +1,5 @@
-#ifndef QWLANMAN_BACKEND_ENGINEMOCK_H
-#define QWLANMAN_BACKEND_ENGINEMOCK_H
+#ifndef QWLANMAN_BACKEND_WINNATIVE_ENGINEWINNATIVE_H
+#define QWLANMAN_BACKEND_WINNATIVE_ENGINEWINNATIVE_H
 
 #include "manager_priv.h"
 
@@ -14,11 +14,11 @@ namespace qwm
 /* Class definitions         */
 /*****************************/
 
-class EngineMock final : public ManagerPrivate
+class EngineWinNative final : public ManagerPrivate
 {
 public:
-    explicit EngineMock(Manager *parent);
-    ~EngineMock();
+    explicit EngineWinNative(Manager *parent);
+    ~EngineWinNative();
 
 public:
     void initialize() override;
@@ -26,6 +26,15 @@ public:
 
 public:
     void refreshInterfaces() override;
+
+private:
+    bool apiOpen();
+    void apiClose();
+
+    bool interfaceIsVirtual(const QString &description);
+
+private:
+    Qt::HANDLE m_handle;
 };
 
 /*****************************/
@@ -34,4 +43,4 @@ public:
 
 } // namespace qwm
 
-#endif // QWLANMAN_BACKEND_ENGINEMOCK_H
+#endif // QWLANMAN_BACKEND_WINNATIVE_ENGINEWINNATIVE_H

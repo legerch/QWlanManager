@@ -83,17 +83,16 @@ set(PROJECT_HEADERS_PUBLIC
     network.h
     qwlantypes.h
 )
-list(TRANSFORM PROJECT_HEADERS_PUBLIC PREPEND "${PROJECT_DIR_PUBLIC_HEADERS}/")
 
 ### Private
 set(PROJECT_HEADERS_PRIVATE
     factorybackend.h
     manager_priv.h
 
-    backend/enginemock.h
+    backend/mock/enginemock.h
+
     mutators/ifacemutator.h
 )
-list(TRANSFORM PROJECT_HEADERS_PRIVATE PREPEND "${PROJECT_DIR_PRIV_SOURCES}/")
 
 set(PROJECT_SOURCES
     factorybackend.cpp
@@ -103,10 +102,10 @@ set(PROJECT_SOURCES
     network.cpp
     qwlantypes.cpp
 
-    backend/enginemock.cpp
+    backend/mock/enginemock.cpp
+
     mutators/ifacemutator.cpp
 )
-list(TRANSFORM PROJECT_SOURCES PREPEND "${PROJECT_DIR_PRIV_SOURCES}/")
 
 # Manage platform differences
 ## Refer to: https://cmake.org/cmake/help/latest/variable/CMAKE_SYSTEM_NAME.html
@@ -115,13 +114,36 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
         "NOMINMAX"  # Needed because Windows define macros "min/max", better to not defined those and use "std::min/std::max" instead
         "WIN32_LEAN_AND_MEAN=1"
     )
+
+    set(PROJECT_DEFS_PRIV ${PROJECT_DEFS_PRIV}
+        "USE_ENGINE_WINNATIVE=1"
+    )
+
+    set(PROJECT_HEADERS_PRIVATE ${PROJECT_HEADERS_PRIVATE}
+        backend/winnative/enginewinnative.h
+    )
+
+    set(PROJECT_SOURCES ${PROJECT_SOURCES}
+        backend/winnative/enginewinnative.cpp
+    )
+
+    set(PROJECT_LINKING_LIB ${PROJECT_LINKING_LIB}
+        Wlanapi             # WlanAPI
+        Iphlpapi            # IP helper tools
+    )
 endif()
 
 # Manage options
 ## Example: if(QWLANMANAGER_USE_CUSTOM_BEHAVIOUR)
 
-# Add files to the library
+### Prepend all files to proper directory
+list(TRANSFORM PROJECT_HEADERS_PUBLIC PREPEND "${PROJECT_DIR_PUBLIC_HEADERS}/")
+list(TRANSFORM PROJECT_HEADERS_PRIVATE PREPEND "${PROJECT_DIR_PRIV_SOURCES}/")
+list(TRANSFORM PROJECT_SOURCES PREPEND "${PROJECT_DIR_PRIV_SOURCES}/")
+
 set(PROJECT_FILES ${PROJECT_FILE_GLOBAL} ${PROJECT_HEADERS_PUBLIC} ${PROJECT_HEADERS_PRIVATE} ${PROJECT_SOURCES})
+
+# Add files to the library
 add_library(${PROJECT_NAME} SHARED ${PROJECT_FILES})
 
 # Set version of library
