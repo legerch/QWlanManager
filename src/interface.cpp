@@ -20,64 +20,64 @@ namespace qwm
 /*      Public Class         */
 /*****************************/
 
-Interface::Interface() = default;
+InterfaceData::InterfaceData() = default;
 
-const QUuid& Interface::getUid() const
+const QUuid& InterfaceData::getUid() const
 {
     return m_uid;
 }
 
-const QString& Interface::getHwAddress() const
+const QString& InterfaceData::getHwAddress() const
 {
     return m_hwAddress;
 }
 
-const QString& Interface::getName() const
+const QString& InterfaceData::getName() const
 {
     return m_name;
 }
 
-const QString& Interface::getFriendlyName() const
+const QString& InterfaceData::getFriendlyName() const
 {
     return m_friendlyName;
 }
 
-const QString& Interface::getDescription() const
+const QString& InterfaceData::getDescription() const
 {
     return m_description;
 }
 
-bool Interface::isUp() const
+bool InterfaceData::isUp() const
 {
     return m_isUp;
 }
 
-bool Interface::operator==(const Interface &other) const
+bool InterfaceData::operator==(const InterfaceData &other) const
 {
     return m_uid == other.m_uid;
 }
 
-bool Interface::operator!=(const Interface &other) const
+bool InterfaceData::operator!=(const InterfaceData &other) const
 {
     return !(*this == other);
 }
 
-bool Interface::operator<(const Interface &other) const
+bool InterfaceData::operator<(const InterfaceData &other) const
 {
     return m_uid < other.m_uid;
 }
 
-bool Interface::operator>(const Interface &other) const
+bool InterfaceData::operator>(const InterfaceData &other) const
 {
     return m_uid > other.m_uid;
 }
 
-bool Interface::operator<=(const Interface &other) const
+bool InterfaceData::operator<=(const InterfaceData &other) const
 {
     return !(*this > other);
 }
 
-bool Interface::operator>=(const Interface &other) const
+bool InterfaceData::operator>=(const InterfaceData &other) const
 {
     return !(*this < other);
 }
@@ -86,7 +86,7 @@ bool Interface::operator>=(const Interface &other) const
 /* Qt custom related methods */
 /*****************************/
 
-size_t qHash(const Interface &key, uint seed)
+size_t qHash(const InterfaceData &key, uint seed)
 {
     return qHash(key.getUid(), seed);
 }

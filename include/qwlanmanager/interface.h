@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QUuid>
 
+#include "qwlanmanager/network.h"
+
 /*****************************/
 /* Namespace instructions    */
 /*****************************/
@@ -16,7 +18,7 @@ namespace qwm
 
 //TODO: when retrieveing interfaces, filter "virtual"
 
-class Interface
+class InterfaceData
 {
     Q_GADGET
 
@@ -28,7 +30,7 @@ class Interface
     Q_PROPERTY(bool isUp READ isUp)
 
 public:
-    Interface();
+    InterfaceData();
 
 public:
     const QUuid& getUid() const;
@@ -39,12 +41,12 @@ public:
     bool isUp() const;
 
 public:
-    bool operator==(const Interface &other) const;
-    bool operator!=(const Interface &other) const;
-    bool operator<(const Interface &other) const;
-    bool operator>(const Interface &other) const;
-    bool operator<=(const Interface &other) const;
-    bool operator>=(const Interface &other) const;
+    bool operator==(const InterfaceData &other) const;
+    bool operator!=(const InterfaceData &other) const;
+    bool operator<(const InterfaceData &other) const;
+    bool operator>(const InterfaceData &other) const;
+    bool operator<=(const InterfaceData &other) const;
+    bool operator>=(const InterfaceData &other) const;
 
 private:
     QUuid m_uid;
@@ -53,19 +55,23 @@ private:
     QString m_friendlyName;
     QString m_description;
     bool m_isUp;
+
+    MapNetworks m_mapNets;
 };
 
 /*****************************/
 /* Qt custom related methods */
 /*****************************/
-size_t qHash(const Interface &key, uint seed = 0);
+size_t qHash(const InterfaceData &key, uint seed = 0);
 
 /*****************************/
 /* Alias for related types   */
 /*****************************/
 
+using Interface = QSharedPointer<InterfaceData>;
+
 using ListInterfaces = QList<Interface>;
-using MapInterfaces = QHash<QString, Interface>; /**< Key is interface UID */
+using MapInterfaces = QHash<QUuid, Interface>; /**< Key is interface UID */
 
 /*****************************/
 /* End namespaces            */

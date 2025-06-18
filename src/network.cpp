@@ -21,49 +21,49 @@ namespace qwm
 /*      Public Class         */
 /*****************************/
 
-Network::Network() = default;
+NetworkData::NetworkData() = default;
 
-const QString& Network::getBssid() const
+const QString& NetworkData::getBssid() const
 {
     return m_bssid;
 }
 
-const QString& Network::getSsid() const
+const QString& NetworkData::getSsid() const
 {
     return m_ssid;
 }
 
-const QString& Network::getProfileName() const
+const QString& NetworkData::getProfileName() const
 {
     return m_profileName;
 }
 
-bool Network::operator==(const Network &other) const
+bool NetworkData::operator==(const NetworkData &other) const
 {
     return m_bssid == other.m_bssid;
 }
 
-bool Network::operator!=(const Network &other) const
+bool NetworkData::operator!=(const NetworkData &other) const
 {
     return !(*this == other);
 }
 
-bool Network::operator<(const Network &other) const
+bool NetworkData::operator<(const NetworkData &other) const
 {
     return m_bssid < other.m_bssid;
 }
 
-bool Network::operator>(const Network &other) const
+bool NetworkData::operator>(const NetworkData &other) const
 {
     return m_bssid > other.m_bssid;
 }
 
-bool Network::operator<=(const Network &other) const
+bool NetworkData::operator<=(const NetworkData &other) const
 {
     return !(*this > other);
 }
 
-bool Network::operator>=(const Network &other) const
+bool NetworkData::operator>=(const NetworkData &other) const
 {
     return !(*this < other);
 }
@@ -72,7 +72,7 @@ bool Network::operator>=(const Network &other) const
 /* Qt custom related methods */
 /*****************************/
 
-size_t qHash(const Network &key, uint seed)
+size_t qHash(const NetworkData &key, uint seed)
 {
     return qHash(key.getBssid(), seed);
 }

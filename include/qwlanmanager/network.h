@@ -1,6 +1,7 @@
 #ifndef QWLANMAN_NETWORK_H
 #define QWLANMAN_NETWORK_H
 
+#include <QHash>
 #include <QString>
 #include <QObject>
 
@@ -14,7 +15,7 @@ namespace qwm
 /* Class definitions         */
 /*****************************/
 
-class Network
+class NetworkData
 {
     Q_GADGET
 
@@ -23,7 +24,7 @@ class Network
     Q_PROPERTY(QString profile READ getProfileName)    
 
 public:
-    Network();
+    NetworkData();
 
 public:
     const QString& getBssid() const;
@@ -31,12 +32,12 @@ public:
     const QString& getProfileName() const;
 
 public:
-    bool operator==(const Network &other) const;
-    bool operator!=(const Network &other) const;
-    bool operator<(const Network &other) const;
-    bool operator>(const Network &other) const;
-    bool operator<=(const Network &other) const;
-    bool operator>=(const Network &other) const;
+    bool operator==(const NetworkData &other) const;
+    bool operator!=(const NetworkData &other) const;
+    bool operator<(const NetworkData &other) const;
+    bool operator>(const NetworkData &other) const;
+    bool operator<=(const NetworkData &other) const;
+    bool operator>=(const NetworkData &other) const;
 
 private:
     QString m_bssid;
@@ -47,11 +48,13 @@ private:
 /*****************************/
 /* Qt custom related methods */
 /*****************************/
-size_t qHash(const Network &key, uint seed = 0);
+size_t qHash(const NetworkData &key, uint seed = 0);
 
 /*****************************/
 /* Alias for related types   */
 /*****************************/
+using Network = QSharedPointer<NetworkData>;
+
 using ListNetworks = QList<Network>;
 using MapNetworks = QHash<QString, Network>; /**< Key is network BSSID */
 
