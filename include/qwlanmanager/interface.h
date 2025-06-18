@@ -1,10 +1,10 @@
 #ifndef QWLANMAN_INTERFACE_H
 #define QWLANMAN_INTERFACE_H
 
-#include <QObject>
-#include <QUuid>
-
+#include "qwlanmanager/qwlanman_global.h"
 #include "qwlanmanager/network.h"
+
+#include <QUuid>
 
 /*****************************/
 /* Namespace instructions    */
@@ -18,7 +18,7 @@ namespace qwm
 
 //TODO: when retrieveing interfaces, filter "virtual"
 
-class InterfaceData
+class QWLANMAN_EXPORT InterfaceData
 {
     Q_GADGET
 
@@ -28,6 +28,8 @@ class InterfaceData
     Q_PROPERTY(QString friendlyName READ getFriendlyName)
     Q_PROPERTY(QString description READ getDescription)
     Q_PROPERTY(bool isUp READ isUp)
+
+    friend class IfaceMutator;
 
 public:
     InterfaceData();
@@ -39,6 +41,8 @@ public:
     const QString& getFriendlyName() const;
     const QString& getDescription() const;
     bool isUp() const;
+
+    const MapNetworks& getMapNetworks() const;
 
 public:
     bool operator==(const InterfaceData &other) const;

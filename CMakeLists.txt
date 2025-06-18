@@ -91,6 +91,7 @@ set(PROJECT_HEADERS_PRIVATE
     manager_priv.h
 
     backend/enginemock.h
+    mutators/ifacemutator.h
 )
 list(TRANSFORM PROJECT_HEADERS_PRIVATE PREPEND "${PROJECT_DIR_PRIV_SOURCES}/")
 
@@ -103,6 +104,7 @@ set(PROJECT_SOURCES
     qwlantypes.cpp
 
     backend/enginemock.cpp
+    mutators/ifacemutator.cpp
 )
 list(TRANSFORM PROJECT_SOURCES PREPEND "${PROJECT_DIR_PRIV_SOURCES}/")
 

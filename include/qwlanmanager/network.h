@@ -1,7 +1,10 @@
 #ifndef QWLANMAN_NETWORK_H
 #define QWLANMAN_NETWORK_H
 
+#include "qwlanmanager/qwlanman_global.h"
+
 #include <QHash>
+#include <QSharedPointer>
 #include <QString>
 #include <QObject>
 
@@ -15,7 +18,7 @@ namespace qwm
 /* Class definitions         */
 /*****************************/
 
-class NetworkData
+class QWLANMAN_EXPORT NetworkData
 {
     Q_GADGET
 

@@ -52,6 +52,11 @@ bool InterfaceData::isUp() const
     return m_isUp;
 }
 
+const MapNetworks& InterfaceData::getMapNetworks() const
+{
+    return m_mapNets;
+}
+
 bool InterfaceData::operator==(const InterfaceData &other) const
 {
     return m_uid == other.m_uid;
