@@ -57,6 +57,16 @@ const MapNetworks& InterfaceData::getMapNetworks() const
     return m_mapNets;
 }
 
+ListNetworks InterfaceData::getListNetworks() const
+{
+    return m_mapNets.values();
+}
+
+Network InterfaceData::getNetwork(const QString &ssid) const
+{
+    return m_mapNets.value(ssid, nullptr);
+}
+
 bool InterfaceData::operator==(const InterfaceData &other) const
 {
     return m_uid == other.m_uid;

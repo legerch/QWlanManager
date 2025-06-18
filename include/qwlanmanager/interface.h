@@ -44,6 +44,9 @@ public:
 
     const MapNetworks& getMapNetworks() const;
 
+    ListNetworks getListNetworks() const;
+    Network getNetwork(const QString &ssid) const;
+
 public:
     bool operator==(const InterfaceData &other) const;
     bool operator!=(const InterfaceData &other) const;

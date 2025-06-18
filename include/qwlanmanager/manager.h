@@ -2,6 +2,7 @@
 #define QWLANMAN_MANAGER_H
 
 #include "qwlanmanager/qwlanman_global.h"
+#include "qwlanmanager/interface.h"
 
 #include <QObject>
 
@@ -24,6 +25,10 @@ class QWLANMAN_EXPORT Manager : public QObject
 public:
     explicit Manager(QObject *parent = nullptr);
     ~Manager();
+
+public:
+    ListInterfaces getInterfaces() const;
+    Interface getInterface(const QUuid &idInterface) const;
 
 private:
     std::unique_ptr<ManagerPrivate> d_ptr;

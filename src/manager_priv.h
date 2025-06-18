@@ -1,6 +1,7 @@
 #ifndef QWLANMAN_MANAGER_PRIV_H
 #define QWLANMAN_MANAGER_PRIV_H
 
+#include "mutators/ifacemutator.h"
 #include "qwlanmanager/manager.h"
 
 /*****************************/
@@ -27,7 +28,12 @@ public:
     virtual void initialize() = 0;
     virtual void terminate() = 0;
 
-private:
+public:
+    virtual void refreshInterfaces() = 0;
+
+protected:
+    MapInterfaces m_interfaces;
+
     Manager *q_ptr;
 };
 

@@ -23,6 +23,9 @@ public:
 public:
     void initialize() override;
     void terminate() override;
+
+public:
+    void refreshInterfaces() override;
 };
 
 /*****************************/
