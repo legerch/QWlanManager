@@ -25,7 +25,6 @@ class QWLANMAN_EXPORT InterfaceData
     Q_PROPERTY(QUuid uid READ getUid)
     Q_PROPERTY(QString hwAddress READ getHwAddress)
     Q_PROPERTY(QString name READ getName)
-    Q_PROPERTY(QString friendlyName READ getFriendlyName)
     Q_PROPERTY(QString description READ getDescription)
     Q_PROPERTY(bool isUp READ isUp)
 
@@ -38,7 +37,6 @@ public:
     const QUuid& getUid() const;
     const QString& getHwAddress() const;
     const QString& getName() const;
-    const QString& getFriendlyName() const;
     const QString& getDescription() const;
     bool isUp() const;
 
@@ -59,7 +57,6 @@ private:
     QUuid m_uid;
     QString m_hwAddress;
     QString m_name;
-    QString m_friendlyName;
     QString m_description;
     bool m_isUp;
 

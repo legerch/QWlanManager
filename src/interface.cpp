@@ -37,11 +37,6 @@ const QString& InterfaceData::getName() const
     return m_name;
 }
 
-const QString& InterfaceData::getFriendlyName() const
-{
-    return m_friendlyName;
-}
-
 const QString& InterfaceData::getDescription() const
 {
     return m_description;

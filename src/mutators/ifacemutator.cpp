@@ -40,11 +40,6 @@ void IfaceMutator::setName(const QString &name)
     m_iface->m_name = name;
 }
 
-void IfaceMutator::setFriendlyName(const QString &fname)
-{
-    m_iface->m_friendlyName = fname;
-}
-
 void IfaceMutator::setDescription(const QString &desc)
 {
     m_iface->m_description = desc;

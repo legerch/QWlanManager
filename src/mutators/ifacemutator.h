@@ -23,7 +23,6 @@ public:
     void setUid(const QUuid& uid);
     void setHwAddress(const QString& hwAddr);
     void setName(const QString& name);
-    void setFriendlyName(const QString& fname);
     void setDescription(const QString& desc);
     void setIsUp(bool isUp);
 
