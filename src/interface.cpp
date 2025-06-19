@@ -20,25 +20,38 @@ namespace qwm
 /*      Public Class         */
 /*****************************/
 
-InterfaceData::InterfaceData() = default;
+InterfaceData::InterfaceData()
+{
+    m_state = State::IFACE_STS_IDLE;
+}
+
+InterfaceData::State InterfaceData::getState() const
+{
+    QMutexLocker locker(&m_mutex);
+    return m_state;
+}
 
 const QUuid& InterfaceData::getUid() const
 {
+    QMutexLocker locker(&m_mutex);
     return m_uid;
 }
 
 const QString& InterfaceData::getHwAddress() const
 {
+    QMutexLocker locker(&m_mutex);
     return m_hwAddress;
 }
 
 const QString& InterfaceData::getName() const
 {
+    QMutexLocker locker(&m_mutex);
     return m_name;
 }
 
 const QString& InterfaceData::getDescription() const
 {
+    QMutexLocker locker(&m_mutex);
     return m_description;
 }
 
@@ -49,11 +62,13 @@ const MapNetworks& InterfaceData::getMapNetworks() const
 
 ListNetworks InterfaceData::getListNetworks() const
 {
+    QMutexLocker locker(&m_mutex);
     return m_mapNets.values();
 }
 
 Network InterfaceData::getNetwork(const QString &ssid) const
 {
+    QMutexLocker locker(&m_mutex);
     return m_mapNets.value(ssid, nullptr);
 }
 

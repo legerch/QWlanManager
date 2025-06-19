@@ -4,6 +4,7 @@
 #include "qwlanmanager/qwlanman_global.h"
 #include "qwlanmanager/network.h"
 
+#include <QMutex>
 #include <QUuid>
 
 /*****************************/
@@ -15,8 +16,6 @@ namespace qwm
 /*****************************/
 /* Class definitions         */
 /*****************************/
-
-//TODO: when retrieveing interfaces, filter "virtual"
 
 class QWLANMAN_EXPORT InterfaceData
 {
@@ -30,9 +29,18 @@ class QWLANMAN_EXPORT InterfaceData
     friend class IfaceMutator;
 
 public:
+    enum class State
+    {
+        IFACE_STS_IDLE = 0,
+        IFACE_STS_SCANNING
+    };
+    Q_ENUM(State);
+
+public:
     InterfaceData();
 
 public:
+    State getState() const;
     const QUuid& getUid() const;
     const QString& getHwAddress() const;
     const QString& getName() const;
@@ -52,6 +60,9 @@ public:
     bool operator>=(const InterfaceData &other) const;
 
 private:
+    mutable QMutex m_mutex;
+
+    State m_state;
     QUuid m_uid;
     QString m_hwAddress;
     QString m_name;

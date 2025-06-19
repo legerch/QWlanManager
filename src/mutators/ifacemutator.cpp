@@ -25,13 +25,21 @@ IfaceMutator::IfaceMutator(const Interface &iface)
     /* Nothing to do */
 }
 
+void IfaceMutator::setState(InterfaceData::State idState)
+{
+    QMutexLocker locker(&m_iface->m_mutex);
+    m_iface->m_state = idState;
+}
+
 void IfaceMutator::setUid(const QUuid &uid)
 {
+    QMutexLocker locker(&m_iface->m_mutex);
     m_iface->m_uid = uid;
 }
 
 void IfaceMutator::setHwAddress(const QString &hwAddr)
 {
+    QMutexLocker locker(&m_iface->m_mutex);
     m_iface->m_hwAddress = hwAddr;
 }
 
@@ -55,16 +63,19 @@ void IfaceMutator::setHwAddress(const uchar *buffer, int lenBuffer)
 
 void IfaceMutator::setName(const QString &name)
 {
+    QMutexLocker locker(&m_iface->m_mutex);
     m_iface->m_name = name;
 }
 
 void IfaceMutator::setDescription(const QString &desc)
 {
+    QMutexLocker locker(&m_iface->m_mutex);
     m_iface->m_description = desc;
 }
 
 MapNetworks& IfaceMutator::getMapNetworksRef()
 {
+    QMutexLocker locker(&m_iface->m_mutex);
     return m_iface->m_mapNets;
 }
 
