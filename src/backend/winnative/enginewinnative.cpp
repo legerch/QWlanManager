@@ -119,7 +119,6 @@ void EngineWinNative::refreshInterfaces()
         miface.setHwAddress(pAdapter->PhysicalAddress, pAdapter->PhysicalAddressLength);
         miface.setName(QString::fromWCharArray(pAdapter->FriendlyName));
         miface.setDescription(desc);
-        miface.setIsUp((pAdapter->OperStatus == IfOperStatusUp));
 
         m_interfaces.insert(iface->getUid(), iface);
     }

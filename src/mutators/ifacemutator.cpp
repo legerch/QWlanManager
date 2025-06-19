@@ -63,11 +63,6 @@ void IfaceMutator::setDescription(const QString &desc)
     m_iface->m_description = desc;
 }
 
-void IfaceMutator::setIsUp(bool isUp)
-{
-    m_iface->m_isUp = isUp;
-}
-
 MapNetworks& IfaceMutator::getMapNetworksRef()
 {
     return m_iface->m_mapNets;

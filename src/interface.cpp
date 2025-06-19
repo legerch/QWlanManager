@@ -42,11 +42,6 @@ const QString& InterfaceData::getDescription() const
     return m_description;
 }
 
-bool InterfaceData::isUp() const
-{
-    return m_isUp;
-}
-
 const MapNetworks& InterfaceData::getMapNetworks() const
 {
     return m_mapNets;

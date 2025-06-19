@@ -25,7 +25,6 @@ public:
     void setHwAddress(const uchar *buffer, int lenBuffer);
     void setName(const QString& name);
     void setDescription(const QString& desc);
-    void setIsUp(bool isUp);
 
     MapNetworks& getMapNetworksRef();
 

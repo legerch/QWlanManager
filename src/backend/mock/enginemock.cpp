@@ -53,7 +53,6 @@ void EngineMock::refreshInterfaces()
     miface1.setHwAddress("11:22:33:44:55:66");
     miface1.setName("Wifi 1");
     miface1.setDescription("Example of adapter 1");
-    miface1.setIsUp(true);
 
     Interface iface2 = Interface::create();
     IfaceMutator miface2(iface2);
@@ -61,7 +60,6 @@ void EngineMock::refreshInterfaces()
     miface2.setHwAddress("77:88:99:00:AA:BB");
     miface2.setName("Wifi 2");
     miface2.setDescription("Example of adapter 2");
-    miface2.setIsUp(true);
 
     /* Add interface to map */
     m_interfaces.insert(iface1->getUid(), iface1);

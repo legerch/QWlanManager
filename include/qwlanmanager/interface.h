@@ -26,7 +26,6 @@ class QWLANMAN_EXPORT InterfaceData
     Q_PROPERTY(QString hwAddress READ getHwAddress)
     Q_PROPERTY(QString name READ getName)
     Q_PROPERTY(QString description READ getDescription)
-    Q_PROPERTY(bool isUp READ isUp)
 
     friend class IfaceMutator;
 
@@ -38,7 +37,6 @@ public:
     const QString& getHwAddress() const;
     const QString& getName() const;
     const QString& getDescription() const;
-    bool isUp() const;
 
     const MapNetworks& getMapNetworks() const;
 
@@ -58,7 +56,6 @@ private:
     QString m_hwAddress;
     QString m_name;
     QString m_description;
-    bool m_isUp;
 
     MapNetworks m_mapNets;
 };
