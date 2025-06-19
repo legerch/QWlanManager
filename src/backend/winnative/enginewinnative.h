@@ -62,7 +62,11 @@ private:
     void eventUnregister();
 
     bool interfaceIsVirtual(const QString &description);
+
     void interfaceListUpdate();
+
+private:
+    static WlanError convertWinNativeErr(WLAN_REASON_CODE winErr);
 
 private:
     static void WINAPI cbNotif(PWLAN_NOTIFICATION_DATA ptrDataNotif, PVOID ptrDataCtx);

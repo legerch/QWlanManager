@@ -2,7 +2,9 @@
 #define QWLANMAN_INTERFACE_H
 
 #include "qwlanmanager/qwlanman_global.h"
+
 #include "qwlanmanager/network.h"
+#include "qwlanmanager/qwlantypes.h"
 
 #include <QMutex>
 #include <QUuid>
@@ -29,18 +31,10 @@ class QWLANMAN_EXPORT InterfaceData
     friend class IfaceMutator;
 
 public:
-    enum class State
-    {
-        IFACE_STS_IDLE = 0,
-        IFACE_STS_SCANNING
-    };
-    Q_ENUM(State);
-
-public:
     InterfaceData();
 
 public:
-    State getState() const;
+    IfaceState getState() const;
     const QUuid& getUid() const;
     const QString& getHwAddress() const;
     const QString& getName() const;
@@ -62,7 +56,7 @@ public:
 private:
     mutable QMutex m_mutex;
 
-    State m_state;
+    IfaceState m_state;
     QUuid m_uid;
     QString m_hwAddress;
     QString m_name;

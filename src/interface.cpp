@@ -22,10 +22,10 @@ namespace qwm
 
 InterfaceData::InterfaceData()
 {
-    m_state = State::IFACE_STS_IDLE;
+    m_state = IfaceState::IFACE_STS_IDLE;
 }
 
-InterfaceData::State InterfaceData::getState() const
+IfaceState InterfaceData::getState() const
 {
     QMutexLocker locker(&m_mutex);
     return m_state;

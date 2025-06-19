@@ -25,7 +25,7 @@ IfaceMutator::IfaceMutator(const Interface &iface)
     /* Nothing to do */
 }
 
-void IfaceMutator::setState(InterfaceData::State idState)
+void IfaceMutator::setState(IfaceState idState)
 {
     QMutexLocker locker(&m_iface->m_mutex);
     m_iface->m_state = idState;

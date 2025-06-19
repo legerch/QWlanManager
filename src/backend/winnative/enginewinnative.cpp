@@ -225,6 +225,46 @@ void EngineWinNative::interfaceListUpdate()
 }
 
 /*!
+ * \brief EngineWinNative::convertWinNativeErr
+ * \param winErr
+ *
+ * \note
+ * https://learn.microsoft.com/en-us/windows/win32/nativewifi/wlan-reason-code
+ *
+ * \return
+ */
+WlanError EngineWinNative::convertWinNativeErr(WLAN_REASON_CODE winErr)
+{
+    WlanError idErr = WlanError::WERR_NO_ERROR;
+
+    switch(winErr)
+    {
+        case WLAN_REASON_CODE_USER_CANCELLED:                   idErr = WlanError::WERR_OPERATION_CANCEL;break;
+        case WLAN_REASON_CODE_MSMSEC_CANCELLED:                 idErr = WlanError::WERR_OPERATION_CANCEL; break;
+
+        case WLAN_REASON_CODE_NETWORK_NOT_AVAILABLE:            idErr = WlanError::WERR_NET_UNAVAILABLE; break;
+
+        case WLAN_REASON_CODE_KEY_MISMATCH:                     idErr = WlanError::WERR_NET_PASSKEY; break;
+        case WLAN_REASON_CODE_MSMSEC_PROFILE_KEY_LENGTH:        idErr = WlanError::WERR_NET_PASSKEY; break;
+        case WLAN_REASON_CODE_MSMSEC_PROFILE_PSK_LENGTH:        idErr = WlanError::WERR_NET_PASSKEY; break;
+        case WLAN_REASON_CODE_MSMSEC_PSK_MISMATCH_SUSPECTED:    idErr = WlanError::WERR_NET_PASSKEY; break;
+        case WLAN_REASON_CODE_MSMSEC_KEY_START_TIMEOUT:         idErr = WlanError::WERR_NET_PASSKEY; break;
+        case WLAN_REASON_CODE_MSMSEC_KEY_SUCCESS_TIMEOUT:       idErr = WlanError::WERR_NET_PASSKEY; break;
+        case WLAN_REASON_CODE_MSMSEC_KEY_FORMAT:                idErr = WlanError::WERR_NET_PASSKEY; break;
+        case WLAN_REASON_CODE_MSMSEC_PROFILE_PASSPHRASE_CHAR:   idErr = WlanError::WERR_NET_PASSKEY; break;
+
+        case WLAN_REASON_CODE_ASSOCIATION_TIMEOUT:              idErr = WlanError::WERR_OPERATION_TIMEOUT; break;
+        case WLAN_REASON_CODE_SECURITY_TIMEOUT:                 idErr = WlanError::WERR_OPERATION_TIMEOUT; break;
+        case WLAN_REASON_CODE_DISCONNECT_TIMEOUT:               idErr = WlanError::WERR_OPERATION_TIMEOUT; break;
+        case WLAN_REASON_CODE_UI_REQUEST_TIMEOUT:               idErr = WlanError::WERR_OPERATION_TIMEOUT; break;
+
+        default:                                                break;
+    }
+
+    return idErr;
+}
+
+/*!
  * \brief Notification callback function
  * \details
  * This function is used each time a notification from WlanAPI is received.

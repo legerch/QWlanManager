@@ -20,7 +20,7 @@ public:
     explicit IfaceMutator(const Interface& iface);
 
 public:
-    void setState(Interface::State idState);
+    void setState(IfaceState idState);
     void setUid(const QUuid& uid);
     void setHwAddress(const QString& hwAddr);
     void setHwAddress(const uchar *buffer, int lenBuffer);
