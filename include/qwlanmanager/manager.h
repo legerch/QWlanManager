@@ -30,6 +30,10 @@ public:
     ListInterfaces getInterfaces() const;
     Interface getInterface(const QUuid &idInterface) const;
 
+signals:
+    void sInterfaceAdded(qwm::Interface interface);
+    void sInterfaceRemoved(qwm::Interface interface);
+
 private:
     std::unique_ptr<ManagerPrivate> d_ptr;
     Q_DECLARE_PRIVATE(Manager)

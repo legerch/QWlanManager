@@ -1,30 +1,5 @@
 #include "enginewinnative.h"
 
-/*
- * Since we need to include winsock2.h, we need to define WIN32_LEAN_AND_MEAN
- * so windows.h won't include winsock.h.
- *
- * Note: This definition is commented in this file because
- * it is defined in top layer (see build system, which is currently cmake)
- */
-//#define WIN32_LEAN_AND_MEAN 1
-
-#include <Windows.h>
-#include <Wlanapi.h>
-
-/*
- * IpHlpAPI : Windows API which contains tools to manage interfaces
- * and IPs addresses.
- * In addition, we need to include winsock2.h before iphlpapi.h and we need
- * to include ws2ipdef.h to work around a MinGW-w64 bug
- * (http://sourceforge.net/p/mingw-w64/mailman/message/32935366/)
- */
-#include <winsock2.h>
-#include <ws2ipdef.h>
-#include <wincrypt.h>
-#include <iphlpapi.h>
-#include <ws2tcpip.h>
-
 /*****************************/
 /* Macro definitions         */
 /*****************************/
@@ -61,14 +36,20 @@ EngineWinNative::~EngineWinNative()
 
 void EngineWinNative::initialize()
 {
-    // TODO: open API
-    // TODO: register notif
+    /* Open WLAN API */
+    bool succeed = apiOpen();
+    if(!succeed){
+        return;
+    }
+
+    /* Register notifications events */
+    eventRegister();
 }
 
 void EngineWinNative::terminate()
 {
-    // TODO: close API
-    // TODO: unregister notif
+    eventUnregister();
+    apiClose();
 }
 
 /*!
@@ -86,6 +67,9 @@ void EngineWinNative::refreshInterfaces()
     PIP_ADAPTER_ADDRESSES listAdapters = nullptr;
     DWORD res = 0;
     int nbTrials = 0;
+
+    /* Clean current list of interfaces */
+    m_interfaces.clear();
 
     /* Retrieve interfaces list */
     do{
@@ -171,6 +155,32 @@ void EngineWinNative::apiClose()
     }
 }
 
+bool EngineWinNative::eventRegister()
+{
+    DWORD res = WlanRegisterNotification(m_handle, WLAN_NOTIFICATION_SOURCE_ACM | WLAN_NOTIFICATION_SOURCE_MSM, true,
+                                         &EngineWinNative::cbNotif, this, nullptr, nullptr
+    );
+
+    if(res != ERROR_SUCCESS){
+        qCritical("Unable to register for WLAN notifications events [err: %d]", res);
+        return false;
+    }
+
+    return true;
+}
+
+void EngineWinNative::eventUnregister()
+{
+    DWORD res = WlanRegisterNotification(m_handle, WLAN_NOTIFICATION_SOURCE_NONE, false,
+                                         nullptr, this, nullptr, nullptr
+                                         );
+
+    if(res != ERROR_SUCCESS){
+        qCritical("Unable to unregister WLAN notifications events [err: %d]", res);
+        return;
+    }
+}
+
 /*!
  * \brief Use to known if device adapter is virtual or not
  * \details
@@ -188,6 +198,76 @@ bool EngineWinNative::interfaceIsVirtual(const QString &description)
 {
     return description.contains("virtual", Qt::CaseInsensitive)
         || description.contains("vmware", Qt::CaseInsensitive);
+}
+
+void EngineWinNative::interfaceListUpdate()
+{
+    /* Move old list in order to keep a reference */
+    MapInterfaces prevIfaces = std::move(m_interfaces);
+
+    /* Refresh interface list */
+    refreshInterfaces();
+
+    /* Perform comparaisons according to associated events */
+    const auto newIds = QSet<QUuid>(m_interfaces.keyBegin(), m_interfaces.keyEnd());
+    const auto oldIds = QSet<QUuid>(prevIfaces.keyBegin(), prevIfaces.keyEnd());
+
+    /* Do interfaces has been added ? */
+    const QSet<QUuid> setAdded = newIds - oldIds;
+    for(auto it = setAdded.cbegin(); it != setAdded.cend(); ++it){
+        emit q_ptr->sInterfaceAdded(m_interfaces.value(*it));
+    }
+
+    /* Do interfaces has been removed ? */
+    const QSet<QUuid> setRemoved = oldIds - newIds;
+    for(auto it = setRemoved.cbegin(); it != setRemoved.cend(); ++it){
+        emit q_ptr->sInterfaceRemoved(prevIfaces.value(*it));
+    }
+}
+
+/*!
+ * \brief Notification callback function
+ * \details
+ * This function is used each time a notification from WlanAPI is received.
+ *
+ * \param[in] ptrDataNotif
+ * Pointer to a \b WLAN_NOTIFICATION_DATA structure that contains notification informations.
+ * \param[in, out] ptrDataCtx
+ * Pointer to context information provided by the client when it registered for notifications.
+ *
+ * \note
+ * For developers:
+ * - https://docs.microsoft.com/en-us/windows/win32/api/wlanapi/nc-wlanapi-wlan_notification_callback
+ *
+ * \sa cbNotifAcm(), cbNotifMsm()
+ */
+void EngineWinNative::cbNotif(PWLAN_NOTIFICATION_DATA ptrDataNotif, PVOID ptrDataCtx)
+{
+    switch(ptrDataNotif->NotificationSource)
+    {
+        case WLAN_NOTIFICATION_SOURCE_ACM:  cbNotifAcm(ptrDataNotif, ptrDataCtx); break;
+        case WLAN_NOTIFICATION_SOURCE_MSM:  cbNotifMsm(ptrDataNotif, ptrDataCtx); break;
+
+        default: break;
+    }
+}
+
+void EngineWinNative::cbNotifAcm(PWLAN_NOTIFICATION_DATA ptrDataNotif, PVOID ptrDataCtx)
+{
+    EngineWinNative *engine = static_cast<EngineWinNative*>(ptrDataCtx);
+
+    switch(ptrDataNotif->NotificationCode)
+    {
+        case wlan_notification_acm_interface_arrival:
+        case wlan_notification_acm_interface_removal:{
+            engine->interfaceListUpdate();
+        }break;
+    }
+}
+
+void EngineWinNative::cbNotifMsm(QWLANMAN_VAR_UNUSED PWLAN_NOTIFICATION_DATA ptrDataNotif, QWLANMAN_VAR_UNUSED PVOID ptrDataCtx)
+{
+    // TODO: implement signal quality : wlan_notification_msm_signal_quality_change
 }
 
 /*****************************/
