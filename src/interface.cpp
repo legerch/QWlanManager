@@ -72,6 +72,12 @@ Network InterfaceData::getNetwork(const QString &ssid) const
     return m_mapNets.value(ssid, nullptr);
 }
 
+Network InterfaceData::getNetworkConnected() const
+{
+    QMutexLocker locker(&m_mutex);
+    return m_mapNets.value(m_connectedSsid, nullptr);
+}
+
 bool InterfaceData::operator==(const InterfaceData &other) const
 {
     return m_uid == other.m_uid;

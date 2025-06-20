@@ -73,6 +73,12 @@ void IfaceMutator::setDescription(const QString &desc)
     m_iface->m_description = desc;
 }
 
+void IfaceMutator::setConnectedSsid(const QString &ssid)
+{
+    QMutexLocker locker(&m_iface->m_mutex);
+    m_iface->m_connectedSsid = ssid;
+}
+
 MapNetworks& IfaceMutator::getMapNetworksRef()
 {
     QMutexLocker locker(&m_iface->m_mutex);

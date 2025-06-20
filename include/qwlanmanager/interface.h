@@ -43,6 +43,7 @@ public:
 
     ListNetworks getListNetworks() const;
     Network getNetwork(const QString &ssid) const;
+    Network getNetworkConnected() const;
 
 public:
     bool operator==(const InterfaceData &other) const;
@@ -62,6 +63,7 @@ private:
     QString m_description;
 
     MapNetworks m_mapNets;
+    QString m_connectedSsid;
 };
 
 /*****************************/
