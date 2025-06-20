@@ -23,24 +23,22 @@ namespace qwm
 
 NetworkData::NetworkData() = default;
 
-const QString& NetworkData::getBssid() const
-{
-    return m_bssid;
-}
-
 const QString& NetworkData::getSsid() const
 {
+    QMutexLocker locker(&m_mutex);
     return m_ssid;
 }
 
 const QString& NetworkData::getProfileName() const
 {
+    QMutexLocker locker(&m_mutex);
     return m_profileName;
 }
 
 bool NetworkData::operator==(const NetworkData &other) const
 {
-    return m_bssid == other.m_bssid;
+    return m_ssid == other.m_ssid
+        && m_profileName == other.m_profileName;
 }
 
 bool NetworkData::operator!=(const NetworkData &other) const
@@ -50,12 +48,20 @@ bool NetworkData::operator!=(const NetworkData &other) const
 
 bool NetworkData::operator<(const NetworkData &other) const
 {
-    return m_bssid < other.m_bssid;
+    if(m_ssid != other.m_ssid){
+        return m_ssid < other.m_ssid;
+    }
+
+    return m_profileName < other.m_profileName;
 }
 
 bool NetworkData::operator>(const NetworkData &other) const
 {
-    return m_bssid > other.m_bssid;
+    if(m_ssid != other.m_ssid){
+        return m_ssid > other.m_ssid;
+    }
+
+    return m_profileName > other.m_profileName;
 }
 
 bool NetworkData::operator<=(const NetworkData &other) const
@@ -74,7 +80,7 @@ bool NetworkData::operator>=(const NetworkData &other) const
 
 size_t qHash(const NetworkData &key, uint seed)
 {
-    return qHash(key.getBssid(), seed);
+    return qHashMulti(seed, key.getSsid(), key.getProfileName());
 }
 
 /*****************************/

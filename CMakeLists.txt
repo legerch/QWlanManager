@@ -92,6 +92,7 @@ set(PROJECT_HEADERS_PRIVATE
     backend/mock/enginemock.h
 
     mutators/ifacemutator.h
+    mutators/networkmutator.h
 )
 
 set(PROJECT_SOURCES
@@ -105,6 +106,7 @@ set(PROJECT_SOURCES
     backend/mock/enginemock.cpp
 
     mutators/ifacemutator.cpp
+    mutators/networkmutator.cpp
 )
 
 # Manage platform differences

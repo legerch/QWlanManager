@@ -6,7 +6,6 @@
 #include "qwlanmanager/network.h"
 #include "qwlanmanager/qwlantypes.h"
 
-#include <QMutex>
 #include <QUuid>
 
 /*****************************/

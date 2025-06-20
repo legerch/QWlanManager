@@ -4,6 +4,7 @@
 #include "qwlanmanager/qwlanman_global.h"
 
 #include <QHash>
+#include <QMutex>
 #include <QSharedPointer>
 #include <QString>
 #include <QObject>
@@ -22,15 +23,15 @@ class QWLANMAN_EXPORT NetworkData
 {
     Q_GADGET
 
-    Q_PROPERTY(QString bssid READ getBssid)
     Q_PROPERTY(QString ssid READ getSsid)
-    Q_PROPERTY(QString profile READ getProfileName)    
+    Q_PROPERTY(QString profile READ getProfileName)
+
+    friend class NetworkMutator;
 
 public:
     NetworkData();
 
 public:
-    const QString& getBssid() const;
     const QString& getSsid() const;
     const QString& getProfileName() const;
 
@@ -43,7 +44,8 @@ public:
     bool operator>=(const NetworkData &other) const;
 
 private:
-    QString m_bssid;
+    mutable QMutex m_mutex;
+
     QString m_ssid;
     QString m_profileName;
 };
