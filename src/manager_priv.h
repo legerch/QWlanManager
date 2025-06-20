@@ -1,7 +1,7 @@
 #ifndef QWLANMAN_MANAGER_PRIV_H
 #define QWLANMAN_MANAGER_PRIV_H
 
-#include "mutators/ifacemutator.h"
+#include "datas/interfacemutator.h"
 #include "mutators/networkmutator.h"
 
 #include "qwlanmanager/manager.h"

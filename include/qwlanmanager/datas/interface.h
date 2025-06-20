@@ -1,9 +1,9 @@
-#ifndef QWLANMAN_INTERFACE_H
-#define QWLANMAN_INTERFACE_H
+#ifndef QWLANMAN_DATAS_INTERFACE_H
+#define QWLANMAN_DATAS_INTERFACE_H
 
 #include "qwlanmanager/qwlanman_global.h"
 
-#include "qwlanmanager/network.h"
+#include "qwlanmanager/datas/network.h"
 #include "qwlanmanager/qwlantypes.h"
 
 #include <QUuid>
@@ -18,7 +18,8 @@ namespace qwm
 /* Class definitions         */
 /*****************************/
 
-class QWLANMAN_EXPORT InterfaceData
+class InterfaceData;
+class QWLANMAN_EXPORT Interface
 {
     Q_GADGET
 
@@ -27,12 +28,17 @@ class QWLANMAN_EXPORT InterfaceData
     Q_PROPERTY(QString name READ getName)
     Q_PROPERTY(QString description READ getDescription)
 
-    friend class IfaceMutator;
+    friend class InterfaceMutator;
 
 public:
-    InterfaceData();
+    Interface();
+
+    Interface(const Interface&) = default;
+    Interface& operator=(const Interface&) = default;
 
 public:
+    bool isValid() const;
+
     IfaceState getState() const;
     const QUuid& getUid() const;
     const QString& getHwAddress() const;
@@ -46,36 +52,16 @@ public:
     Network getNetworkConnected() const;
 
 public:
-    bool operator==(const InterfaceData &other) const;
-    bool operator!=(const InterfaceData &other) const;
-    bool operator<(const InterfaceData &other) const;
-    bool operator>(const InterfaceData &other) const;
-    bool operator<=(const InterfaceData &other) const;
-    bool operator>=(const InterfaceData &other) const;
+    bool operator==(const Interface &other) const;
+    bool operator!=(const Interface &other) const;
 
 private:
-    mutable QMutex m_mutex;
-
-    IfaceState m_state;
-    QUuid m_uid;
-    QString m_hwAddress;
-    QString m_name;
-    QString m_description;
-
-    MapNetworks m_mapNets;
-    QString m_connectedSsid;
+    QSharedPointer<InterfaceData> d_ptr;
 };
-
-/*****************************/
-/* Qt custom related methods */
-/*****************************/
-size_t qHash(const InterfaceData &key, uint seed = 0);
 
 /*****************************/
 /* Alias for related types   */
 /*****************************/
-
-using Interface = QSharedPointer<InterfaceData>;
 
 using ListInterfaces = QList<Interface>;
 using MapInterfaces = QHash<QUuid, Interface>; /**< Key is interface UID */
@@ -86,4 +72,4 @@ using MapInterfaces = QHash<QUuid, Interface>; /**< Key is interface UID */
 
 } // namespace qwm
 
-#endif // QWLANMAN_INTERFACE_H
+#endif // QWLANMAN_DATAS_INTERFACE_H

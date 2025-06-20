@@ -3,7 +3,7 @@
 
 #include "qwlanmanager/qwlanman_global.h"
 
-#include "qwlanmanager/interface.h"
+#include "qwlanmanager/datas/interface.h"
 #include "qwlanmanager/qwlantypes.h"
 
 #include <QObject>

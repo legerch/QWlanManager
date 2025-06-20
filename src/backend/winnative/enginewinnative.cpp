@@ -114,15 +114,15 @@ void EngineWinNative::interfaceListRefresh()
         }
 
         // Register an interface
-        Interface iface = Interface::create();
-        IfaceMutator miface(iface);
+        Interface iface;
+        InterfaceMutator miface(iface);
 
         miface.setUid(QUuid(pAdapter->AdapterName));
         miface.setHwAddress(pAdapter->PhysicalAddress, pAdapter->PhysicalAddressLength);
         miface.setName(QString::fromWCharArray(pAdapter->FriendlyName));
         miface.setDescription(desc);
 
-        m_interfaces.insert(iface->getUid(), iface);
+        m_interfaces.insert(iface.getUid(), iface);
     }
 
 stat_free:
@@ -136,16 +136,16 @@ stat_return:
 void EngineWinNative::interfaceScanNetworksAsync(Interface interface)
 {
     /* Perform scan request */
-    const GUID ifaceUuid = interface->getUid();
+    const GUID ifaceUuid = interface.getUid();
     DWORD res = WlanScan(m_handle, &ifaceUuid, nullptr, nullptr, nullptr);
     if(res != ERROR_SUCCESS){
         qCritical("Failed to perform scan request [err: %d]", res);
-        emit q_ptr->sScanFailed(interface->getUid(), WlanError::WERR_API_INTERNAL);
+        emit q_ptr->sScanFailed(interface.getUid(), WlanError::WERR_API_INTERNAL);
         return;
     }
 
     /* Update interface state */
-    IfaceMutator miface(interface);
+    InterfaceMutator miface(interface);
     miface.setState(IfaceState::IFACE_STS_SCANNING);
 }
 
@@ -246,7 +246,7 @@ void EngineWinNative::interfaceListUpdate()
 //TODO: doc -> explain that hidden networks are currently ignored
 WlanError EngineWinNative::interfaceNetworksUpdate(Interface interface)
 {
-    IfaceMutator miface(interface);
+    InterfaceMutator miface(interface);
     MapNetworks &mapNets = miface.getMapNetworksRef();
 
     /* Clear current networks infos */
@@ -255,14 +255,14 @@ WlanError EngineWinNative::interfaceNetworksUpdate(Interface interface)
 
     /* Prepare arguments needed to perform request */
     constexpr DWORD flags = 0;
-    const GUID ifaceUuid = interface->getUid();
+    const GUID ifaceUuid = interface.getUid();
     PWLAN_AVAILABLE_NETWORK_LIST apiNetList = nullptr;
     QString connectedSsid = ""; // Empty means "no network connected"
 
     /* Perform request */
     DWORD res = WlanGetAvailableNetworkList(m_handle, &ifaceUuid, flags, nullptr, &apiNetList);
     if(res != ERROR_SUCCESS){
-        qCritical("Unable to retrieve list of networks [uuid: %s, err: %d]", qUtf8Printable(interface->getUid().toString()), res);
+        qCritical("Unable to retrieve list of networks [uuid: %s, err: %d]", qUtf8Printable(interface.getUid().toString()), res);
         return WlanError::WERR_API_INTERNAL;
     }
 
@@ -323,12 +323,12 @@ void EngineWinNative::interfaceScanFinished(const QUuid &idInterface, WlanError 
     }
 
     /* Reset interface state */
-    IfaceMutator miface(iface);
+    InterfaceMutator miface(iface);
     miface.setState(IfaceState::IFACE_STS_IDLE);
 
     /* Send associated signals */
     if(result == WlanError::WERR_NO_ERROR){
-        emit q_ptr->sScanSucceed(idInterface, iface->getListNetworks());
+        emit q_ptr->sScanSucceed(idInterface, iface.getListNetworks());
 
     }else{
         qCritical("Scan request has failed [uuid: %s, err: %s (%d)]",

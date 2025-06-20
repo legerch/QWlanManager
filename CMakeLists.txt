@@ -78,10 +78,11 @@ set(PROJECT_LINKING_LIB
 ## Set library files
 ### Public interface
 set(PROJECT_HEADERS_PUBLIC
-    interface.h
     manager.h
-    network.h
     qwlantypes.h
+
+    datas/interface.h
+    datas/network.h
 )
 
 ### Private
@@ -91,22 +92,24 @@ set(PROJECT_HEADERS_PRIVATE
 
     backend/mock/enginemock.h
 
-    mutators/ifacemutator.h
-    mutators/networkmutator.h
+    datas/interfacedata.h
+    datas/interfacemutator.h
+    datas/networkmutator.h
 )
 
 set(PROJECT_SOURCES
     factorybackend.cpp
-    interface.cpp
     manager.cpp
     manager_priv.cpp
-    network.cpp
     qwlantypes.cpp
 
     backend/mock/enginemock.cpp
 
-    mutators/ifacemutator.cpp
-    mutators/networkmutator.cpp
+    datas/interface.cpp
+    datas/interfacedata.cpp
+    datas/interfacemutator.cpp
+    datas/network.cpp
+    datas/networkmutator.cpp
 )
 
 # Manage platform differences

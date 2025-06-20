@@ -1,7 +1,7 @@
-#ifndef QWLANMAN_MUTATOR_IFACEMUTATOR_H
-#define QWLANMAN_MUTATOR_IFACEMUTATOR_H
+#ifndef QWLANMAN_DATAS_INTERFACEMUTATOR_H
+#define QWLANMAN_DATAS_INTERFACEMUTATOR_H
 
-#include "qwlanmanager/interface.h"
+#include "qwlanmanager/datas/interface.h"
 
 /*****************************/
 /* Namespace instructions    */
@@ -13,11 +13,11 @@ namespace qwm
 /* Class definitions         */
 /*****************************/
 
-class IfaceMutator
+class InterfaceMutator
 {
 
 public:
-    explicit IfaceMutator(const Interface &iface);
+    explicit InterfaceMutator(const Interface &iface);
 
 public:
     void setState(IfaceState idState);
@@ -40,4 +40,4 @@ private:
 
 } // namespace qwm
 
-#endif // QWLANMAN_MUTATOR_IFACEMUTATOR_H
+#endif // QWLANMAN_DATAS_INTERFACEMUTATOR_H
