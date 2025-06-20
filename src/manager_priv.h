@@ -2,6 +2,8 @@
 #define QWLANMAN_MANAGER_PRIV_H
 
 #include "mutators/ifacemutator.h"
+#include "mutators/networkmutator.h"
+
 #include "qwlanmanager/manager.h"
 
 /*****************************/
@@ -25,11 +27,17 @@ public:
     virtual ~ManagerPrivate();
 
 public:
+    void interfaceScanNetworks(Interface interface);
+
+public:
     virtual void initialize() = 0;
     virtual void terminate() = 0;
 
 public:
-    virtual void refreshInterfaces() = 0;
+    virtual void interfaceListRefresh() = 0;
+
+protected:
+    virtual void interfaceScanNetworksAsync(Interface interface) = 0;
 
 protected:
     MapInterfaces m_interfaces;

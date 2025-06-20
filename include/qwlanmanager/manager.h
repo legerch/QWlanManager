@@ -2,7 +2,9 @@
 #define QWLANMAN_MANAGER_H
 
 #include "qwlanmanager/qwlanman_global.h"
+
 #include "qwlanmanager/interface.h"
+#include "qwlanmanager/qwlantypes.h"
 
 #include <QObject>
 
@@ -27,12 +29,18 @@ public:
     ~Manager();
 
 public:
+    void doScan(const QUuid &idInterface);
+
+public:
     ListInterfaces getInterfaces() const;
     Interface getInterface(const QUuid &idInterface) const;
 
 signals:
     void sInterfaceAdded(qwm::Interface interface);
     void sInterfaceRemoved(qwm::Interface interface);
+
+    void sScanSucceed(const QUuid &idInterface, qwm::ListNetworks listNets);
+    void sScanFailed(const QUuid &idInterface, qwm::WlanError idErr);
 
 private:
     std::unique_ptr<ManagerPrivate> d_ptr;

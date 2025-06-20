@@ -25,7 +25,10 @@ public:
     void terminate() override;
 
 public:
-    void refreshInterfaces() override;
+    void interfaceListRefresh() override;
+
+protected:
+    void interfaceScanNetworksAsync(Interface interface) override;
 };
 
 /*****************************/

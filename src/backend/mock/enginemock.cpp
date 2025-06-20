@@ -41,7 +41,7 @@ void EngineMock::terminate()
     qDebug("Engine mock termination called");
 }
 
-void EngineMock::refreshInterfaces()
+void EngineMock::interfaceListRefresh()
 {
     /* Reset list of interfaces */
     m_interfaces.clear();
@@ -64,6 +64,11 @@ void EngineMock::refreshInterfaces()
     /* Add interface to map */
     m_interfaces.insert(iface1->getUid(), iface1);
     m_interfaces.insert(iface2->getUid(), iface2);
+}
+
+void EngineMock::interfaceScanNetworksAsync(QWLANMAN_VAR_UNUSED Interface interface)
+{
+    /* Not implemented for mock */
 }
 
 /*****************************/

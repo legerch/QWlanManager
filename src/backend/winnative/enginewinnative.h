@@ -52,7 +52,10 @@ public:
     void terminate() override;
 
 public:
-    void refreshInterfaces() override;
+    void interfaceListRefresh() override;
+
+protected:
+    void interfaceScanNetworksAsync(Interface interface) override;
 
 private:
     bool apiOpen();
@@ -64,6 +67,8 @@ private:
     bool interfaceIsVirtual(const QString &description);
 
     void interfaceListUpdate();
+    WlanError interfaceNetworksUpdate(Interface interface);
+    void interfaceScanFinished(const QUuid &idInterface, WlanError result);
 
 private:
     static WlanError convertWinNativeErr(WLAN_REASON_CODE winErr);

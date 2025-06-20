@@ -29,12 +29,26 @@ Manager::Manager(QObject *parent) :
     d_ptr(FactoryBackend::createBackend(this))
 {
     d_ptr->initialize();
-    d_ptr->refreshInterfaces();
+    d_ptr->interfaceListRefresh();
 }
 
 Manager::~Manager()
 {
     d_ptr->terminate();
+}
+
+void Manager::doScan(const QUuid &idInterface)
+{
+    /* Retrieve associated interfaces */
+    Interface iface = getInterface(idInterface);
+    if(iface.isNull()){
+        qWarning("Unable to perform scan, unknown interface ID [uuid: %s]", qUtf8Printable(idInterface.toString()));
+        emit sScanFailed(idInterface, WlanError::WERR_ITEM_INVALID);
+        return;
+    }
+
+    /* Start scan request */
+    d_ptr->interfaceScanNetworks(iface);
 }
 
 ListInterfaces Manager::getInterfaces() const
