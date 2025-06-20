@@ -1,5 +1,7 @@
 #include "enginewinnative.h"
 
+#include <QDebug>
+
 /*****************************/
 /* Macro definitions         */
 /*****************************/
@@ -241,6 +243,7 @@ void EngineWinNative::interfaceListUpdate()
 }
 
 //TODO: save signal quality information
+//TODO: doc -> explain that hidden networks are currently ignored
 WlanError EngineWinNative::interfaceNetworksUpdate(Interface interface)
 {
     IfaceMutator miface(interface);
@@ -270,10 +273,11 @@ WlanError EngineWinNative::interfaceNetworksUpdate(Interface interface)
         /*
          * Verify that network is not already registered
          * WlanAPI returns duplicated networks when a profile already exists,
-         * so we have to filter them
+         * so we have to filter them.
+         * Also filter hidden networks
          */
         const QString ssid = QString::fromUtf8(reinterpret_cast<char *>(apiNet->dot11Ssid.ucSSID), apiNet->dot11Ssid.uSSIDLength);
-        if(mapNets.contains(ssid)){
+        if(ssid.isEmpty() || mapNets.contains(ssid)){
             continue;
         }
 
