@@ -70,7 +70,8 @@ void EngineWinNative::interfaceListRefresh()
     DWORD res = 0;
     int nbTrials = 0;
 
-    /* Clean current list of interfaces */
+    /* Prepare list of interfaces */
+    MapInterfaces prevIfaces = m_interfaces;
     m_interfaces.clear();
 
     /* Retrieve interfaces list */
@@ -113,17 +114,28 @@ void EngineWinNative::interfaceListRefresh()
             continue;
         }
 
-        // Register an interface
-        Interface iface;
-        InterfaceMutator miface(iface);
+        // Manage known interface
+        const QUuid uid = QUuid(pAdapter->AdapterName);
 
-        miface.setUid(QUuid(pAdapter->AdapterName));
-        miface.setHwAddress(pAdapter->PhysicalAddress, pAdapter->PhysicalAddressLength);
-        miface.setName(QString::fromWCharArray(pAdapter->FriendlyName));
-        miface.setDescription(desc);
+        Interface iface;
+        if(prevIfaces.contains(uid)){
+            iface = prevIfaces.value(uid);
+
+        // Register an interface
+        }else{
+            InterfaceMutator miface(iface);
+
+            miface.setUid(uid);
+            miface.setHwAddress(pAdapter->PhysicalAddress, pAdapter->PhysicalAddressLength);
+            miface.setName(QString::fromWCharArray(pAdapter->FriendlyName));
+            miface.setDescription(desc);
+        }
 
         m_interfaces.insert(iface.getUid(), iface);
     }
+
+    /* Manage interface events */
+    interfaceListHandleEvents(prevIfaces, m_interfaces);
 
 stat_free:
     free(listAdapters);
@@ -217,28 +229,27 @@ bool EngineWinNative::interfaceIsVirtual(const QString &description)
         || description.contains("vmware", Qt::CaseInsensitive);
 }
 
-void EngineWinNative::interfaceListUpdate()
+void EngineWinNative::interfaceListHandleEvents(const MapInterfaces &oldMap, const MapInterfaces &newMap)
 {
-    /* Move old list in order to keep a reference */
-    MapInterfaces prevIfaces = std::move(m_interfaces);
+    /* Do we need to manage events */
+    if(oldMap.size() == 0){
+        return;
+    }
 
-    /* Refresh interface list */
-    interfaceListRefresh();
-
-    /* Perform comparaisons according to associated events */
-    const auto newIds = QSet<QUuid>(m_interfaces.keyBegin(), m_interfaces.keyEnd());
-    const auto oldIds = QSet<QUuid>(prevIfaces.keyBegin(), prevIfaces.keyEnd());
+    /* Retrieve keys allowing to perform comparaisons */
+    const auto newIds = QSet<QUuid>(newMap.keyBegin(), newMap.keyEnd());
+    const auto oldIds = QSet<QUuid>(oldMap.keyBegin(), oldMap.keyEnd());
 
     /* Do interfaces has been added ? */
     const QSet<QUuid> setAdded = newIds - oldIds;
     for(auto it = setAdded.cbegin(); it != setAdded.cend(); ++it){
-        emit q_ptr->sInterfaceAdded(m_interfaces.value(*it));
+        emit q_ptr->sInterfaceAdded(newMap.value(*it));
     }
 
     /* Do interfaces has been removed ? */
     const QSet<QUuid> setRemoved = oldIds - newIds;
     for(auto it = setRemoved.cbegin(); it != setRemoved.cend(); ++it){
-        emit q_ptr->sInterfaceRemoved(prevIfaces.value(*it));
+        emit q_ptr->sInterfaceRemoved(oldMap.value(*it));
     }
 }
 
@@ -438,7 +449,7 @@ void EngineWinNative::cbNotifAcm(PWLAN_NOTIFICATION_DATA ptrDataNotif, PVOID ptr
 
         case wlan_notification_acm_interface_arrival:
         case wlan_notification_acm_interface_removal:{
-            engine->interfaceListUpdate();
+            engine->interfaceListRefresh();
         }break;
     }
 }

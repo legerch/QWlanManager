@@ -66,7 +66,7 @@ private:
 
     bool interfaceIsVirtual(const QString &description);
 
-    void interfaceListUpdate();
+    void interfaceListHandleEvents(const MapInterfaces &oldMap, const MapInterfaces &newMap);
     WlanError interfaceNetworksUpdate(Interface interface);
     void interfaceScanFinished(const QUuid &idInterface, WlanError result);
 
