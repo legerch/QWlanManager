@@ -81,13 +81,13 @@ ListNetworks Interface::getListNetworks() const
 Network Interface::getNetwork(const QString &ssid) const
 {
     QMutexLocker locker(&d_ptr->m_mutex);
-    return d_ptr->m_mapNets.value(ssid, nullptr);
+    return d_ptr->m_mapNets.value(ssid);
 }
 
 Network Interface::getNetworkConnected() const
 {
     QMutexLocker locker(&d_ptr->m_mutex);
-    return d_ptr->m_mapNets.value(d_ptr->m_connectedSsid, nullptr);
+    return d_ptr->m_mapNets.value(d_ptr->m_connectedSsid);
 }
 
 bool Interface::operator==(const Interface &other) const

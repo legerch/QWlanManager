@@ -1,5 +1,7 @@
 #include "networkmutator.h"
 
+#include "networkdata.h"
+
 /*****************************/
 /* Class documentations      */
 /*****************************/
@@ -27,14 +29,14 @@ NetworkMutator::NetworkMutator(const Network &network)
 
 void NetworkMutator::setSsid(const QString &ssid)
 {
-    QMutexLocker locker(&m_network->m_mutex);
-    m_network->m_ssid = ssid;
+    QMutexLocker locker(&m_network.d_ptr->m_mutex);
+    m_network.d_ptr->m_ssid = ssid;
 }
 
 void NetworkMutator::setProfileName(const QString &profile)
 {
-    QMutexLocker locker(&m_network->m_mutex);
-    m_network->m_profileName = profile;
+    QMutexLocker locker(&m_network.d_ptr->m_mutex);
+    m_network.d_ptr->m_profileName = profile;
 }
 
 /*****************************/

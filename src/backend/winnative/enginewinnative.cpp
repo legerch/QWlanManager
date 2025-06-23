@@ -293,7 +293,7 @@ WlanError EngineWinNative::interfaceNetworksUpdate(Interface interface)
         }
 
         // Register network
-        Network net = Network::create();
+        Network net;
         NetworkMutator munet(net);
 
         munet.setSsid(ssid);

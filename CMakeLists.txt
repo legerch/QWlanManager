@@ -94,6 +94,7 @@ set(PROJECT_HEADERS_PRIVATE
 
     datas/interfacedata.h
     datas/interfacemutator.h
+    datas/networkdata.h
     datas/networkmutator.h
 )
 
@@ -109,6 +110,7 @@ set(PROJECT_SOURCES
     datas/interfacedata.cpp
     datas/interfacemutator.cpp
     datas/network.cpp
+    datas/networkdata.cpp
     datas/networkmutator.cpp
 )
 

@@ -1,7 +1,7 @@
-#ifndef QWLANMAN_MUTATOR_NETWORKMUTATOR_H
-#define QWLANMAN_MUTATOR_NETWORKMUTATOR_H
+#ifndef QWLANMAN_DATAS_NETWORKMUTATOR_H
+#define QWLANMAN_DATAS_NETWORKMUTATOR_H
 
-#include "qwlanmanager/network.h"
+#include "qwlanmanager/datas/network.h"
 
 /*****************************/
 /* Namespace instructions    */
@@ -32,4 +32,4 @@ private:
 
 } // namespace qwm
 
-#endif // QWLANMAN_MUTATOR_NETWORKMUTATOR_H
+#endif // QWLANMAN_DATAS_NETWORKMUTATOR_H
