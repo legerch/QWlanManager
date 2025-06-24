@@ -22,6 +22,7 @@ QString wlanErrorToString(WlanError idErr)
     static const QHash<WlanError, QString> MAP_STR_ERR =
     {
         {WlanError::WERR_NO_ERROR, "no error"},
+        {WlanError::WERR_OPERATION_UNAVAILABLE, "operation unavailable"},
         {WlanError::WERR_OPERATION_CANCEL, "operation cancelled"},
         {WlanError::WERR_OPERATION_TIMEOUT, "operation reached timeout"},
         {WlanError::WERR_ITEM_INVALID, "invalid item"},

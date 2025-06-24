@@ -66,9 +66,10 @@ void EngineMock::interfaceListRefresh()
     m_interfaces.insert(iface2.getUid(), iface2);
 }
 
-void EngineMock::interfaceScanNetworksAsync(QWLANMAN_VAR_UNUSED Interface interface)
+void EngineMock::interfaceScanNetworksAsync(Interface interface)
 {
-    /* Not implemented for mock */
+    qCritical("Unable to perform scan, not implemented for mock engine");
+    emit q_ptr->sScanFailed(interface.getUid(), WlanError::WERR_OPERATION_UNAVAILABLE);
 }
 
 /*****************************/

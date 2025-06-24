@@ -16,6 +16,7 @@ namespace qwm
     enum class WlanError
     {
         WERR_NO_ERROR = 0,
+        WERR_OPERATION_UNAVAILABLE,
         WERR_OPERATION_CANCEL,
         WERR_OPERATION_TIMEOUT,
         WERR_ITEM_INVALID,
