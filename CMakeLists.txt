@@ -128,11 +128,13 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
 
     set(PROJECT_HEADERS_PRIVATE ${PROJECT_HEADERS_PRIVATE}
         backend/winnative/enginewinnative.h
+        backend/winnative/profilewinnative.h
         backend/winnative/typeswinnative.h
     )
 
     set(PROJECT_SOURCES ${PROJECT_SOURCES}
         backend/winnative/enginewinnative.cpp
+        backend/winnative/profilewinnative.cpp
         backend/winnative/typeswinnative.cpp
     )
 

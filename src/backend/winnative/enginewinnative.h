@@ -44,6 +44,7 @@ private:
 
     void interfaceListHandleEvents(const MapInterfaces &oldMap, const MapInterfaces &newMap);
     WlanError interfaceNetworksUpdate(Interface interface);
+    WlanError interfaceNetworkCreateProfile(Interface interface, Network network, const QString &password);
     void interfaceScanFinished(const QUuid &idInterface, WlanError result);
 
 private:

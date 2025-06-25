@@ -1,5 +1,7 @@
 #include "enginewinnative.h"
 
+#include "profilewinnative.h"
+
 #include <QDebug>
 
 /*****************************/
@@ -341,6 +343,47 @@ WlanError EngineWinNative::interfaceNetworksUpdate(Interface interface)
     /* Clean used ressources */
     WlanFreeMemory(apiNetList);
     apiNetList = nullptr;
+
+    return WlanError::WERR_NO_ERROR;
+}
+
+/*!
+ * \brief EngineWinNative::interfaceNetworkCreateProfile
+ * \param interface
+ * \param network
+ * \param password
+ *
+ * \note
+ * https://learn.microsoft.com/fr-fr/windows/win32/api/wlanapi/nf-wlanapi-wlansetprofile
+ *
+ * \return
+ */
+WlanError EngineWinNative::interfaceNetworkCreateProfile(Interface interface, Network network, const QString &password)
+{
+    /* Prepare profile XML */
+    const ProfileWinNative profile(network, password);
+    const QString xmlProfile = profile.toXmlFormat();
+
+    /* Prepare argument request */
+    constexpr DWORD flags = 0;
+    const GUID ifaceUuid = interface.getUid();
+    const LPCWSTR strProfile = reinterpret_cast<LPCWSTR>(xmlProfile.utf16());
+    WLAN_REASON_CODE idStatus = WLAN_REASON_CODE_UNKNOWN;
+
+    /* Perform request */
+    DWORD res = WlanSetProfile(m_handle, &ifaceUuid, flags, strProfile, nullptr, true, nullptr, &idStatus);
+    if(res != ERROR_SUCCESS){
+        qCritical("Unable to set profile [uuid: %s, ssid: %s, id-result: %d, id-reason: %d]",
+                  qUtf8Printable(interface.getUid().toString()),
+                  qUtf8Printable(network.getSsid()),
+                  res, idStatus
+        );
+        return WinNative::convertErrFromApi(idStatus);
+    }
+
+    /* Update network informations */
+    NetworkMutator munet(network);
+    munet.setProfileName(profile.getName());
 
     return WlanError::WERR_NO_ERROR;
 }
