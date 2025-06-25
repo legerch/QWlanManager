@@ -50,6 +50,12 @@ const QString& Network::getProfileName() const
     return d_ptr->m_profileName;
 }
 
+AuthAlgo Network::getAuthAlgo() const
+{
+    QMutexLocker locker(&d_ptr->m_mutex);
+    return d_ptr->m_idAuth;
+}
+
 bool Network::operator==(const Network &other) const
 {
     /* Verify if same pointer */

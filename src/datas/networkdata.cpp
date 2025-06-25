@@ -22,7 +22,7 @@ namespace qwm
 
 NetworkData::NetworkData()
 {
-    /* Nothing to do */
+    m_idAuth = AuthAlgo::AUTH_ALGO_UNKNOWN;
 }
 
 bool NetworkData::operator==(const NetworkData &other) const

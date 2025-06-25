@@ -4,6 +4,8 @@
 #include <QMutex>
 #include <QString>
 
+#include "qwlanmanager/qwlantypes.h"
+
 /*****************************/
 /* Namespace instructions    */
 /*****************************/
@@ -29,6 +31,7 @@ public:
 
     QString m_ssid;
     QString m_profileName;
+    AuthAlgo m_idAuth;
 };
 
 /*****************************/

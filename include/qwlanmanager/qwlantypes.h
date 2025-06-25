@@ -16,7 +16,7 @@ namespace qwm
     enum class WlanError
     {
         WERR_NO_ERROR = 0,
-        WERR_OPERATION_UNAVAILABLE,
+        WERR_OPERATION_UNSUPPORTED,
         WERR_OPERATION_CANCEL,
         WERR_OPERATION_TIMEOUT,
         WERR_ITEM_INVALID,
@@ -27,7 +27,7 @@ namespace qwm
     };
     Q_ENUM_NS(WlanError)
 
-    QString wlanErrorToString(WlanError idErr);
+    QWLANMAN_EXPORT QString wlanErrorToString(WlanError idErr);
 
     enum class IfaceState
     {
@@ -36,7 +36,21 @@ namespace qwm
     };
     Q_ENUM_NS(IfaceState);
 
-    QString ifaceStateToString(IfaceState idState);
+    QWLANMAN_EXPORT QString ifaceStateToString(IfaceState idState);
+
+    enum class AuthAlgo
+    {
+        AUTH_ALGO_UNKNOWN = 0,
+
+        AUTH_ALGO_OPEN,
+        AUTH_ALGO_WPA2_PERSONAL,
+        AUTH_ALGO_WPA2_ENTERPRISE,
+        AUTH_ALGO_WPA3_PERSONAL,
+        AUTH_ALGO_WPA3_ENTERPRISE
+    };
+    Q_ENUM_NS(AuthAlgo);
+
+    QWLANMAN_EXPORT QString authAlgoToString(AuthAlgo idAuth);
 
 /*****************************/
 /* End namespaces            */

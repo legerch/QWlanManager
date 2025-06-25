@@ -22,7 +22,7 @@ QString wlanErrorToString(WlanError idErr)
     static const QHash<WlanError, QString> MAP_STR_ERR =
     {
         {WlanError::WERR_NO_ERROR, "no error"},
-        {WlanError::WERR_OPERATION_UNAVAILABLE, "operation unavailable"},
+        {WlanError::WERR_OPERATION_UNSUPPORTED, "operation unsupported"},
         {WlanError::WERR_OPERATION_CANCEL, "operation cancelled"},
         {WlanError::WERR_OPERATION_TIMEOUT, "operation reached timeout"},
         {WlanError::WERR_ITEM_INVALID, "invalid item"},
@@ -37,13 +37,27 @@ QString wlanErrorToString(WlanError idErr)
 
 QString ifaceStateToString(IfaceState idState)
 {
-    static const QHash<IfaceState, QString> MAP_STR_ERR =
+    static const QHash<IfaceState, QString> MAP_STR_IFACE_STS =
     {
         {IfaceState::IFACE_STS_IDLE, "idle"},
         {IfaceState::IFACE_STS_SCANNING, "scanning"}
     };
 
-    return MAP_STR_ERR.value(idState, "unknown state");
+    return MAP_STR_IFACE_STS.value(idState, "unknown state");
+}
+
+QString authAlgoToString(AuthAlgo idAuth)
+{
+    static const QHash<AuthAlgo, QString> MAP_STR_AUTH =
+    {
+        {AuthAlgo::AUTH_ALGO_OPEN, "Open authentication"},
+        {AuthAlgo::AUTH_ALGO_WPA2_PERSONAL, "WPA2 Personal"},
+        {AuthAlgo::AUTH_ALGO_WPA2_ENTERPRISE, "WPA2 Enterprise"},
+        {AuthAlgo::AUTH_ALGO_WPA3_PERSONAL, "WPA3 Personal"},
+        {AuthAlgo::AUTH_ALGO_WPA3_ENTERPRISE, "WPA3 Enterprise"},
+    };
+
+    return MAP_STR_AUTH.value(idAuth, "Unknown authentication algorithm");
 }
 
 /*****************************/
