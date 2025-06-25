@@ -25,7 +25,7 @@ namespace qwm::WinNative
  *
  * \param[in] apiErr
  * API error to convert. \n
- * Unknown error will be set to \c WlanError::WERR_NO_ERROR.
+ * Unknown error will be set to \c WlanError::WERR_UNKNOWN.
  *
  * \note
  * https://learn.microsoft.com/en-us/windows/win32/nativewifi/wlan-reason-code
@@ -35,7 +35,7 @@ namespace qwm::WinNative
  */
 WlanError convertErrFromApi(WLAN_REASON_CODE apiErr)
 {
-    WlanError idErr = WlanError::WERR_NO_ERROR;
+    WlanError idErr = WlanError::WERR_UNKNOWN;
 
     switch(apiErr)
     {
@@ -58,7 +58,7 @@ WlanError convertErrFromApi(WLAN_REASON_CODE apiErr)
         case WLAN_REASON_CODE_DISCONNECT_TIMEOUT:               idErr = WlanError::WERR_OPERATION_TIMEOUT; break;
         case WLAN_REASON_CODE_UI_REQUEST_TIMEOUT:               idErr = WlanError::WERR_OPERATION_TIMEOUT; break;
 
-        default:                                                break;
+        default:                                                qWarning("Unable to convert error ID from API [id: %d]", apiErr); break;
     }
 
     return idErr;
