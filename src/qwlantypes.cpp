@@ -60,6 +60,19 @@ QString authAlgoToString(AuthAlgo idAuth)
     return MAP_STR_AUTH.value(idAuth, "Unknown authentication algorithm");
 }
 
+QString cipherAlgoToString(CipherAlgo idCipher)
+{
+    static const QHash<CipherAlgo, QString> MAP_STR_CIPHER =
+    {
+        {CipherAlgo::CIPHER_ALGO_NONE, "None"},
+        {CipherAlgo::CIPHER_ALGO_TKIP, "TKIP"},
+        {CipherAlgo::CIPHER_ALGO_AES, "AES"},
+        {CipherAlgo::CIPHER_ALGO_GCMP, "GCMP"},
+    };
+
+    return MAP_STR_CIPHER.value(idCipher, "Unknown cipher algorithm");
+}
+
 /*****************************/
 /* Functions implementation  */
 /*****************************/

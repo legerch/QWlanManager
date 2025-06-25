@@ -56,6 +56,12 @@ AuthAlgo Network::getAuthAlgo() const
     return d_ptr->m_idAuth;
 }
 
+CipherAlgo Network::getCipherAlgo() const
+{
+    QMutexLocker locker(&d_ptr->m_mutex);
+    return d_ptr->m_idCipher;
+}
+
 bool Network::operator==(const Network &other) const
 {
     /* Verify if same pointer */

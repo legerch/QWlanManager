@@ -39,6 +39,7 @@ namespace qwm::WinNative
 
     WlanError convertErrFromApi(WLAN_REASON_CODE apiErr);
     AuthAlgo convertAuthFromApi(DOT11_AUTH_ALGORITHM apiAuth);
+    CipherAlgo convertCipherFromApi(DOT11_CIPHER_ALGORITHM apiCipher);
 
 /*****************************/
 /* End namespaces            */

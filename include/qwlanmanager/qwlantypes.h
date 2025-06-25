@@ -52,6 +52,19 @@ namespace qwm
 
     QWLANMAN_EXPORT QString authAlgoToString(AuthAlgo idAuth);
 
+    enum class CipherAlgo
+    {
+        CIPHER_ALGO_UNKNOWN = 0,
+
+        CIPHER_ALGO_NONE,
+        CIPHER_ALGO_TKIP,
+        CIPHER_ALGO_AES,
+        CIPHER_ALGO_GCMP
+    };
+    Q_ENUM_NS(CipherAlgo);
+
+    QWLANMAN_EXPORT QString cipherAlgoToString(CipherAlgo idCipher);
+
 /*****************************/
 /* End namespaces            */
 /*****************************/

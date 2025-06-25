@@ -21,6 +21,8 @@ public:
 public:
     void setSsid(const QString &ssid);
     void setProfileName(const QString &profile);
+    void setAuthAlgo(AuthAlgo idAuth);
+    void setCipherAlgo(CipherAlgo idCipher);
 
 private:
     Network m_network;

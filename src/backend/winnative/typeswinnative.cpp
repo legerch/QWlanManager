@@ -93,10 +93,47 @@ AuthAlgo convertAuthFromApi(DOT11_AUTH_ALGORITHM apiAuth)
         case DOT11_AUTH_ALGO_WPA3_SAE:      idAuth = AuthAlgo::AUTH_ALGO_WPA3_PERSONAL; break;
         case DOT11_AUTH_ALGO_WPA3:          idAuth = AuthAlgo::AUTH_ALGO_WPA3_ENTERPRISE; break;
 
-        default:                            break;
+        default:                            qWarning("Unable to convert authentication algorithm from API [id: %d]", apiAuth); break;
     }
 
     return idAuth;
+}
+
+/*!
+ * \brief Use to convert cipher algorithm from
+ * \c WlanAPI to library equivalent.
+ *
+ * \param[in] apiCipher
+ * API cipher algorithm to convert. \n
+ * Unknown or unsupported cipher IDs will
+ * be set to \c CipherAlgo::CIPHER_ALGO_UNKNOWN.
+ *
+ * \note
+ * https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/wlantypes/ne-wlantypes-_dot11_cipher_algorithm
+ *
+ * \return
+ * Returns library equivalent cipher algorithm ID.
+ */
+CipherAlgo convertCipherFromApi(DOT11_CIPHER_ALGORITHM apiCipher)
+{
+    CipherAlgo idCipher = CipherAlgo::CIPHER_ALGO_UNKNOWN;
+
+    switch(apiCipher)
+    {
+        case DOT11_CIPHER_ALGO_NONE:        idCipher = CipherAlgo::CIPHER_ALGO_NONE; break;
+
+        case DOT11_CIPHER_ALGO_TKIP:        idCipher = CipherAlgo::CIPHER_ALGO_TKIP; break;
+
+        case DOT11_CIPHER_ALGO_CCMP_256:
+        case DOT11_CIPHER_ALGO_CCMP:        idCipher = CipherAlgo::CIPHER_ALGO_AES; break;
+
+        case DOT11_CIPHER_ALGO_GCMP:
+        case DOT11_CIPHER_ALGO_GCMP_256:    idCipher = CipherAlgo::CIPHER_ALGO_GCMP; break;
+
+        default:                            qWarning("Unable to convert cipher algorithm from API [id: %d]", apiCipher); break;
+    }
+
+    return idCipher;
 }
 
 /*****************************/

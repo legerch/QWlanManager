@@ -39,6 +39,18 @@ void NetworkMutator::setProfileName(const QString &profile)
     m_network.d_ptr->m_profileName = profile;
 }
 
+void NetworkMutator::setAuthAlgo(AuthAlgo idAuth)
+{
+    QMutexLocker locker(&m_network.d_ptr->m_mutex);
+    m_network.d_ptr->m_idAuth = idAuth;
+}
+
+void NetworkMutator::setCipherAlgo(CipherAlgo idCipher)
+{
+    QMutexLocker locker(&m_network.d_ptr->m_mutex);
+    m_network.d_ptr->m_idCipher = idCipher;
+}
+
 /*****************************/
 /* End namespace             */
 /*****************************/

@@ -27,6 +27,7 @@ class QWLANMAN_EXPORT Network
     Q_PROPERTY(QString ssid READ getSsid)
     Q_PROPERTY(QString profile READ getProfileName)
     Q_PROPERTY(AuthAlgo authAlgo READ getAuthAlgo)
+    Q_PROPERTY(CipherAlgo cipherAlgo READ getCipherAlgo)
 
     friend class NetworkMutator;
 
@@ -42,6 +43,7 @@ public:
     const QString& getSsid() const;
     const QString& getProfileName() const;
     AuthAlgo getAuthAlgo() const;
+    CipherAlgo getCipherAlgo() const;
 
 public:
     bool operator==(const Network &other) const;

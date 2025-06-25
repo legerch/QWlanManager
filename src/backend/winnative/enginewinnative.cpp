@@ -310,6 +310,7 @@ WlanError EngineWinNative::interfaceNetworksUpdate(Interface interface)
         munet.setSsid(ssid);
         munet.setProfileName(profile);
         munet.setAuthAlgo(WinNative::convertAuthFromApi(apiNet->dot11DefaultAuthAlgorithm));
+        munet.setCipherAlgo(WinNative::convertCipherFromApi(apiNet->dot11DefaultCipherAlgorithm));
 
         mapNets.insert(ssid, net);
     }

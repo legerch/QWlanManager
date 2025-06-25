@@ -32,6 +32,7 @@ public:
     QString m_ssid;
     QString m_profileName;
     AuthAlgo m_idAuth;
+    CipherAlgo m_idCipher;
 };
 
 /*****************************/
