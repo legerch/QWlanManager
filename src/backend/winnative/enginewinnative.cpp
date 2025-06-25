@@ -145,6 +145,13 @@ stat_return:
     return;
 }
 
+/*!
+ * \brief EngineWinNative::interfaceScanNetworksAsync
+ * \param interface
+ *
+ * \note
+ * https://learn.microsoft.com/fr-fr/windows/win32/api/wlanapi/nf-wlanapi-wlanscan
+ */
 void EngineWinNative::interfaceScanNetworksAsync(Interface interface)
 {
     /* Perform scan request */
@@ -184,6 +191,13 @@ void EngineWinNative::apiClose()
     }
 }
 
+/*!
+ * \brief EngineWinNative::eventRegister
+ * \return
+ *
+ * \note
+ * https://learn.microsoft.com/fr-fr/windows/win32/api/wlanapi/nf-wlanapi-wlanregisternotification
+ */
 bool EngineWinNative::eventRegister()
 {
     DWORD res = WlanRegisterNotification(m_handle, WLAN_NOTIFICATION_SOURCE_ACM | WLAN_NOTIFICATION_SOURCE_MSM, true,
@@ -255,6 +269,7 @@ void EngineWinNative::interfaceListHandleEvents(const MapInterfaces &oldMap, con
 
 //TODO: save signal quality information
 //TODO: doc -> explain that hidden networks are currently ignored
+//TODO: doc -> explain that ad-hoc (peer-to-peer) are currently ignored (also called "BSS_type_independent")
 WlanError EngineWinNative::interfaceNetworksUpdate(Interface interface)
 {
     InterfaceMutator miface(interface);
@@ -280,6 +295,11 @@ WlanError EngineWinNative::interfaceNetworksUpdate(Interface interface)
     /* Register networks */
     for(apiNetList->dwIndex = 0; apiNetList->dwIndex < apiNetList->dwNumberOfItems; ++apiNetList->dwIndex){
         PWLAN_AVAILABLE_NETWORK apiNet = &apiNetList->Network[apiNetList->dwIndex];
+
+        /* Verify that network is infrastructure-based (is an access-point) */
+        if(apiNet->dot11BssType != dot11_BSS_type_infrastructure){
+            continue;
+        }
 
         /*
          * Verify that network is not already registered
