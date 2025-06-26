@@ -40,7 +40,8 @@ QString ifaceStateToString(IfaceState idState)
     static const QHash<IfaceState, QString> MAP_STR_IFACE_STS =
     {
         {IfaceState::IFACE_STS_IDLE, "idle"},
-        {IfaceState::IFACE_STS_SCANNING, "scanning"}
+        {IfaceState::IFACE_STS_SCANNING, "scanning"},
+        {IfaceState::IFACE_STS_CONNECTING, "connecting"}
     };
 
     return MAP_STR_IFACE_STS.value(idState, "unknown state");

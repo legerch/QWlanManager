@@ -32,6 +32,7 @@ public:
 
 protected:
     void interfaceScanNetworksAsync(Interface interface) override;
+    void interfaceConnectAsync(Interface interface, Network network, const QString &password) override;
 
 private:
     bool apiOpen();
@@ -45,7 +46,9 @@ private:
     void interfaceListHandleEvents(const MapInterfaces &oldMap, const MapInterfaces &newMap);
     WlanError interfaceNetworksUpdate(Interface interface);
     WlanError interfaceNetworkCreateProfile(Interface interface, Network network, const QString &password);
+
     void interfaceScanFinished(const QUuid &idInterface, WlanError result);
+    void interfaceConnectionFinished(const QUuid &idInterface, const QString &ssid, WlanError result);
 
 private:
     static void WINAPI cbNotif(PWLAN_NOTIFICATION_DATA ptrDataNotif, PVOID ptrDataCtx);

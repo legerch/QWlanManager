@@ -158,7 +158,7 @@ void EngineWinNative::interfaceScanNetworksAsync(Interface interface)
 {
     /* Perform scan request */
     const GUID ifaceUuid = interface.getUid();
-    DWORD res = WlanScan(m_handle, &ifaceUuid, nullptr, nullptr, nullptr);
+    const DWORD res = WlanScan(m_handle, &ifaceUuid, nullptr, nullptr, nullptr);
     if(res != ERROR_SUCCESS){
         qCritical("Failed to perform scan request [err: %d]", res);
         emit q_ptr->sScanFailed(interface.getUid(), WlanError::WERR_API_INTERNAL);
@@ -168,6 +168,52 @@ void EngineWinNative::interfaceScanNetworksAsync(Interface interface)
     /* Update interface state */
     InterfaceMutator miface(interface);
     miface.setState(IfaceState::IFACE_STS_SCANNING);
+}
+
+void EngineWinNative::interfaceConnectAsync(Interface interface, Network network, const QString &password)
+{
+    /* Do we need to create a network profile ? */
+    if(network.getProfileName().isEmpty()){
+        // Do we have a proper password ?
+        if(password.isEmpty()){
+            emit q_ptr->sConnectionFailed(interface.getUid(), network.getSsid(), WlanError::WERR_NET_PASSKEY);
+            return;
+        }
+
+        // Password is set, try to create profile
+        const WlanError errProfile = interfaceNetworkCreateProfile(interface, network, password);
+        if(errProfile != WlanError::WERR_NO_ERROR){
+            emit q_ptr->sConnectionFailed(interface.getUid(), network.getSsid(), errProfile);
+            return;
+        }
+    }
+
+    /* Prepare request arguments */
+    const GUID ifaceUuid = interface.getUid();
+    const std::wstring wstrProfile = network.getProfileName().toStdWString();
+    const LPCWSTR strProfile = static_cast<LPCWSTR>(wstrProfile.c_str());
+
+    WLAN_CONNECTION_PARAMETERS params;
+    params.wlanConnectionMode = wlan_connection_mode_profile;
+    params.strProfile = strProfile;
+    params.pDot11Ssid = nullptr;
+    params.pDesiredBssidList = nullptr;
+    params.dot11BssType = dot11_BSS_type_infrastructure;
+    params.dwFlags = 0;
+
+    PWLAN_CONNECTION_PARAMETERS ptrParams = &params;
+
+    /* Perform connection request */
+    const DWORD res = WlanConnect(m_handle, &ifaceUuid, ptrParams, nullptr);
+    if(res != ERROR_SUCCESS){
+        qCritical("Failed to perform connection request [err: %d]", res);
+        emit q_ptr->sConnectionFailed(interface.getUid(), network.getSsid(), WlanError::WERR_API_INTERNAL);
+        return;
+    }
+
+    /* Update interface state */
+    InterfaceMutator miface(interface);
+    miface.setState(IfaceState::IFACE_STS_CONNECTING);
 }
 
 bool EngineWinNative::apiOpen()
@@ -367,7 +413,9 @@ WlanError EngineWinNative::interfaceNetworkCreateProfile(Interface interface, Ne
     /* Prepare argument request */
     constexpr DWORD flags = 0;
     const GUID ifaceUuid = interface.getUid();
-    const LPCWSTR strProfile = reinterpret_cast<LPCWSTR>(xmlProfile.utf16());
+    const std::wstring wstrProfile = xmlProfile.toStdWString();
+    const LPCWSTR strProfile = static_cast<LPCWSTR>(wstrProfile.c_str());
+
     WLAN_REASON_CODE idStatus = WLAN_REASON_CODE_UNKNOWN;
 
     /* Perform request */
@@ -390,7 +438,7 @@ WlanError EngineWinNative::interfaceNetworkCreateProfile(Interface interface, Ne
 
 void EngineWinNative::interfaceScanFinished(const QUuid &idInterface, WlanError result)
 {
-    /* Retrive interface */
+    /* Retrieve interface */
     Interface iface = m_interfaces.value(idInterface);
 
     /* Retrieve list of scanned networks */
@@ -414,6 +462,31 @@ void EngineWinNative::interfaceScanFinished(const QUuid &idInterface, WlanError 
         );
 
         emit q_ptr->sScanFailed(idInterface, result);
+    }
+}
+
+void EngineWinNative::interfaceConnectionFinished(const QUuid &idInterface, const QString &ssid, WlanError result)
+{
+    /* Update interface properties */
+    Interface iface = m_interfaces.value(idInterface);
+
+    InterfaceMutator miface(iface);
+    miface.setState(IfaceState::IFACE_STS_IDLE);
+
+    /* Send associated signals */
+    if(result == WlanError::WERR_NO_ERROR){
+        miface.setConnectedSsid(ssid);
+        emit q_ptr->sConnectionSucceed(idInterface, ssid);
+
+    }else{
+        qCritical("Connection request has failed [uuid: %s, ssid: %s, err: %s (%d)]",
+                  qUtf8Printable(idInterface.toString()),
+                  qUtf8Printable(ssid),
+                  qUtf8Printable(wlanErrorToString(result)),
+                  result
+        );
+
+        emit q_ptr->sConnectionFailed(idInterface, ssid, result);
     }
 }
 
@@ -458,6 +531,11 @@ void EngineWinNative::cbNotifAcm(PWLAN_NOTIFICATION_DATA ptrDataNotif, PVOID ptr
 
     switch(ptrDataNotif->NotificationCode)
     {
+        case wlan_notification_acm_interface_arrival:
+        case wlan_notification_acm_interface_removal:{
+            engine->interfaceListRefresh();
+        }break;
+
         case wlan_notification_acm_scan_complete:{
             const QUuid idInterface = QUuid(ptrDataNotif->InterfaceGuid);
             engine->interfaceScanFinished(idInterface, WlanError::WERR_NO_ERROR);
@@ -472,10 +550,17 @@ void EngineWinNative::cbNotifAcm(PWLAN_NOTIFICATION_DATA ptrDataNotif, PVOID ptr
             engine->interfaceScanFinished(idInterface, idErr);
         }break;
 
-        case wlan_notification_acm_interface_arrival:
-        case wlan_notification_acm_interface_removal:{
-            engine->interfaceListRefresh();
+        case wlan_notification_acm_connection_complete:{
+            const PWLAN_CONNECTION_NOTIFICATION_DATA connectData = static_cast<PWLAN_CONNECTION_NOTIFICATION_DATA>(ptrDataNotif->pData);
+
+            const QUuid idInterface = QUuid(ptrDataNotif->InterfaceGuid);
+            const QString ssid = QString::fromUtf8(reinterpret_cast<char *>(connectData->dot11Ssid.ucSSID), connectData->dot11Ssid.uSSIDLength);
+            const WlanError idErr = WinNative::convertErrFromApi(connectData->wlanReasonCode);
+
+            engine->interfaceConnectionFinished(idInterface, ssid, idErr);
         }break;
+
+        default: break;
     }
 }
 
