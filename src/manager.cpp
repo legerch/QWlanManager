@@ -39,7 +39,7 @@ Manager::~Manager()
 
 void Manager::doScan(const QUuid &idInterface)
 {
-    /* Retrieve associated interfaces */
+    /* Retrieve associated interface */
     Interface iface = getInterface(idInterface);
     if(!iface.isValid()){
         qWarning("Unable to perform scan, unknown interface ID [uuid: %s]", qUtf8Printable(idInterface.toString()));
@@ -49,6 +49,28 @@ void Manager::doScan(const QUuid &idInterface)
 
     /* Start scan request */
     d_ptr->interfaceScanNetworks(iface);
+}
+
+void Manager::doConnect(const QUuid &idInterface, const QString &ssid, const QString &password)
+{
+    /* Retrieve associated interface */
+    Interface iface = getInterface(idInterface);
+    if(!iface.isValid()){
+        qWarning("Unable to perform connection, unknown interface ID [uuid: %s]", qUtf8Printable(idInterface.toString()));
+        emit sConnectionFailed(idInterface, ssid, WlanError::WERR_ITEM_INVALID);
+        return;
+    }
+
+    /* Retrieve associated network */
+    Network net = iface.getNetwork(ssid);
+    if(!net.isValid()){
+        qWarning("Unable to perform connection, unknown network SSID [ssid: %s]", qUtf8Printable(ssid));
+        emit sConnectionFailed(idInterface, ssid, WlanError::WERR_ITEM_INVALID);
+        return;
+    }
+
+    /* Start connection request */
+    d_ptr->interfaceConnect(iface, net, password);
 }
 
 ListInterfaces Manager::getInterfaces() const

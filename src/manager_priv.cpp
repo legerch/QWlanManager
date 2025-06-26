@@ -45,6 +45,33 @@ void ManagerPrivate::interfaceScanNetworks(Interface interface)
     interfaceScanNetworksAsync(interface);
 }
 
+void ManagerPrivate::interfaceConnect(Interface interface, Network network, const QString &password)
+{
+    /* Verify that interface is not already connected */
+    const Network current = interface.getNetworkConnected();
+    if(interface.getNetworkConnected() == network){
+        qDebug("Interface is already connected to '%s', nothing to perform", qUtf8Printable(network.getSsid()));
+
+        emit q_ptr->sConnectionSucceed(interface.getUid(), network.getSsid());
+        return;
+    }
+
+    /* Verify that interface can perform connection */
+    if(interface.getState() != IfaceState::IFACE_STS_IDLE){
+        qWarning("Unable to perform connection, interface is busy [uuid: %s, state: %s (%d)]",
+                 qUtf8Printable(interface.getUid().toString()),
+                 qUtf8Printable(ifaceStateToString(interface.getState())),
+                 interface.getState()
+        );
+
+        emit q_ptr->sConnectionFailed(interface.getUid(), network.getSsid(), WlanError::WERR_IFACE_BUSY);
+        return;
+    }
+
+    /* Start connection request */
+    interfaceConnectAsync(interface, network, password);
+}
+
 /*****************************/
 /* Functions implementation  */
 /*****************************/

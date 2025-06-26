@@ -1,7 +1,5 @@
 #include "factorybackend.h"
 
-#include <QtSystemDetection>
-
 #if USE_ENGINE_WINNATIVE
 #   include "backend/winnative/enginewinnative.h"
 #else
