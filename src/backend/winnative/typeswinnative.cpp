@@ -4,6 +4,8 @@
 /* Macro definitions         */
 /*****************************/
 
+#define BUFFER_SIZE_MAX 512
+
 /*****************************/
 /* Class documentations      */
 /*****************************/
@@ -39,7 +41,9 @@ WlanError convertErrFromApi(WLAN_REASON_CODE apiErr)
 
     switch(apiErr)
     {
-        case WLAN_REASON_CODE_USER_CANCELLED:                   idErr = WlanError::WERR_OPERATION_CANCEL;break;
+        case WLAN_REASON_CODE_SUCCESS:                          idErr = WlanError::WERR_NO_ERROR; break;
+
+        case WLAN_REASON_CODE_USER_CANCELLED:                   idErr = WlanError::WERR_OPERATION_CANCEL; break;
         case WLAN_REASON_CODE_MSMSEC_CANCELLED:                 idErr = WlanError::WERR_OPERATION_CANCEL; break;
 
         case WLAN_REASON_CODE_NETWORK_NOT_AVAILABLE:            idErr = WlanError::WERR_NET_UNAVAILABLE; break;
@@ -58,7 +62,19 @@ WlanError convertErrFromApi(WLAN_REASON_CODE apiErr)
         case WLAN_REASON_CODE_DISCONNECT_TIMEOUT:               idErr = WlanError::WERR_OPERATION_TIMEOUT; break;
         case WLAN_REASON_CODE_UI_REQUEST_TIMEOUT:               idErr = WlanError::WERR_OPERATION_TIMEOUT; break;
 
-        default:                                                qWarning("Unable to convert error ID from API [id: %d]", apiErr); break;
+        default:{
+            // Convert error to string
+            WCHAR buffer[BUFFER_SIZE_MAX];
+            const DWORD res = WlanReasonCodeToString(apiErr, BUFFER_SIZE_MAX, buffer, nullptr);
+
+            // Manage result
+            QString strErr = "none";
+            if(res == ERROR_SUCCESS){
+                strErr = QString::fromWCharArray(buffer);
+            }
+
+            qWarning("Unable to convert error ID from API [id: 0x%08X, string: '%s']", apiErr, qUtf8Printable(strErr));
+        }break;
     }
 
     return idErr;
