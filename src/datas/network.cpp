@@ -84,6 +84,28 @@ bool Network::operator!=(const Network &other) const
 }
 
 /*****************************/
+/* Qt specific methods       */
+/*****************************/
+
+QDebug operator<<(QDebug debug, const Network &net)
+{
+    QDebugStateSaver saver(debug);
+    if(!net.isValid()){
+        debug.nospace() << "Network("
+                        << "is valid: false)";
+
+        return debug;
+    }
+
+    debug.nospace() << "Network("
+                    << "ssid: " << net.getSsid() << ", "
+                    << "profile name: " << net.getProfileName() << ", "
+                    << "auth algo: " << net.getAuthAlgo() << ", "
+                    << "cipher algo: " << net.getCipherAlgo() << ")";
+    return debug;
+}
+
+/*****************************/
 /* End namespace             */
 /*****************************/
 

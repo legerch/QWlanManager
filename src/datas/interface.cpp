@@ -112,6 +112,29 @@ bool Interface::operator!=(const Interface &other) const
 }
 
 /*****************************/
+/* Qt specific methods       */
+/*****************************/
+
+QDebug operator<<(QDebug debug, const Interface &interface)
+{
+    QDebugStateSaver saver(debug);
+    if(!interface.isValid()){
+        debug.nospace() << "Interface("
+                        << "is valid: false)";
+
+        return debug;
+    }
+
+    debug.nospace() << "Interface("
+                    << "state: " << interface.getState() << ", "
+                    << "uid: " << interface.getUid() << ", "
+                    << "hw address: " << interface.getHwAddress() << ", "
+                    << "name: " << interface.getName() << ", "
+                    << "description: " << interface.getDescription() << ")";
+    return debug;
+}
+
+/*****************************/
 /* End namespace             */
 /*****************************/
 

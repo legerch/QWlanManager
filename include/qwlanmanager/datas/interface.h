@@ -60,6 +60,12 @@ private:
 };
 
 /*****************************/
+/* Qt specific methods       */
+/*****************************/
+
+QWLANMAN_EXPORT QDebug operator<<(QDebug debug, const Interface &interface);
+
+/*****************************/
 /* Alias for related types   */
 /*****************************/
 

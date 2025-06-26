@@ -4,6 +4,7 @@
 #include "qwlanmanager/qwlanman_global.h"
 #include "qwlanmanager/qwlantypes.h"
 
+#include <QDebug>
 #include <QHash>
 #include <QObject>
 #include <QSharedPointer>
@@ -52,6 +53,12 @@ public:
 private:
     QSharedPointer<NetworkData> d_ptr;
 };
+
+/*****************************/
+/* Qt specific methods       */
+/*****************************/
+
+QWLANMAN_EXPORT QDebug operator<<(QDebug debug, const Network &net);
 
 /*****************************/
 /* Alias for related types   */
