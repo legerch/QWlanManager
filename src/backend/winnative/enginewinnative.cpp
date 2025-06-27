@@ -22,6 +22,8 @@
  */
 #define API_ERR_CODE_SCAN_FAIL_PASSKEY  (0xC001000C)
 
+#define API_ERR_CODE_FMT                "0x%08X"
+
 /*****************************/
 /* Class documentations      */
 /*****************************/
@@ -442,7 +444,7 @@ WlanError EngineWinNative::interfaceNetworkCreateProfile(Interface interface, Ne
     /* Perform request */
     DWORD res = WlanSetProfile(m_handle, &ifaceUuid, flags, strProfile, nullptr, true, nullptr, &idStatus);
     if(res != ERROR_SUCCESS){
-        qCritical("Unable to set profile [uuid: %s, ssid: %s, id-result: %d, id-reason: %d]",
+        qCritical("Unable to set profile [uuid: %s, ssid: %s, id-result: %d, id-reason: " API_ERR_CODE_FMT "]",
                   qUtf8Printable(interface.getUid().toString()),
                   qUtf8Printable(network.getSsid()),
                   res, idStatus
