@@ -36,6 +36,7 @@ public:
     ListInterfaces getInterfaces() const;
     Interface getInterface(const QUuid &idInterface) const;
 
+//TODO: add start signals for request "scan" and "connect"
 signals:
     void sInterfaceAdded(qwm::Interface interface);
     void sInterfaceRemoved(qwm::Interface interface);

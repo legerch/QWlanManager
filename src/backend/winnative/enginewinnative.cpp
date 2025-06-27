@@ -488,6 +488,8 @@ void EngineWinNative::interfaceScanFinished(const QUuid &idInterface, WlanError 
     }
 }
 
+// TODO: verify that connected ssid must not be reset in case of failure ? (I think a reco is done, so resetting it seems ok)
+// TODO: set state is wrong (same case for the scan !) -> add a connect/disconnected getter on interface
 void EngineWinNative::interfaceConnectionFinished(const QUuid &idInterface, const QString &ssid, WlanError result)
 {
     /* Update interface properties */

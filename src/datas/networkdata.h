@@ -16,6 +16,8 @@ namespace qwm
 /* Class definitions         */
 /*****************************/
 
+//TODO: add a member allowing engine native platform to use custom type (maybe "void*" ?)
+
 class NetworkData
 {
 

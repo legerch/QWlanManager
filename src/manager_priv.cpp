@@ -45,6 +45,7 @@ void ManagerPrivate::interfaceScanNetworks(Interface interface)
     interfaceScanNetworksAsync(interface);
 }
 
+//TODO: enqueue connection request (because, performing connection during scan is undefined behaviour but hard to be out this window !)
 void ManagerPrivate::interfaceConnect(Interface interface, Network network, const QString &password)
 {
     /* Verify that interface is not already connected */
