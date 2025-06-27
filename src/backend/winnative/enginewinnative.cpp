@@ -323,7 +323,9 @@ WlanError EngineWinNative::interfaceNetworksUpdate(Interface interface)
     InterfaceMutator miface(interface);
     MapNetworks &mapNets = miface.getMapNetworksRef();
 
-    /* Clear current networks infos */
+    /* Prepare list of networks */
+    MapNetworks prevNets = mapNets;
+
     miface.setConnectedSsid();
     mapNets.clear();
 
@@ -344,7 +346,7 @@ WlanError EngineWinNative::interfaceNetworksUpdate(Interface interface)
     for(apiNetList->dwIndex = 0; apiNetList->dwIndex < apiNetList->dwNumberOfItems; ++apiNetList->dwIndex){
         PWLAN_AVAILABLE_NETWORK apiNet = &apiNetList->Network[apiNetList->dwIndex];
 
-        /* Verify that network is infrastructure-based (is an access-point) */
+        // Verify that network is infrastructure-based (is an access-point)
         if(apiNet->dot11BssType != dot11_BSS_type_infrastructure){
             continue;
         }
@@ -371,8 +373,13 @@ WlanError EngineWinNative::interfaceNetworksUpdate(Interface interface)
             connectedSsid = ssid;
         }
 
-        // Register network
+        // Manage known network
         Network net;
+        if(prevNets.contains(ssid)){
+            net = prevNets.value(ssid);
+        }
+
+        // Update network properties
         NetworkMutator munet(net);
 
         munet.setSsid(ssid);
