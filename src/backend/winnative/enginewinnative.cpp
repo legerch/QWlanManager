@@ -8,6 +8,20 @@
 /* Macro definitions         */
 /*****************************/
 
+/*!
+ * Define the \c WLAN_REASON_CODE value associated
+ * to a scan failure happening right after
+ * passkeys used during a connection has been
+ * exchanged
+ *
+ * \warning
+ * This \c WLAN_REASON_CODE is not documented, this is
+ * an internal error, which happens to be triggered
+ * for this specific case. \n
+ * So we need to track it.
+ */
+#define API_ERR_CODE_SCAN_FAIL_PASSKEY  (0xC001000C)
+
 /*****************************/
 /* Class documentations      */
 /*****************************/
@@ -549,9 +563,16 @@ void EngineWinNative::cbNotifAcm(PWLAN_NOTIFICATION_DATA ptrDataNotif, PVOID ptr
         }break;
 
         case wlan_notification_acm_scan_fail:{
-            const QUuid idInterface = QUuid(ptrDataNotif->InterfaceGuid);
-
             WLAN_REASON_CODE *apiErr = static_cast<WLAN_REASON_CODE*>(ptrDataNotif->pData);
+
+            /* Do we have a scan failure due to passkey exchanged */
+            if(*apiErr == API_ERR_CODE_SCAN_FAIL_PASSKEY){
+                qDebug("Scan failure has been ignored, triggered by a passkey exchange during connection");
+                goto stat_return;
+            }
+
+            /* Manage scan failure */
+            const QUuid idInterface = QUuid(ptrDataNotif->InterfaceGuid);
             const WlanError idErr = WinNative::convertErrFromApi(*apiErr);
 
             engine->interfaceScanFinished(idInterface, idErr);
@@ -569,6 +590,8 @@ void EngineWinNative::cbNotifAcm(PWLAN_NOTIFICATION_DATA ptrDataNotif, PVOID ptr
 
         default: break;
     }
+
+stat_return:;
 }
 
 void EngineWinNative::cbNotifMsm(QWLANMAN_VAR_UNUSED PWLAN_NOTIFICATION_DATA ptrDataNotif, QWLANMAN_VAR_UNUSED PVOID ptrDataCtx)
