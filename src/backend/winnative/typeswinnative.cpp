@@ -43,19 +43,19 @@ WlanError convertErrFromApi(WLAN_REASON_CODE apiErr)
     {
         case WLAN_REASON_CODE_SUCCESS:                          idErr = WlanError::WERR_NO_ERROR; break;
 
-        case WLAN_REASON_CODE_USER_CANCELLED:                   idErr = WlanError::WERR_OPERATION_CANCEL; break;
+        case WLAN_REASON_CODE_USER_CANCELLED:
         case WLAN_REASON_CODE_MSMSEC_CANCELLED:                 idErr = WlanError::WERR_OPERATION_CANCEL; break;
 
         case WLAN_REASON_CODE_NETWORK_NOT_AVAILABLE:            idErr = WlanError::WERR_NET_UNAVAILABLE; break;
 
-        case WLAN_REASON_CODE_KEY_MISMATCH:                     idErr = WlanError::WERR_NET_PASSKEY; break;
-        case WLAN_REASON_CODE_MSMSEC_PROFILE_KEY_LENGTH:        idErr = WlanError::WERR_NET_PASSKEY; break;
-        case WLAN_REASON_CODE_MSMSEC_PROFILE_PSK_LENGTH:        idErr = WlanError::WERR_NET_PASSKEY; break;
-        case WLAN_REASON_CODE_MSMSEC_PSK_MISMATCH_SUSPECTED:    idErr = WlanError::WERR_NET_PASSKEY; break;
-        case WLAN_REASON_CODE_MSMSEC_KEY_START_TIMEOUT:         idErr = WlanError::WERR_NET_PASSKEY; break;
-        case WLAN_REASON_CODE_MSMSEC_KEY_SUCCESS_TIMEOUT:       idErr = WlanError::WERR_NET_PASSKEY; break;
+        case WLAN_REASON_CODE_KEY_MISMATCH:
+        case WLAN_REASON_CODE_MSMSEC_PROFILE_KEY_LENGTH:
+        case WLAN_REASON_CODE_MSMSEC_PROFILE_PSK_LENGTH:
+        case WLAN_REASON_CODE_MSMSEC_PROFILE_PASSPHRASE_CHAR:
+        case WLAN_REASON_CODE_MSMSEC_PSK_MISMATCH_SUSPECTED:
+        case WLAN_REASON_CODE_MSMSEC_KEY_START_TIMEOUT:
+        case WLAN_REASON_CODE_MSMSEC_KEY_SUCCESS_TIMEOUT:
         case WLAN_REASON_CODE_MSMSEC_KEY_FORMAT:                idErr = WlanError::WERR_NET_PASSKEY; break;
-        case WLAN_REASON_CODE_MSMSEC_PROFILE_PASSPHRASE_CHAR:   idErr = WlanError::WERR_NET_PASSKEY; break;
 
         case WLAN_REASON_CODE_ASSOCIATION_TIMEOUT:              idErr = WlanError::WERR_OPERATION_TIMEOUT; break;
         case WLAN_REASON_CODE_SECURITY_TIMEOUT:                 idErr = WlanError::WERR_OPERATION_TIMEOUT; break;

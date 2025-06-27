@@ -186,15 +186,8 @@ void EngineWinNative::interfaceScanNetworksAsync(Interface interface)
 
 void EngineWinNative::interfaceConnectAsync(Interface interface, Network network, const QString &password)
 {
-    /* Do we need to create a network profile ? */
-    if(network.getProfileName().isEmpty()){
-        // Do we have a proper password ?
-        if(password.isEmpty()){
-            emit q_ptr->sConnectionFailed(interface.getUid(), network.getSsid(), WlanError::WERR_NET_PASSKEY);
-            return;
-        }
-
-        // Password is set, try to create profile
+    /* Do profile must be created/updated ? */
+    if(!password.isEmpty()){
         const WlanError errProfile = interfaceNetworkCreateProfile(interface, network, password);
         if(errProfile != WlanError::WERR_NO_ERROR){
             emit q_ptr->sConnectionFailed(interface.getUid(), network.getSsid(), errProfile);
@@ -202,9 +195,16 @@ void EngineWinNative::interfaceConnectAsync(Interface interface, Network network
         }
     }
 
+    /* Do we have a valid profile ? */
+    const QString &profileName = network.getProfileName();
+    if(profileName.isEmpty()){
+        emit q_ptr->sConnectionFailed(interface.getUid(), network.getSsid(), WlanError::WERR_NET_PASSKEY);
+        return;
+    }
+
     /* Prepare request arguments */
     const GUID ifaceUuid = interface.getUid();
-    const std::wstring wstrProfile = network.getProfileName().toStdWString();
+    const std::wstring wstrProfile = profileName.toStdWString();
     const LPCWSTR strProfile = static_cast<LPCWSTR>(wstrProfile.c_str());
 
     WLAN_CONNECTION_PARAMETERS params;
@@ -578,12 +578,22 @@ void EngineWinNative::cbNotifAcm(PWLAN_NOTIFICATION_DATA ptrDataNotif, PVOID ptr
             engine->interfaceScanFinished(idInterface, idErr);
         }break;
 
+        case  wlan_notification_acm_connection_attempt_fail:{
+            const QUuid idInterface = QUuid(ptrDataNotif->InterfaceGuid);
+            const PWLAN_CONNECTION_NOTIFICATION_DATA connectData = static_cast<PWLAN_CONNECTION_NOTIFICATION_DATA>(ptrDataNotif->pData);
+
+            engine->m_errConnect.insert(idInterface, connectData->wlanReasonCode);
+        }break;
+
         case wlan_notification_acm_connection_complete:{
             const PWLAN_CONNECTION_NOTIFICATION_DATA connectData = static_cast<PWLAN_CONNECTION_NOTIFICATION_DATA>(ptrDataNotif->pData);
 
             const QUuid idInterface = QUuid(ptrDataNotif->InterfaceGuid);
             const QString ssid = QString::fromUtf8(reinterpret_cast<char *>(connectData->dot11Ssid.ucSSID), connectData->dot11Ssid.uSSIDLength);
-            const WlanError idErr = WinNative::convertErrFromApi(connectData->wlanReasonCode);
+
+            const WLAN_REASON_CODE apiErr = engine->m_errConnect.value(idInterface, connectData->wlanReasonCode);
+            const WlanError idErr = WinNative::convertErrFromApi(apiErr);
+            engine->m_errConnect.remove(idInterface);
 
             engine->interfaceConnectionFinished(idInterface, ssid, idErr);
         }break;

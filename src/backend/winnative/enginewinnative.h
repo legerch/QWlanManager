@@ -58,6 +58,7 @@ private:
 
 private:
     Qt::HANDLE m_handle;
+    QHash<QUuid, WLAN_REASON_CODE> m_errConnect;
 };
 
 /*****************************/
