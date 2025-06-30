@@ -57,11 +57,8 @@ void Manager::doScan(const QUuid &idInterface)
 //Done : case 4 -> Network known and valid profile
 //TODO : case 5 -> Network known and invalid profile (passkey wrong and network not forgotten)
 //Done : case 5 -> Try to connect to already connected network
-//TODO : case 6 -> Try to connect to UTF-8 ssid
-//TODO : case 7 -> Try to connect to UTF-8 passkey
-
-//FIXME : Use SSID hexadecimal field to support UTF-8 SSIDs
-// note -> https://www.vbforums.com/showthread.php?883153-RESOLVED-WlanSetProfile-returns-Error
+//Done : case 6 -> Try to connect to UTF-8 ssid
+//Done : case 7 -> Try to connect to UTF-8 passkey
 void Manager::doConnect(const QUuid &idInterface, const QString &ssid, const QString &password)
 {
     /* Retrieve associated interface */

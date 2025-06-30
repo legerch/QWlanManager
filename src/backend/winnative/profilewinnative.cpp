@@ -47,16 +47,19 @@ const QString& ProfileWinNative::getName() const
 QString ProfileWinNative::toXmlFormat() const
 {
     /* Escape needed values */
-    const QString ssidFmt = m_network.getSsid().toHtmlEscaped();
+    const QString ssid = m_network.getSsid();
+    const QString ssidFmt = ssid.toHtmlEscaped();
+    const QString ssidHex = QString::fromLatin1(ssid.toUtf8().toHex());
 
     /* Create XML profile */
-    QString xml = QString
+    const QString xml = QString
     (
-        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+        "<?xml version=\"1.0\"?>"
         "<WLANProfile xmlns=\"http://www.microsoft.com/networking/WLAN/profile/v1\">"
             "<name>%1</name>"
             "<SSIDConfig>"
                 "<SSID>"
+                    "<hex>%2</hex>"
                     "<name>%1</name>"
                 "</SSID>"
             "</SSIDConfig>"
@@ -65,12 +68,13 @@ QString ProfileWinNative::toXmlFormat() const
             "<autoSwitch>false</autoSwitch>"
             "<MSM>"
                 "<security>"
-                    "%2"
+                    "%3"
                 "</security>"
             "</MSM>"
         "</WLANProfile>"
     ).arg(
         ssidFmt,
+        ssidHex,
         blockSecurityToXml()
     );
 

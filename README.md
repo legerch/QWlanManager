@@ -18,6 +18,7 @@ Allow to manage WLAN interfaces and network easily without worrying about OS dep
     - [3.2.1. Compilation time](#321-compilation-time)
     - [3.2.2. Runtime](#322-runtime)
 - [4. Library details](#4-library-details)
+  - [Features](#features)
   - [Supported OSes](#supported-oses)
 - [5. Documentation](#5-documentation)
 - [6. License](#6-license)
@@ -79,6 +80,19 @@ const QVersionNumber &libSemver = libnamespace::MyClass::getLibraryVersion();
 ```
 
 # 4. Library details
+## Features
+
+- UT8 SSID based supported
+- Asynchrone operations
+- Detect added/removed interfaces
+- Thread-safe
+- QML compatible
+
+Currently not supported :
+- hidden networks
+- enterprise WPA2/3 networks
+- Ad-hoc (peer-to-peer / independant) not supported, only infrastured-based supported
+  
 ## Supported OSes
 
 | OS | Support |
