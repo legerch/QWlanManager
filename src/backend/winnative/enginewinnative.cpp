@@ -234,8 +234,18 @@ void EngineWinNative::interfaceConnectAsync(Interface interface, Network network
 
 void EngineWinNative::interfaceDisconnectAsync(Interface interface)
 {
-    qCritical("Unable to perform disconnection, not implemented for winnative engine");
-    emit q_ptr->sDisconnectionFailed(interface.getUid(), WlanError::WERR_OPERATION_UNSUPPORTED);
+    /* Perform disconnection request */
+    const GUID ifaceUuid = interface.getUid();
+    const DWORD res = WlanDisconnect(m_handle, &ifaceUuid, nullptr);
+    if(res != ERROR_SUCCESS){
+        qCritical("Failed to perform disconnection request [err: %d]", res);
+        emit q_ptr->sDisconnectionFailed(interface.getUid(), WlanError::WERR_API_INTERNAL);
+        return;
+    }
+
+    /* Update interface state */
+    InterfaceMutator miface(interface);
+    miface.setState(IfaceState::IFACE_STS_DISCONNECTING);
 }
 
 bool EngineWinNative::apiOpen()
@@ -521,6 +531,30 @@ void EngineWinNative::interfaceConnectionFinished(const QUuid &idInterface, cons
     }
 }
 
+void EngineWinNative::interfaceDisconnectionFinished(const QUuid &idInterface, WlanError result)
+{
+    /* Update interface properties */
+    Interface iface = m_interfaces.value(idInterface);
+
+    InterfaceMutator miface(iface);
+    miface.setState(IfaceState::IFACE_STS_IDLE);
+
+    /* Send associated signals */
+    if(result == WlanError::WERR_NO_ERROR){
+        miface.setConnectedSsid();
+        emit q_ptr->sDisconnectionSucceed(idInterface);
+
+    }else{
+        qCritical("Disconnection request has failed [uuid: %s, err: %s (%d)]",
+                  qUtf8Printable(idInterface.toString()),
+                  qUtf8Printable(wlanErrorToString(result)),
+                  result
+        );
+
+        emit q_ptr->sDisconnectionFailed(idInterface, result);
+    }
+}
+
 /*!
  * \brief Notification callback function
  * \details
@@ -606,6 +640,15 @@ void EngineWinNative::cbNotifAcm(PWLAN_NOTIFICATION_DATA ptrDataNotif, PVOID ptr
             engine->m_errConnect.remove(idInterface);
 
             engine->interfaceConnectionFinished(idInterface, ssid, idErr);
+        }break;
+
+        case wlan_notification_acm_disconnected:{
+            const PWLAN_CONNECTION_NOTIFICATION_DATA connectData = static_cast<PWLAN_CONNECTION_NOTIFICATION_DATA>(ptrDataNotif->pData);
+
+            const QUuid idInterface = QUuid(ptrDataNotif->InterfaceGuid);
+            const WlanError idErr = WinNative::convertErrFromApi(connectData->wlanReasonCode);
+
+            engine->interfaceDisconnectionFinished(idInterface, idErr);
         }break;
 
         default: break;

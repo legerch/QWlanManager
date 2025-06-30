@@ -50,6 +50,7 @@ private:
 
     void interfaceScanFinished(const QUuid &idInterface, WlanError result);
     void interfaceConnectionFinished(const QUuid &idInterface, const QString &ssid, WlanError result);
+    void interfaceDisconnectionFinished(const QUuid &idInterface, WlanError result);
 
 private:
     static void WINAPI cbNotif(PWLAN_NOTIFICATION_DATA ptrDataNotif, PVOID ptrDataCtx);
