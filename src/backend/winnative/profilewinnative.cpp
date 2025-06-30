@@ -34,6 +34,16 @@ const QString& ProfileWinNative::getName() const
     return m_name;
 }
 
+QString ProfileWinNative::getNameFmt() const
+{
+    return m_name.toHtmlEscaped();
+}
+
+QString ProfileWinNative::getNameHex() const
+{
+    return QString::fromLatin1(m_name.toUtf8().toHex());
+}
+
 /*!
  * \brief ProfileWinNative::toXmlFormat
  *
@@ -46,11 +56,6 @@ const QString& ProfileWinNative::getName() const
  */
 QString ProfileWinNative::toXmlFormat() const
 {
-    /* Escape needed values */
-    const QString ssid = m_network.getSsid();
-    const QString ssidFmt = ssid.toHtmlEscaped();
-    const QString ssidHex = QString::fromLatin1(ssid.toUtf8().toHex());
-
     /* Create XML profile */
     const QString xml = QString
     (
@@ -73,8 +78,8 @@ QString ProfileWinNative::toXmlFormat() const
             "</MSM>"
         "</WLANProfile>"
     ).arg(
-        ssidFmt,
-        ssidHex,
+        getNameFmt(),
+        getNameHex(),
         blockSecurityToXml()
     );
 

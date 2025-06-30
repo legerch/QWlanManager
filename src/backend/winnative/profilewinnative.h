@@ -21,6 +21,9 @@ public:
 public:
     const QString& getName() const;
 
+    QString getNameFmt() const;
+    QString getNameHex() const;
+
     QString toXmlFormat() const;
 
 private:

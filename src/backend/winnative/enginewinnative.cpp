@@ -190,7 +190,7 @@ void EngineWinNative::interfaceConnectAsync(Interface interface, Network network
 {
     /* Do profile must be created/updated ? */
     if(!password.isEmpty()){
-        const WlanError errProfile = interfaceNetworkCreateProfile(interface, network, password);
+        const WlanError errProfile = interfaceNetworkProfileCreate(interface, network, password);
         if(errProfile != WlanError::WERR_NO_ERROR){
             emit q_ptr->sConnectionFailed(interface.getUid(), network.getSsid(), errProfile);
             return;
@@ -250,8 +250,14 @@ void EngineWinNative::interfaceDisconnectAsync(Interface interface)
 
 void EngineWinNative::interfaceForgetAsync(Interface interface, Network network)
 {
-    qCritical("Unable to perform forget, not implemented for winnative engine");
-    emit q_ptr->sForgetFailed(interface.getUid(), network.getSsid(), WlanError::WERR_OPERATION_UNSUPPORTED);
+    /* Forget network */
+    const WlanError idErr = interfaceNetworkProfileDelete(interface, network);
+    if(idErr != WlanError::WERR_NO_ERROR){
+        emit q_ptr->sForgetFailed(interface.getUid(), network.getSsid(), idErr);
+        return;
+    }
+
+    emit q_ptr->sForgetSucceed(interface.getUid(), network.getSsid());
 }
 
 bool EngineWinNative::apiOpen()
@@ -449,7 +455,7 @@ WlanError EngineWinNative::interfaceNetworksUpdate(Interface interface)
  *
  * \return
  */
-WlanError EngineWinNative::interfaceNetworkCreateProfile(Interface interface, Network network, const QString &password)
+WlanError EngineWinNative::interfaceNetworkProfileCreate(Interface interface, Network network, const QString &password)
 {
     /* Prepare profile XML */
     const ProfileWinNative profile(network, password);
@@ -464,7 +470,7 @@ WlanError EngineWinNative::interfaceNetworkCreateProfile(Interface interface, Ne
     WLAN_REASON_CODE idStatus = WLAN_REASON_CODE_UNKNOWN;
 
     /* Perform request */
-    DWORD res = WlanSetProfile(m_handle, &ifaceUuid, flags, strProfile, nullptr, true, nullptr, &idStatus);
+    const DWORD res = WlanSetProfile(m_handle, &ifaceUuid, flags, strProfile, nullptr, true, nullptr, &idStatus);
     if(res != ERROR_SUCCESS){
         qCritical("Unable to set profile [uuid: %s, ssid: %s, id-result: %d, id-reason: " API_ERR_CODE_FMT "]",
                   qUtf8Printable(interface.getUid().toString()),
@@ -477,6 +483,35 @@ WlanError EngineWinNative::interfaceNetworkCreateProfile(Interface interface, Ne
     /* Update network informations */
     NetworkMutator munet(network);
     munet.setProfileName(profile.getName());
+
+    return WlanError::WERR_NO_ERROR;
+}
+
+WlanError EngineWinNative::interfaceNetworkProfileDelete(Interface interface, Network network)
+{
+    /* Prepare profile informations */
+    const ProfileWinNative profile(network, QString());
+    const QString profileApi = profile.getNameFmt();
+
+    /* Prepare argument request */
+    const GUID ifaceUuid = interface.getUid();
+    const std::wstring wstrProfile = profileApi.toStdWString();
+    const LPCWSTR strProfile = static_cast<LPCWSTR>(wstrProfile.c_str());
+
+    /* Perform request */
+    const DWORD res = WlanDeleteProfile(m_handle, &ifaceUuid, strProfile, nullptr);
+    if(res != ERROR_SUCCESS){
+        qCritical("Unable to delete profile [uuid: %s, ssid: %s, id-result: %d]",
+                  qUtf8Printable(interface.getUid().toString()),
+                  qUtf8Printable(network.getSsid()),
+                  res
+        );
+        return WlanError::WERR_API_INTERNAL;
+    }
+
+    /* Update network informations */
+    NetworkMutator munet(network);
+    munet.setProfileName("");
 
     return WlanError::WERR_NO_ERROR;
 }
