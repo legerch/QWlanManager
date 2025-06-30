@@ -32,6 +32,7 @@ public:
     void doScan(const QUuid &idInterface);
     void doConnect(const QUuid &idInterface, const QString &ssid, const QString &password = "");
     void doDisconnect(const QUuid &idInterface);
+    void doForget(const QUuid &idInterface, const QString &ssid);
 
 public:
     ListInterfaces getInterfaces() const;
@@ -52,6 +53,10 @@ signals:
     void sDisconnectionStarted(const QUuid &idInterface);
     void sDisconnectionSucceed(const QUuid &idInterface);
     void sDisconnectionFailed(const QUuid &idInterface, qwm::WlanError idErr);
+
+    void sForgetStarted(const QUuid &idInterface, const QString &ssid);
+    void sForgetSucceed(const QUuid &idInterface, const QString &ssid);
+    void sForgetFailed(const QUuid &idInterface, const QString &ssid, qwm::WlanError idErr);
 
 private:
     std::unique_ptr<ManagerPrivate> d_ptr;

@@ -248,6 +248,12 @@ void EngineWinNative::interfaceDisconnectAsync(Interface interface)
     miface.setState(IfaceState::IFACE_STS_DISCONNECTING);
 }
 
+void EngineWinNative::interfaceForgetAsync(Interface interface, Network network)
+{
+    qCritical("Unable to perform forget, not implemented for winnative engine");
+    emit q_ptr->sForgetFailed(interface.getUid(), network.getSsid(), WlanError::WERR_OPERATION_UNSUPPORTED);
+}
+
 bool EngineWinNative::apiOpen()
 {
     DWORD verAsked = WLAN_API_VERSION;

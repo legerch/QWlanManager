@@ -34,6 +34,7 @@ protected:
     void interfaceScanNetworksAsync(Interface interface) override;
     void interfaceConnectAsync(Interface interface, Network network, const QString &password) override;
     void interfaceDisconnectAsync(Interface interface) override;
+    void interfaceForgetAsync(Interface interface, Network network) override;
 
 private:
     bool apiOpen();

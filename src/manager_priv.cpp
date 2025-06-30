@@ -100,6 +100,20 @@ void ManagerPrivate::interfaceDisconnect(Interface interface)
     interfaceDisconnectAsync(interface);
 }
 
+void ManagerPrivate::interfaceForget(Interface interface, Network network)
+{
+    /* Verify that network is not already forgotten */
+    if(network.getProfileName().isEmpty()){
+        qDebug("Network '%s' is already forgotten for interface '%s', nothing to perform", qUtf8Printable(network.getSsid()), qUtf8Printable(interface.getName()));
+
+        emit q_ptr->sForgetSucceed(interface.getUid(), network.getSsid());
+        return;
+    }
+
+    /* Start forgot request */
+    interfaceForgetAsync(interface, network);
+}
+
 /*****************************/
 /* Functions implementation  */
 /*****************************/

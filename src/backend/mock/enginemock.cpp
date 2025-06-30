@@ -84,6 +84,12 @@ void EngineMock::interfaceDisconnectAsync(Interface interface)
     emit q_ptr->sDisconnectionFailed(interface.getUid(), WlanError::WERR_OPERATION_UNSUPPORTED);
 }
 
+void EngineMock::interfaceForgetAsync(Interface interface, Network network)
+{
+    qCritical("Unable to perform forget, not implemented for mock engine");
+    emit q_ptr->sForgetFailed(interface.getUid(), network.getSsid(), WlanError::WERR_OPERATION_UNSUPPORTED);
+}
+
 /*****************************/
 /* End namespace             */
 /*****************************/

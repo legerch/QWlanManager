@@ -104,6 +104,31 @@ void Manager::doDisconnect(const QUuid &idInterface)
     d_ptr->interfaceDisconnect(iface);
 }
 
+void Manager::doForget(const QUuid &idInterface, const QString &ssid)
+{
+    /* Emit start signal */
+    emit sForgetStarted(idInterface, ssid);
+
+    /* Retrieve associated interface */
+    Interface iface = getInterface(idInterface);
+    if(!iface.isValid()){
+        qWarning("Unable to forget network, unknown interface ID [uuid: %s]", qUtf8Printable(idInterface.toString()));
+        emit sForgetFailed(idInterface, ssid, WlanError::WERR_ITEM_INVALID);
+        return;
+    }
+
+    /* Retrieve associated network */
+    Network net = iface.getNetwork(ssid);
+    if(!net.isValid()){
+        qWarning("Unable to forget network, unknown network SSID [ssid: %s]", qUtf8Printable(ssid));
+        emit sForgetFailed(idInterface, ssid, WlanError::WERR_ITEM_INVALID);
+        return;
+    }
+
+    /* Start connection request */
+    d_ptr->interfaceForget(iface, net);
+}
+
 ListInterfaces Manager::getInterfaces() const
 {
     return d_ptr->m_interfaces.values();
