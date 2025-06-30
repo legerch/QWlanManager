@@ -232,6 +232,12 @@ void EngineWinNative::interfaceConnectAsync(Interface interface, Network network
     miface.setState(IfaceState::IFACE_STS_CONNECTING);
 }
 
+void EngineWinNative::interfaceDisconnectAsync(Interface interface)
+{
+    qCritical("Unable to perform disconnection, not implemented for winnative engine");
+    emit q_ptr->sDisconnectionFailed(interface.getUid(), WlanError::WERR_OPERATION_UNSUPPORTED);
+}
+
 bool EngineWinNative::apiOpen()
 {
     DWORD verAsked = WLAN_API_VERSION;

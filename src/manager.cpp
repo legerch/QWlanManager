@@ -87,6 +87,23 @@ void Manager::doConnect(const QUuid &idInterface, const QString &ssid, const QSt
     d_ptr->interfaceConnect(iface, net, password);
 }
 
+void Manager::doDisconnect(const QUuid &idInterface)
+{
+    /* Emit start signal */
+    emit sDisconnectionStarted(idInterface);
+
+    /* Retrieve associated interface */
+    Interface iface = getInterface(idInterface);
+    if(!iface.isValid()){
+        qWarning("Unable to perform disconnection, unknown interface ID [uuid: %s]", qUtf8Printable(idInterface.toString()));
+        emit sDisconnectionFailed(idInterface, WlanError::WERR_ITEM_INVALID);
+        return;
+    }
+
+    /* Start disconnection request */
+    d_ptr->interfaceDisconnect(iface);
+}
+
 ListInterfaces Manager::getInterfaces() const
 {
     return d_ptr->m_interfaces.values();

@@ -29,6 +29,7 @@ public:
 public:
     void interfaceScanNetworks(Interface interface);
     void interfaceConnect(Interface interface, Network network, const QString &password);
+    void interfaceDisconnect(Interface interface);
 
 public:
     virtual void initialize() = 0;
@@ -40,6 +41,7 @@ public:
 protected:
     virtual void interfaceScanNetworksAsync(Interface interface) = 0;
     virtual void interfaceConnectAsync(Interface interface, Network network, const QString &password) = 0;
+    virtual void interfaceDisconnectAsync(Interface interface) = 0;
 
 protected:
     MapInterfaces m_interfaces;

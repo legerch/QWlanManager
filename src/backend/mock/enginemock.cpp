@@ -78,6 +78,12 @@ void EngineMock::interfaceConnectAsync(Interface interface, Network network, QWL
     emit q_ptr->sConnectionFailed(interface.getUid(), network.getSsid(), WlanError::WERR_OPERATION_UNSUPPORTED);
 }
 
+void EngineMock::interfaceDisconnectAsync(Interface interface)
+{
+    qCritical("Unable to perform disconnection, not implemented for mock engine");
+    emit q_ptr->sDisconnectionFailed(interface.getUid(), WlanError::WERR_OPERATION_UNSUPPORTED);
+}
+
 /*****************************/
 /* End namespace             */
 /*****************************/

@@ -35,7 +35,8 @@ namespace qwm
     {
         IFACE_STS_IDLE = 0,
         IFACE_STS_SCANNING,
-        IFACE_STS_CONNECTING
+        IFACE_STS_CONNECTING,
+        IFACE_STS_DISCONNECTING
     };
     Q_ENUM_NS(IfaceState);
 

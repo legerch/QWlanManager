@@ -30,6 +30,7 @@ public:
 protected:
     void interfaceScanNetworksAsync(Interface interface) override;
     void interfaceConnectAsync(Interface interface, Network network, const QString &password) override;
+    void interfaceDisconnectAsync(Interface interface) override;
 };
 
 /*****************************/
