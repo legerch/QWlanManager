@@ -36,14 +36,15 @@ public:
     ListInterfaces getInterfaces() const;
     Interface getInterface(const QUuid &idInterface) const;
 
-//TODO: add start signals for request "scan" and "connect"
 signals:
     void sInterfaceAdded(qwm::Interface interface);
     void sInterfaceRemoved(qwm::Interface interface);
 
+    void sScanStarted(const QUuid &idInterface);
     void sScanSucceed(const QUuid &idInterface, qwm::ListNetworks listNets);
     void sScanFailed(const QUuid &idInterface, qwm::WlanError idErr);
 
+    void sConnectionStarted(const QUuid &idInterface, const QString &ssid);
     void sConnectionSucceed(const QUuid &idInterface, const QString &ssid);
     void sConnectionFailed(const QUuid &idInterface, const QString &ssid, qwm::WlanError idErr);
 

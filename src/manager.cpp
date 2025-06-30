@@ -39,6 +39,9 @@ Manager::~Manager()
 
 void Manager::doScan(const QUuid &idInterface)
 {
+    /* Emit start signal */
+    emit sScanStarted(idInterface);
+
     /* Retrieve associated interface */
     Interface iface = getInterface(idInterface);
     if(!iface.isValid()){
@@ -61,6 +64,9 @@ void Manager::doScan(const QUuid &idInterface)
 //Done : case 7 -> Try to connect to UTF-8 passkey
 void Manager::doConnect(const QUuid &idInterface, const QString &ssid, const QString &password)
 {
+    /* Emit start signal */
+    emit sConnectionStarted(idInterface, ssid);
+
     /* Retrieve associated interface */
     Interface iface = getInterface(idInterface);
     if(!iface.isValid()){
