@@ -51,6 +51,18 @@ void NetworkMutator::setCipherAlgo(CipherAlgo idCipher)
     m_network.d_ptr->m_idCipher = idCipher;
 }
 
+void NetworkMutator::setDataEngine(const std::any &data)
+{
+    QMutexLocker locker(&m_network.d_ptr->m_mutex);
+    m_network.d_ptr->m_dataEngine = data;
+}
+
+const std::any& NetworkMutator::getDataEngine() const
+{
+    QMutexLocker locker(&m_network.d_ptr->m_mutex);
+    return m_network.d_ptr->m_dataEngine;
+}
+
 /*****************************/
 /* End namespace             */
 /*****************************/

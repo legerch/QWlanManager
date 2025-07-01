@@ -3,6 +3,8 @@
 
 #include "qwlanmanager/datas/interface.h"
 
+#include <any>
+
 /*****************************/
 /* Namespace instructions    */
 /*****************************/
@@ -29,6 +31,9 @@ public:
 
     void setConnectedSsid(const QString &ssid = QString());
     MapNetworks& getMapNetworksRef();
+
+    void setDataEngine(const std::any &data);
+    const std::any& getDataEngine() const;
 
 private:
     Interface m_iface;

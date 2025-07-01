@@ -7,6 +7,8 @@
 #include <QMutex>
 #include <QUuid>
 
+#include <any>
+
 /*****************************/
 /* Namespace instructions    */
 /*****************************/
@@ -18,7 +20,6 @@ namespace qwm
 /*****************************/
 
 //TODO: implement cache on network list (some scan give 1 or 2 network insteads of all available)
-//TODO: add a member allowing engine native platform to use custom type (maybe "void*" ?)
 class InterfaceData
 {
 
@@ -40,6 +41,8 @@ public:
 
     MapNetworks m_mapNets;
     QString m_connectedSsid;
+
+    std::any m_dataEngine;
 };
 
 /*****************************/

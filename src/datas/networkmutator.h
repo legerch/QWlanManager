@@ -3,6 +3,8 @@
 
 #include "qwlanmanager/datas/network.h"
 
+#include <any>
+
 /*****************************/
 /* Namespace instructions    */
 /*****************************/
@@ -23,6 +25,9 @@ public:
     void setProfileName(const QString &profile);
     void setAuthAlgo(AuthAlgo idAuth);
     void setCipherAlgo(CipherAlgo idCipher);
+
+    void setDataEngine(const std::any &data);
+    const std::any& getDataEngine() const;
 
 private:
     Network m_network;

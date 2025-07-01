@@ -4,6 +4,8 @@
 #include <QMutex>
 #include <QString>
 
+#include <any>
+
 #include "qwlanmanager/qwlantypes.h"
 
 /*****************************/
@@ -15,8 +17,6 @@ namespace qwm
 /*****************************/
 /* Class definitions         */
 /*****************************/
-
-//TODO: add a member allowing engine native platform to use custom type (maybe "void*" ?)
 
 class NetworkData
 {
@@ -35,6 +35,8 @@ public:
     QString m_profileName;
     AuthAlgo m_idAuth;
     CipherAlgo m_idCipher;
+
+    std::any m_dataEngine;
 };
 
 /*****************************/

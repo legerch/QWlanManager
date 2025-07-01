@@ -87,6 +87,18 @@ MapNetworks& InterfaceMutator::getMapNetworksRef()
     return m_iface.d_ptr->m_mapNets;
 }
 
+void InterfaceMutator::setDataEngine(const std::any &data)
+{
+    QMutexLocker locker(&m_iface.d_ptr->m_mutex);
+    m_iface.d_ptr->m_dataEngine = data;
+}
+
+const std::any& InterfaceMutator::getDataEngine() const
+{
+    QMutexLocker locker(&m_iface.d_ptr->m_mutex);
+    return m_iface.d_ptr->m_dataEngine;
+}
+
 /*****************************/
 /* End namespace             */
 /*****************************/
