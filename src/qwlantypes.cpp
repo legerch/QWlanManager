@@ -35,6 +35,18 @@ QString wlanErrorToString(WlanError idErr)
     return MAP_STR_ERR.value(idErr, "unknown error");
 }
 
+QString wlanPermToString(WlanPerm idPerm)
+{
+    static const QHash<WlanPerm, QString> MAP_STR_PERMISSIONS =
+    {
+        {WlanPerm::WPERM_PROMPT_REQUIRED, "prompt required"},
+        {WlanPerm::WPERM_GRANTED, "granted"},
+        {WlanPerm::WPERM_DENIED, "denied"},
+    };
+
+    return MAP_STR_PERMISSIONS.value(idPerm, "unknown");
+}
+
 QString ifaceStateToString(IfaceState idState)
 {
     static const QHash<IfaceState, QString> MAP_STR_IFACE_STS =

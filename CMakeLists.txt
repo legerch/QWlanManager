@@ -130,17 +130,24 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
         backend/winnative/enginewinnative.h
         backend/winnative/profilewinnative.h
         backend/winnative/typeswinnative.h
+
+        backend/winrt/typeswinrt.h
     )
 
     set(PROJECT_SOURCES ${PROJECT_SOURCES}
         backend/winnative/enginewinnative.cpp
         backend/winnative/profilewinnative.cpp
         backend/winnative/typeswinnative.cpp
+
+        backend/winrt/typeswinrt.cpp
     )
 
+    find_package(cppwinrt CONFIG REQUIRED)
     set(PROJECT_LINKING_LIB ${PROJECT_LINKING_LIB}
         Wlanapi             # WlanAPI
         Iphlpapi            # IP helper tools
+
+        Microsoft::CppWinRT # WinRT
     )
 endif()
 

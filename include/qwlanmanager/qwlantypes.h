@@ -31,6 +31,18 @@ namespace qwm
 
     QWLANMAN_EXPORT QString wlanErrorToString(WlanError idErr);
 
+    enum class WlanPerm
+    {
+        WPERM_UNKNOWN = 0,
+
+        WPERM_PROMPT_REQUIRED,
+        WPERM_GRANTED,
+        WPERM_DENIED
+    };
+    Q_ENUM_NS(WlanPerm)
+
+    QWLANMAN_EXPORT QString wlanPermToString(WlanPerm idPerm);
+
     enum class IfaceState
     {
         IFACE_STS_IDLE = 0,

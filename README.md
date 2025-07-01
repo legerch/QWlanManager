@@ -89,11 +89,13 @@ const QVersionNumber &libSemver = libnamespace::MyClass::getLibraryVersion();
 - Detect added/removed interfaces
 - Thread-safe
 - QML compatible
+- Permission supported : explain in which case, even when using Windows Native API, we still need WinRT (winnative required for windows version earlier than Windows 10 (10.0.10240.0) and still compatible with later, except that since Windows 11 24H2, winnative required location permission to be granted (permission that we can check programmatically only via WinRT api))
 
 Currently not supported :
 - hidden networks
 - enterprise WPA2/3 networks
 - Ad-hoc (peer-to-peer / independant) not supported, only infrastured-based supported
+- On Windows, newer WINRT wlan related API not supported (yet !)
   
 ## Supported OSes
 
