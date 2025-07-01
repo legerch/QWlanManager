@@ -82,6 +82,8 @@ const QVersionNumber &libSemver = libnamespace::MyClass::getLibraryVersion();
 # 4. Library details
 ## Features
 
+// TODO: add more details and unsupported features
+
 - UT8 SSID based supported
 - Asynchrone operations
 - Detect added/removed interfaces
