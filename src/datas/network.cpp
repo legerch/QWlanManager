@@ -62,6 +62,12 @@ CipherAlgo Network::getCipherAlgo() const
     return d_ptr->m_idCipher;
 }
 
+uint Network::getSignalQuality() const
+{
+    QMutexLocker locker(&d_ptr->m_mutex);
+    return d_ptr->m_signalQuality;
+}
+
 bool Network::operator==(const Network &other) const
 {
     /* Verify if same pointer */

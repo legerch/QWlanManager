@@ -51,6 +51,12 @@ void NetworkMutator::setCipherAlgo(CipherAlgo idCipher)
     m_network.d_ptr->m_idCipher = idCipher;
 }
 
+void NetworkMutator::setSignalQuality(uint quality)
+{
+    QMutexLocker locker(&m_network.d_ptr->m_mutex);
+    m_network.d_ptr->m_signalQuality = quality;
+}
+
 void NetworkMutator::setDataEngine(const std::any &data)
 {
     QMutexLocker locker(&m_network.d_ptr->m_mutex);

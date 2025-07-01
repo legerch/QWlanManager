@@ -58,6 +58,8 @@ signals:
     void sForgetSucceed(const QUuid &idInterface, const QString &ssid);
     void sForgetFailed(const QUuid &idInterface, const QString &ssid, qwm::WlanError idErr);
 
+    void sSignalQualityChanged(const QUuid &idInterface, uint percent);
+
 private:
     std::unique_ptr<ManagerPrivate> d_ptr;
     Q_DECLARE_PRIVATE(Manager)

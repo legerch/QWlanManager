@@ -359,7 +359,6 @@ void EngineWinNative::interfaceListHandleEvents(const MapInterfaces &oldMap, con
     }
 }
 
-//TODO: save signal quality information
 WlanError EngineWinNative::interfaceNetworksUpdate(Interface interface)
 {
     InterfaceMutator miface(interface);
@@ -428,6 +427,7 @@ WlanError EngineWinNative::interfaceNetworksUpdate(Interface interface)
         munet.setProfileName(profile);
         munet.setAuthAlgo(WinNative::convertAuthFromApi(apiNet->dot11DefaultAuthAlgorithm));
         munet.setCipherAlgo(WinNative::convertCipherFromApi(apiNet->dot11DefaultCipherAlgorithm));
+        munet.setSignalQuality(apiNet->wlanSignalQuality);
 
         mapNets.insert(ssid, net);
     }
@@ -592,6 +592,33 @@ void EngineWinNative::interfaceDisconnectionFinished(const QUuid &idInterface, W
     }
 }
 
+void EngineWinNative::interfaceSignalQualityReceived(const QUuid &idInterface, uint percent)
+{
+    /* Retrieve associated interface */
+    Interface iface = m_interfaces.value(idInterface);
+    if(!iface.isValid()){
+        qWarning("Unable to update signal quality, invalid interface [uuid: %s]", qUtf8Printable(idInterface.toString()));
+        return;
+    }
+
+    /* Retrieve current network */
+    Network net = iface.getNetworkConnected();
+    if(!net.isValid()){
+        qWarning("Unable to update signal quality, current network not set [iface-uuid: %s, iface-name: '%s']",
+                qUtf8Printable(idInterface.toString()),
+                qUtf8Printable(iface.getName())
+        );
+        return;
+    }
+
+    /* Update network informations */
+    NetworkMutator munet(net);
+    munet.setSignalQuality(percent);
+
+    /* Emit associated signals */
+    emit q_ptr->sSignalQualityChanged(idInterface, percent);
+}
+
 /*!
  * \brief Notification callback function
  * \details
@@ -694,9 +721,21 @@ void EngineWinNative::cbNotifAcm(PWLAN_NOTIFICATION_DATA ptrDataNotif, PVOID ptr
 stat_return:;
 }
 
-void EngineWinNative::cbNotifMsm(QWLANMAN_VAR_UNUSED PWLAN_NOTIFICATION_DATA ptrDataNotif, QWLANMAN_VAR_UNUSED PVOID ptrDataCtx)
+void EngineWinNative::cbNotifMsm(QWLANMAN_VAR_UNUSED PWLAN_NOTIFICATION_DATA ptrDataNotif, PVOID ptrDataCtx)
 {
-    // TODO: implement signal quality : wlan_notification_msm_signal_quality_change
+    EngineWinNative *engine = static_cast<EngineWinNative*>(ptrDataCtx);
+
+    switch(ptrDataNotif->NotificationCode)
+    {
+        case wlan_notification_msm_signal_quality_change:{
+            const QUuid idInterface = QUuid(ptrDataNotif->InterfaceGuid);
+            const ULONG *apiQuality = static_cast<ULONG *>(ptrDataNotif->pData);
+
+            engine->interfaceSignalQualityReceived(idInterface, *apiQuality);
+        }break;
+
+        default: break;
+    }
 }
 
 /*****************************/

@@ -54,6 +54,8 @@ private:
     void interfaceConnectionFinished(const QUuid &idInterface, const QString &ssid, WlanError result);
     void interfaceDisconnectionFinished(const QUuid &idInterface, WlanError result);
 
+    void interfaceSignalQualityReceived(const QUuid &idInterface, uint percent);
+
 private:
     static void WINAPI cbNotif(PWLAN_NOTIFICATION_DATA ptrDataNotif, PVOID ptrDataCtx);
 

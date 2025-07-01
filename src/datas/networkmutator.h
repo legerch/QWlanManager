@@ -25,6 +25,7 @@ public:
     void setProfileName(const QString &profile);
     void setAuthAlgo(AuthAlgo idAuth);
     void setCipherAlgo(CipherAlgo idCipher);
+    void setSignalQuality(uint quality);
 
     void setDataEngine(const std::any &data);
     const std::any& getDataEngine() const;

@@ -35,6 +35,7 @@ public:
     QString m_profileName;
     AuthAlgo m_idAuth;
     CipherAlgo m_idCipher;
+    uint m_signalQuality;
 
     std::any m_dataEngine;
 };
