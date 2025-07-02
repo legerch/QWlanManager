@@ -79,6 +79,7 @@ set(PROJECT_LINKING_LIB
 ### Public interface
 set(PROJECT_HEADERS_PUBLIC
     manager.h
+    permissions.h
     qwlantypes.h
 
     datas/interface.h
@@ -89,8 +90,10 @@ set(PROJECT_HEADERS_PUBLIC
 set(PROJECT_HEADERS_PRIVATE
     factorybackend.h
     manager_priv.h
+    permissions_priv.h
 
     backend/mock/enginemock.h
+    backend/mock/permissionsmock.h
 
     datas/interfacedata.h
     datas/interfacemutator.h
@@ -102,9 +105,12 @@ set(PROJECT_SOURCES
     factorybackend.cpp
     manager.cpp
     manager_priv.cpp
+    permissions.cpp
+    permissions_priv.cpp
     qwlantypes.cpp
 
     backend/mock/enginemock.cpp
+    backend/mock/permissionsmock.cpp
 
     datas/interface.cpp
     datas/interfacedata.cpp
@@ -131,6 +137,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
         backend/winnative/profilewinnative.h
         backend/winnative/typeswinnative.h
 
+        backend/winrt/permissionwinrt.h
         backend/winrt/typeswinrt.h
     )
 
@@ -139,6 +146,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
         backend/winnative/profilewinnative.cpp
         backend/winnative/typeswinnative.cpp
 
+        backend/winrt/permissionwinrt.cpp
         backend/winrt/typeswinrt.cpp
     )
 
@@ -147,7 +155,9 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
         Wlanapi             # WlanAPI
         Iphlpapi            # IP helper tools
 
-        Microsoft::CppWinRT # WinRT
+        # WinRT
+        Microsoft::CppWinRT
+        windowsapp
     )
 endif()
 

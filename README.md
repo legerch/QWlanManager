@@ -96,7 +96,14 @@ Currently not supported :
 - enterprise WPA2/3 networks
 - Ad-hoc (peer-to-peer / independant) not supported, only infrastured-based supported
 - On Windows, newer WINRT wlan related API not supported (yet !)
-  
+
+Tmp notes :
+- Winrt permission introduced in :
+  - Windows 10, version 1903 (introduced in 10.0.18362.0)
+  - https://learn.microsoft.com/en-us/uwp/api/windows.security.authorization.appcapabilityaccess.appcapabilityaccessstatus?view=winrt-26100
+- WinRT wlanapi introduced in :
+
+
 ## Supported OSes
 
 | OS | Support |
