@@ -39,8 +39,8 @@ message(STATUS "Project \"${PROJECT_NAME}\" compiled with C++ standard ${CMAKE_C
 
 # Set needed packages
 ## Qt packages
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Core REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core REQUIRED)
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Gui REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Gui REQUIRED)
 
 ## Other library packages
 ### Example: find_package(nlohmann_json 3.11.3 REQUIRED)
@@ -73,6 +73,7 @@ set(PROJECT_LINKING_DIR
 ### Linking libs
 set(PROJECT_LINKING_LIB
     Qt${QT_VERSION_MAJOR}::Core
+    Qt${QT_VERSION_MAJOR}::Gui
 )
 
 ## Set library files
@@ -126,10 +127,6 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     set(PROJECT_DEFS_PUB ${PROJECT_DEFS_PUB}
         "NOMINMAX"  # Needed because Windows define macros "min/max", better to not defined those and use "std::min/std::max" instead
         "WIN32_LEAN_AND_MEAN=1"
-    )
-
-    set(PROJECT_DEFS_PRIV ${PROJECT_DEFS_PRIV}
-        "USE_ENGINE_WINNATIVE=1"
     )
 
     set(PROJECT_HEADERS_PRIVATE ${PROJECT_HEADERS_PRIVATE}

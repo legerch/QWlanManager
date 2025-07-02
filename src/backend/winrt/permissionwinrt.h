@@ -1,0 +1,42 @@
+#ifndef QWLANMAN_BACKEND_WINRT_PERMISSIONWINRT_H
+#define QWLANMAN_BACKEND_WINRT_PERMISSIONWINRT_H
+
+#include "permissions_priv.h"
+#include "typeswinrt.h"
+
+/*****************************/
+/* Namespace instructions    */
+/*****************************/
+namespace qwm
+{
+
+/*****************************/
+/* Class definitions         */
+/*****************************/
+
+class PermissionWinRt final : public PermissionsPrivate
+{
+
+public:
+    explicit PermissionWinRt(Permissions *parent);
+    ~PermissionWinRt();
+
+public:
+    void initialize() override;
+    void terminate() override;
+
+public:
+    WlanPerm wlanRetrieve() override;
+    bool wlanOpenParams() override;
+
+private:
+    WinRt::PermissionApp m_permsWlan{nullptr};
+};
+
+/*****************************/
+/* End namespaces            */
+/*****************************/
+
+} // namespace qwm
+
+#endif // QWLANMAN_BACKEND_WINRT_PERMISSIONWINRT_H

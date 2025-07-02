@@ -26,7 +26,7 @@ namespace qwm
 
 Manager::Manager(QObject *parent) :
     QObject{parent},
-    d_ptr(FactoryBackend::createBackend(this))
+    d_ptr(FactoryBackend::createEngine(this))
 {
     d_ptr->initialize();
     d_ptr->interfaceListRefresh();

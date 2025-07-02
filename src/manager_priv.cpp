@@ -8,13 +8,16 @@
 /* Signals documentations    */
 /*****************************/
 
-
 /*****************************/
 /* Start namespace           */
 /*****************************/
 
 namespace qwm
 {
+
+/*****************************/
+/* Functions implementation  */
+/*****************************/
 
 ManagerPrivate::ManagerPrivate(Manager *parent)
     : q_ptr(parent)
@@ -113,10 +116,6 @@ void ManagerPrivate::interfaceForget(Interface interface, Network network)
     /* Start forgot request */
     interfaceForgetAsync(interface, network);
 }
-
-/*****************************/
-/* Functions implementation  */
-/*****************************/
 
 /*****************************/
 /* End namespace             */

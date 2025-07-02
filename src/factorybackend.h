@@ -16,6 +16,9 @@ namespace qwm
 class Manager;
 class ManagerPrivate;
 
+class Permissions;
+class PermissionsPrivate;
+
 /*****************************/
 /* Class definitions         */
 /*****************************/
@@ -24,7 +27,8 @@ class FactoryBackend
 {
 
 public:
-    static std::unique_ptr<ManagerPrivate> createBackend(Manager *parent);
+    static std::unique_ptr<ManagerPrivate> createEngine(Manager *parent);
+    static std::unique_ptr<PermissionsPrivate> createPermissions(Permissions *parent);
 };
 
 /*****************************/

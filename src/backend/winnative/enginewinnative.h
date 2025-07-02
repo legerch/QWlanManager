@@ -2,7 +2,7 @@
 #define QWLANMAN_BACKEND_WINNATIVE_ENGINEWINNATIVE_H
 
 #include "manager_priv.h"
-#include "typeswinnative.h"
+#include "typeswinnative.h" // IWYU pragma: keep
 
 #include <QSet>
 

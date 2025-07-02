@@ -1,10 +1,16 @@
 #include "factorybackend.h"
 
-#if USE_ENGINE_WINNATIVE
+#include <QOperatingSystemVersion>
+#include <QtSystemDetection>
+
+#include "backend/mock/enginemock.h"        // IWYU pragma: keep
+#include "backend/mock/permissionsmock.h"
+
+#if defined(Q_OS_WINDOWS)
 #   include "backend/winnative/enginewinnative.h"
-#else
-#   include "backend/mock/enginemock.h"
+#   include "backend/winrt/permissionwinrt.h"
 #endif
+
 
 /*****************************/
 /* Class documentations      */
@@ -25,14 +31,37 @@ namespace qwm
 /* Functions implementation  */
 /*****************************/
 
-std::unique_ptr<ManagerPrivate> FactoryBackend::createBackend(Manager *parent)
+std::unique_ptr<ManagerPrivate> FactoryBackend::createEngine(Manager *parent)
 {
-#if USE_ENGINE_WINNATIVE
+#if defined(Q_OS_WINDOWS)
     qDebug("Use engine \"Windows Native\"");
     return std::make_unique<EngineWinNative>(parent);
+
 #else
     qDebug("Use engine \"Mock\"");
     return std::make_unique<EngineMock>(parent);
+#endif
+}
+
+std::unique_ptr<PermissionsPrivate> FactoryBackend::createPermissions(Permissions *parent)
+{
+#if defined(Q_OS_WINDOWS)
+
+    /* Verify if current Windows OS version has WinRT support */
+    const QOperatingSystemVersion win11 = QOperatingSystemVersion::Windows11;
+    const QOperatingSystemVersion sysVersion = QOperatingSystemVersion::current();
+    if(sysVersion >= win11){
+        qDebug("Use permission \"Windows WinRT\"");
+        return std::make_unique<PermissionWinRt>(parent);
+    }
+
+    /* WinRT not supported */
+    qDebug("Use permissions \"Mock\"");
+    return std::make_unique<PermissionsMock>(parent);
+
+#else
+    qDebug("Use permissions \"Mock\"");
+    return std::make_unique<PermissionsMock>(parent);
 #endif
 }
 
