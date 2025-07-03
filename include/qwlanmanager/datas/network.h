@@ -36,8 +36,8 @@ class QWLANMAN_EXPORT Network
 public:
     Network();
 
-    Network(const Network&) = default;
-    Network& operator=(const Network&) = default;
+    Network(const Network &other);
+    Network& operator=(const Network &other);
 
 public:
     bool isValid() const;

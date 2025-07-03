@@ -33,8 +33,8 @@ class QWLANMAN_EXPORT Interface
 public:
     Interface();
 
-    Interface(const Interface&) = default;
-    Interface& operator=(const Interface&) = default;
+    Interface(const Interface &other);
+    Interface& operator=(const Interface &other);
 
 public:
     bool isValid() const;

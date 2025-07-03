@@ -28,6 +28,9 @@ Interface::Interface()
     /* Nothing to do */
 }
 
+Interface::Interface(const Interface &other) = default;
+Interface &Interface::operator=(const Interface &other) = default;
+
 bool Interface::isValid() const
 {
     if(d_ptr.isNull()){

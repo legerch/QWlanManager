@@ -29,6 +29,9 @@ Network::Network()
     /* Nothing to do */
 }
 
+Network::Network(const Network &other) = default;
+Network &Network::operator=(const Network &other) = default;
+
 bool Network::isValid() const
 {
     if(d_ptr.isNull()){
