@@ -55,7 +55,11 @@ std::unique_ptr<PermissionsPrivate> FactoryBackend::createPermissions(Permission
 #if defined(Q_OS_WINDOWS) && defined(QWLANMAN_HAVE_WINRT)
 
     /* Verify if current Windows OS version has minimum WinRT version */
-    const QOperatingSystemVersion win11 = QOperatingSystemVersion::Windows11;
+#if QT_VERSION < QT_VERSION_CHECK(6, 3, 0)
+    constexpr QOperatingSystemVersion win11{QOperatingSystemVersion::Windows, 10, 0, 22000};
+#else
+    constexpr QOperatingSystemVersion win11 = QOperatingSystemVersion::Windows11;
+#endif
     const QOperatingSystemVersion sysVersion = QOperatingSystemVersion::current();
     if(sysVersion >= win11){
         qDebug("Use permission \"Windows WinRT\"");

@@ -82,6 +82,39 @@ namespace qwm
     QWLANMAN_EXPORT QString cipherAlgoToString(CipherAlgo idCipher);
 
 /*****************************/
+/* Qt related methods        */
+/*****************************/
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+
+inline uint qHash(qwm::WlanError key, uint seed = 0)
+{
+    return ::qHash(static_cast<std::underlying_type<qwm::WlanError>::type>(key), seed);
+}
+
+inline uint qHash(qwm::WlanPerm key, uint seed = 0)
+{
+    return ::qHash(static_cast<std::underlying_type<qwm::WlanPerm>::type>(key), seed);
+}
+
+inline uint qHash(qwm::IfaceState key, uint seed = 0)
+{
+    return ::qHash(static_cast<std::underlying_type<qwm::IfaceState>::type>(key), seed);
+}
+
+inline uint qHash(qwm::AuthAlgo key, uint seed = 0)
+{
+    return ::qHash(static_cast<std::underlying_type<qwm::AuthAlgo>::type>(key), seed);
+}
+
+inline uint qHash(qwm::CipherAlgo key, uint seed = 0)
+{
+    return ::qHash(static_cast<std::underlying_type<qwm::CipherAlgo>::type>(key), seed);
+}
+
+#endif
+
+/*****************************/
 /* End namespaces            */
 /*****************************/
 
