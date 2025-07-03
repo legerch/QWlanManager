@@ -21,6 +21,7 @@ set(CMAKE_AUTORCC ON)
 
 # Define project options
 # Example: option(QWLANMANAGER_BUILD_TESTS "Use to enable/disable build of unit-tests." ON)
+option(QWLANMANAGER_WINDOWS_COMPAT_PREWIN10 "Support Windows versions older than Windows 10" OFF)
 
 # Manage global compiler options
 ## For MSVC: force to read source code as UTF-8 file (already default behaviour on GCC/Clang)
@@ -133,29 +134,42 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
         backend/winnative/enginewinnative.h
         backend/winnative/profilewinnative.h
         backend/winnative/typeswinnative.h
-
-        backend/winrt/permissionwinrt.h
-        backend/winrt/typeswinrt.h
     )
 
     set(PROJECT_SOURCES ${PROJECT_SOURCES}
         backend/winnative/enginewinnative.cpp
         backend/winnative/profilewinnative.cpp
         backend/winnative/typeswinnative.cpp
-
-        backend/winrt/permissionwinrt.cpp
-        backend/winrt/typeswinrt.cpp
     )
 
-    find_package(cppwinrt CONFIG REQUIRED)
     set(PROJECT_LINKING_LIB ${PROJECT_LINKING_LIB}
         Wlanapi             # WlanAPI
         Iphlpapi            # IP helper tools
-
-        # WinRT
-        Microsoft::CppWinRT
-        windowsapp
     )
+
+    if(NOT QWLANMANAGER_WINDOWS_COMPAT_PREWIN10)
+        set(PROJECT_DEFS_PRIV ${PROJECT_DEFS_PRIV}
+            "QWLANMAN_HAVE_WINRT"
+        )
+
+        set(PROJECT_HEADERS_PRIVATE ${PROJECT_HEADERS_PRIVATE}
+            backend/winrt/permissionwinrt.h
+            backend/winrt/typeswinrt.h
+        )
+
+        set(PROJECT_SOURCES ${PROJECT_SOURCES}
+            backend/winrt/permissionwinrt.cpp
+            backend/winrt/typeswinrt.cpp
+        )
+
+        find_package(cppwinrt CONFIG REQUIRED)
+        set(PROJECT_LINKING_LIB ${PROJECT_LINKING_LIB}
+            Microsoft::CppWinRT
+            windowsapp
+        )
+    else()
+        message(STATUS "Project \"${PROJECT_NAME}\" have enabled pre-windows10 compatibility")
+    endif()
 endif()
 
 # Manage options

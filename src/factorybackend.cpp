@@ -1,14 +1,21 @@
 #include "factorybackend.h"
 
 #include <QOperatingSystemVersion>
-#include <QtSystemDetection>
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#   include <QtGlobal>
+#else
+#   include <QtSystemDetection>
+#endif
 
 #include "backend/mock/enginemock.h"        // IWYU pragma: keep
 #include "backend/mock/permissionsmock.h"
 
 #if defined(Q_OS_WINDOWS)
 #   include "backend/winnative/enginewinnative.h"
-#   include "backend/winrt/permissionwinrt.h"
+#   if defined(QWLANMAN_HAVE_WINRT)
+#       include "backend/winrt/permissionwinrt.h"
+#   endif
 #endif
 
 
@@ -45,9 +52,9 @@ std::unique_ptr<ManagerPrivate> FactoryBackend::createEngine(Manager *parent)
 
 std::unique_ptr<PermissionsPrivate> FactoryBackend::createPermissions(Permissions *parent)
 {
-#if defined(Q_OS_WINDOWS)
+#if defined(Q_OS_WINDOWS) && defined(QWLANMAN_HAVE_WINRT)
 
-    /* Verify if current Windows OS version has WinRT support */
+    /* Verify if current Windows OS version has minimum WinRT version */
     const QOperatingSystemVersion win11 = QOperatingSystemVersion::Windows11;
     const QOperatingSystemVersion sysVersion = QOperatingSystemVersion::current();
     if(sysVersion >= win11){
