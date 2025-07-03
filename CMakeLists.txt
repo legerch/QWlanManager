@@ -21,6 +21,7 @@ set(CMAKE_AUTORCC ON)
 
 # Define project options
 # Example: option(QWLANMANAGER_BUILD_TESTS "Use to enable/disable build of unit-tests." ON)
+option(QWLANMANAGER_WINDOWS_COMPAT_PREWIN10 "Support Windows versions older than Windows 10" OFF)
 
 # Manage global compiler options
 ## For MSVC: force to read source code as UTF-8 file (already default behaviour on GCC/Clang)
@@ -39,8 +40,8 @@ message(STATUS "Project \"${PROJECT_NAME}\" compiled with C++ standard ${CMAKE_C
 
 # Set needed packages
 ## Qt packages
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Core REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core REQUIRED)
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Gui REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Gui REQUIRED)
 
 ## Other library packages
 ### Example: find_package(nlohmann_json 3.11.3 REQUIRED)
@@ -73,40 +74,53 @@ set(PROJECT_LINKING_DIR
 ### Linking libs
 set(PROJECT_LINKING_LIB
     Qt${QT_VERSION_MAJOR}::Core
+    Qt${QT_VERSION_MAJOR}::Gui
 )
 
 ## Set library files
 ### Public interface
 set(PROJECT_HEADERS_PUBLIC
-    interface.h
     manager.h
-    network.h
+    permissions.h
     qwlantypes.h
+
+    datas/interface.h
+    datas/network.h
 )
-list(TRANSFORM PROJECT_HEADERS_PUBLIC PREPEND "${PROJECT_DIR_PUBLIC_HEADERS}/")
 
 ### Private
 set(PROJECT_HEADERS_PRIVATE
     factorybackend.h
     manager_priv.h
+    permissions_priv.h
 
-    backend/enginemock.h
-    mutators/ifacemutator.h
+    backend/mock/enginemock.h
+    backend/mock/permissionsmock.h
+
+    datas/interfacedata.h
+    datas/interfacemutator.h
+    datas/networkdata.h
+    datas/networkmutator.h
 )
-list(TRANSFORM PROJECT_HEADERS_PRIVATE PREPEND "${PROJECT_DIR_PRIV_SOURCES}/")
 
 set(PROJECT_SOURCES
     factorybackend.cpp
-    interface.cpp
     manager.cpp
     manager_priv.cpp
-    network.cpp
+    permissions.cpp
+    permissions_priv.cpp
     qwlantypes.cpp
 
-    backend/enginemock.cpp
-    mutators/ifacemutator.cpp
+    backend/mock/enginemock.cpp
+    backend/mock/permissionsmock.cpp
+
+    datas/interface.cpp
+    datas/interfacedata.cpp
+    datas/interfacemutator.cpp
+    datas/network.cpp
+    datas/networkdata.cpp
+    datas/networkmutator.cpp
 )
-list(TRANSFORM PROJECT_SOURCES PREPEND "${PROJECT_DIR_PRIV_SOURCES}/")
 
 # Manage platform differences
 ## Refer to: https://cmake.org/cmake/help/latest/variable/CMAKE_SYSTEM_NAME.html
@@ -115,13 +129,60 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
         "NOMINMAX"  # Needed because Windows define macros "min/max", better to not defined those and use "std::min/std::max" instead
         "WIN32_LEAN_AND_MEAN=1"
     )
+
+    set(PROJECT_HEADERS_PRIVATE ${PROJECT_HEADERS_PRIVATE}
+        backend/winnative/enginewinnative.h
+        backend/winnative/profilewinnative.h
+        backend/winnative/typeswinnative.h
+    )
+
+    set(PROJECT_SOURCES ${PROJECT_SOURCES}
+        backend/winnative/enginewinnative.cpp
+        backend/winnative/profilewinnative.cpp
+        backend/winnative/typeswinnative.cpp
+    )
+
+    set(PROJECT_LINKING_LIB ${PROJECT_LINKING_LIB}
+        Wlanapi             # WlanAPI
+        Iphlpapi            # IP helper tools
+    )
+
+    if(NOT QWLANMANAGER_WINDOWS_COMPAT_PREWIN10)
+        set(PROJECT_DEFS_PRIV ${PROJECT_DEFS_PRIV}
+            "QWLANMAN_HAVE_WINRT"
+        )
+
+        set(PROJECT_HEADERS_PRIVATE ${PROJECT_HEADERS_PRIVATE}
+            backend/winrt/permissionwinrt.h
+            backend/winrt/typeswinrt.h
+        )
+
+        set(PROJECT_SOURCES ${PROJECT_SOURCES}
+            backend/winrt/permissionwinrt.cpp
+            backend/winrt/typeswinrt.cpp
+        )
+
+        find_package(cppwinrt CONFIG REQUIRED)
+        set(PROJECT_LINKING_LIB ${PROJECT_LINKING_LIB}
+            Microsoft::CppWinRT
+            windowsapp
+        )
+    else()
+        message(STATUS "Project \"${PROJECT_NAME}\" have enabled pre-windows10 compatibility")
+    endif()
 endif()
 
 # Manage options
 ## Example: if(QWLANMANAGER_USE_CUSTOM_BEHAVIOUR)
 
-# Add files to the library
+### Prepend all files to proper directory
+list(TRANSFORM PROJECT_HEADERS_PUBLIC PREPEND "${PROJECT_DIR_PUBLIC_HEADERS}/")
+list(TRANSFORM PROJECT_HEADERS_PRIVATE PREPEND "${PROJECT_DIR_PRIV_SOURCES}/")
+list(TRANSFORM PROJECT_SOURCES PREPEND "${PROJECT_DIR_PRIV_SOURCES}/")
+
 set(PROJECT_FILES ${PROJECT_FILE_GLOBAL} ${PROJECT_HEADERS_PUBLIC} ${PROJECT_HEADERS_PRIVATE} ${PROJECT_SOURCES})
+
+# Add files to the library
 add_library(${PROJECT_NAME} SHARED ${PROJECT_FILES})
 
 # Set version of library

@@ -1,8 +1,10 @@
-#ifndef QWLANMAN_INTERFACE_H
-#define QWLANMAN_INTERFACE_H
+#ifndef QWLANMAN_DATAS_INTERFACE_H
+#define QWLANMAN_DATAS_INTERFACE_H
 
 #include "qwlanmanager/qwlanman_global.h"
-#include "qwlanmanager/network.h"
+
+#include "qwlanmanager/datas/network.h"
+#include "qwlanmanager/qwlantypes.h"
 
 #include <QUuid>
 
@@ -16,66 +18,56 @@ namespace qwm
 /* Class definitions         */
 /*****************************/
 
-//TODO: when retrieveing interfaces, filter "virtual"
-
-class QWLANMAN_EXPORT InterfaceData
+class InterfaceData;
+class QWLANMAN_EXPORT Interface
 {
     Q_GADGET
 
     Q_PROPERTY(QUuid uid READ getUid)
     Q_PROPERTY(QString hwAddress READ getHwAddress)
     Q_PROPERTY(QString name READ getName)
-    Q_PROPERTY(QString friendlyName READ getFriendlyName)
     Q_PROPERTY(QString description READ getDescription)
-    Q_PROPERTY(bool isUp READ isUp)
 
-    friend class IfaceMutator;
-
-public:
-    InterfaceData();
+    friend class InterfaceMutator;
 
 public:
+    Interface();
+
+    Interface(const Interface&) = default;
+    Interface& operator=(const Interface&) = default;
+
+public:
+    bool isValid() const;
+
+    IfaceState getState() const;
     const QUuid& getUid() const;
     const QString& getHwAddress() const;
     const QString& getName() const;
-    const QString& getFriendlyName() const;
     const QString& getDescription() const;
-    bool isUp() const;
 
     const MapNetworks& getMapNetworks() const;
 
     ListNetworks getListNetworks() const;
     Network getNetwork(const QString &ssid) const;
+    Network getNetworkConnected() const;
 
 public:
-    bool operator==(const InterfaceData &other) const;
-    bool operator!=(const InterfaceData &other) const;
-    bool operator<(const InterfaceData &other) const;
-    bool operator>(const InterfaceData &other) const;
-    bool operator<=(const InterfaceData &other) const;
-    bool operator>=(const InterfaceData &other) const;
+    bool operator==(const Interface &other) const;
+    bool operator!=(const Interface &other) const;
 
 private:
-    QUuid m_uid;
-    QString m_hwAddress;
-    QString m_name;
-    QString m_friendlyName;
-    QString m_description;
-    bool m_isUp;
-
-    MapNetworks m_mapNets;
+    QSharedPointer<InterfaceData> d_ptr;
 };
 
 /*****************************/
-/* Qt custom related methods */
+/* Qt specific methods       */
 /*****************************/
-size_t qHash(const InterfaceData &key, uint seed = 0);
+
+QWLANMAN_EXPORT QDebug operator<<(QDebug debug, const Interface &interface);
 
 /*****************************/
 /* Alias for related types   */
 /*****************************/
-
-using Interface = QSharedPointer<InterfaceData>;
 
 using ListInterfaces = QList<Interface>;
 using MapInterfaces = QHash<QUuid, Interface>; /**< Key is interface UID */
@@ -86,4 +78,4 @@ using MapInterfaces = QHash<QUuid, Interface>; /**< Key is interface UID */
 
 } // namespace qwm
 
-#endif // QWLANMAN_INTERFACE_H
+#endif // QWLANMAN_DATAS_INTERFACE_H

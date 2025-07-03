@@ -12,13 +12,16 @@ Allow to manage WLAN interfaces and network easily without worrying about OS dep
   - [1.1. C++ Standards](#11-c-standards)
   - [1.2. Dependencies](#12-dependencies)
 - [2. How to build](#2-how-to-build)
+  - [2.1. CMake usage](#21-cmake-usage)
+  - [2.2. CMake options](#22-cmake-options)
 - [3. How to use](#3-how-to-use)
   - [3.1. A custom section](#31-a-custom-section)
   - [3.2. Library version](#32-library-version)
     - [3.2.1. Compilation time](#321-compilation-time)
     - [3.2.2. Runtime](#322-runtime)
 - [4. Library details](#4-library-details)
-  - [Supported OSes](#supported-oses)
+  - [4.1. Features](#41-features)
+  - [4.2. Supported OSes](#42-supported-oses)
 - [5. Documentation](#5-documentation)
 - [6. License](#6-license)
 
@@ -39,7 +42,7 @@ Below, list of required dependencies:
 > Dependency manager [VCPKG][vcpkg-tutorial] is not mandatory, this is only a note to be able to list needed packages
 
 # 2. How to build
-
+## 2.1. CMake usage
 This library can be use as an _embedded library_ in a subdirectory of your project (like a _git submodule_ for example) :
 1. In the **root** CMakeLists, add instructions :
 ```cmake
@@ -51,6 +54,12 @@ add_subdirectory(qwlanmanager) # Or if library is put in a folder "dependencies"
 # Link needed libraries
 target_link_libraries(${PROJECT_NAME} PRIVATE qwlanmanager)
 ```
+
+## 2.2. CMake options
+
+This library provide some build options:
+- `QWLANMANAGER_WINDOWS_COMPAT_PREWIN10` (default: `OFF`) : Use this option to enable compatibility with Windows version earlier than _Windows 10_. Enabling this option will disable some features in order to keep compatibility, so better to disable it for Windows 10 and newer. Internally, this is due to the missing support of _C++/WinRT_ library, impacted features will be :
+  - `qwm:Permissions` : no support for permissions control, each permissions method will use a _mock_ version, allowing users of the library to not have to make distinction code, permissions will simply return an _unknown status_.
 
 # 3. How to use
 ## 3.1. A custom section
@@ -79,7 +88,31 @@ const QVersionNumber &libSemver = libnamespace::MyClass::getLibraryVersion();
 ```
 
 # 4. Library details
-## Supported OSes
+## 4.1. Features
+
+// TODO: add more details and unsupported features
+
+- UT8 SSID based supported
+- Asynchrone operations
+- Detect added/removed interfaces
+- Thread-safe
+- QML compatible
+- Permission supported : explain in which case, even when using Windows Native API, we still need WinRT (winnative required for windows version earlier than Windows 10 (10.0.10240.0) and still compatible with later, except that since Windows 11 24H2, winnative required location permission to be granted (permission that we can check programmatically only via WinRT api))
+
+Currently not supported :
+- hidden networks
+- enterprise WPA2/3 networks
+- Ad-hoc (peer-to-peer / independant) not supported, only infrastured-based supported
+- On Windows, newer WINRT wlan related API not supported (yet !)
+
+Tmp notes :
+- Winrt permission introduced in :
+  - Windows 10, version 1903 (introduced in 10.0.18362.0)
+  - https://learn.microsoft.com/en-us/uwp/api/windows.security.authorization.appcapabilityaccess.appcapabilityaccessstatus?view=winrt-26100
+- WinRT wlanapi introduced in :
+
+
+## 4.2. Supported OSes
 
 | OS | Support |
 |:-:|:-:|

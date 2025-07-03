@@ -1,7 +1,7 @@
-#ifndef QWLANMAN_BACKEND_ENGINEMOCK_H
-#define QWLANMAN_BACKEND_ENGINEMOCK_H
+#ifndef QWLANMAN_BACKEND_MOCK_PERMISSIONSMOCK_H
+#define QWLANMAN_BACKEND_MOCK_PERMISSIONSMOCK_H
 
-#include "manager_priv.h"
+#include "permissions_priv.h"
 
 /*****************************/
 /* Namespace instructions    */
@@ -14,18 +14,19 @@ namespace qwm
 /* Class definitions         */
 /*****************************/
 
-class EngineMock final : public ManagerPrivate
+class PermissionsMock final : public PermissionsPrivate
 {
 public:
-    explicit EngineMock(Manager *parent);
-    ~EngineMock();
+    explicit PermissionsMock(Permissions *parent);
+    ~PermissionsMock();
 
 public:
     void initialize() override;
     void terminate() override;
 
 public:
-    void refreshInterfaces() override;
+    WlanPerm wlanRetrieve() override;
+    bool wlanOpenParams() override;
 };
 
 /*****************************/
@@ -34,4 +35,4 @@ public:
 
 } // namespace qwm
 
-#endif // QWLANMAN_BACKEND_ENGINEMOCK_H
+#endif // QWLANMAN_BACKEND_MOCK_PERMISSIONSMOCK_H
