@@ -25,8 +25,8 @@ public:
     bool operator!=(const CachePolicyPrivate &other) const;
 
 public:
-    int m_maxScans;
-    qint64 m_maxDelay;
+    int m_maxScans = 0;
+    qint64 m_maxDelay = 0;
 };
 
 /*****************************/

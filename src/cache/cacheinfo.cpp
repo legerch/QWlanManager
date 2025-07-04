@@ -1,4 +1,4 @@
-#include "cachepolicy_priv.h"
+#include "cacheinfo.h"
 
 /*****************************/
 /* Class documentations      */
@@ -7,7 +7,6 @@
 /*****************************/
 /* Signals documentations    */
 /*****************************/
-
 
 /*****************************/
 /* Start namespace           */
@@ -20,20 +19,35 @@ namespace qwm
 /* Functions implementation  */
 /*****************************/
 
-CachePolicyPrivate::CachePolicyPrivate()
+CacheInfo::CacheInfo()
 {
     /* Nothing to do */
 }
 
-bool CachePolicyPrivate::operator==(const CachePolicyPrivate &other) const
+void CacheInfo::markSeen(const QDateTime &now)
 {
-    return m_maxScans == other.m_maxScans
-        && m_maxDelay == other.m_maxDelay;
+    m_nbScansMiss = 0;
+    m_lastSeen = now;
 }
 
-bool CachePolicyPrivate::operator!=(const CachePolicyPrivate &other) const
+void CacheInfo::markUnseen()
 {
-    return !(*this == other);
+    ++m_nbScansMiss;
+}
+
+bool CacheInfo::isExpired(const CachePolicy &policy, const QDateTime &now) const
+{
+    /* Verify if we reach maximum number of missed scans */
+    if(m_nbScansMiss >= policy.getMaxScans()){
+        return true;
+    }
+
+    /* Verify if we reach maximum delays since we seen it */
+    if(m_lastSeen.secsTo(now) >= policy.getMaxDelay()){
+        return true;
+    }
+
+    return false;
 }
 
 /*****************************/

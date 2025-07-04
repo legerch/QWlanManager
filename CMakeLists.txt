@@ -99,6 +99,7 @@ set(PROJECT_HEADERS_PRIVATE
     backend/mock/enginemock.h
     backend/mock/permissionsmock.h
 
+    cache/cacheinfo.h
     cache/cachepolicy_priv.h
 
     datas/interfacedata.h
@@ -118,6 +119,7 @@ set(PROJECT_SOURCES
     backend/mock/enginemock.cpp
     backend/mock/permissionsmock.cpp
 
+    cache/cacheinfo.cpp
     cache/cachepolicy.cpp
     cache/cachepolicy_priv.cpp
 
