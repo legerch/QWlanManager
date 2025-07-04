@@ -70,6 +70,12 @@ const QString& Interface::getDescription() const
     return d_ptr->m_description;
 }
 
+const CachePolicy &Interface::getCachePolicy() const
+{
+    QMutexLocker locker(&d_ptr->m_mutex);
+    return d_ptr->m_cachePolicy;
+}
+
 const MapNetworks& Interface::getMapNetworks() const
 {
     return d_ptr->m_mapNets;

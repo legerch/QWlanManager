@@ -87,6 +87,18 @@ MapNetworks& InterfaceMutator::getMapNetworksRef()
     return m_iface.d_ptr->m_mapNets;
 }
 
+void InterfaceMutator::setCachePolicy(const CachePolicy &cachePolicy)
+{
+    QMutexLocker locker(&m_iface.d_ptr->m_mutex);
+    m_iface.d_ptr->m_cachePolicy = cachePolicy;
+}
+
+CachePolicy& InterfaceMutator::getCachePolicyRef()
+{
+    QMutexLocker locker(&m_iface.d_ptr->m_mutex);
+    return m_iface.d_ptr->m_cachePolicy;
+}
+
 void InterfaceMutator::setDataEngine(const std::any &data)
 {
     QMutexLocker locker(&m_iface.d_ptr->m_mutex);

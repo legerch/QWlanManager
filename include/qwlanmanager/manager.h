@@ -29,6 +29,9 @@ public:
     ~Manager();
 
 public:
+    WlanError setCachePolicy(const QUuid &idInterface, const CachePolicy &cachePolicy);
+
+public:
     void doScan(const QUuid &idInterface);
     void doConnect(const QUuid &idInterface, const QString &ssid, const QString &password = "");
     void doDisconnect(const QUuid &idInterface);

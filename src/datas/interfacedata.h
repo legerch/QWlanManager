@@ -1,6 +1,7 @@
 #ifndef QWLANMAN_DATAS_INTERFACEDATA_H
 #define QWLANMAN_DATAS_INTERFACEDATA_H
 
+#include "qwlanmanager/cache/cachepolicy.h"
 #include "qwlanmanager/datas/network.h"
 #include "qwlanmanager/qwlantypes.h"
 
@@ -41,6 +42,8 @@ public:
 
     MapNetworks m_mapNets;
     QString m_connectedSsid;
+
+    CachePolicy m_cachePolicy;
 
     std::any m_dataEngine;
 };
