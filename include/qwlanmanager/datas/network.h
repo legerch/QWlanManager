@@ -35,9 +35,9 @@ class QWLANMAN_EXPORT Network
 
 public:
     Network();
-
     Network(const Network &other);
-    Network& operator=(const Network &other);
+
+    ~Network();
 
 public:
     bool isValid() const;
@@ -47,6 +47,9 @@ public:
     AuthAlgo getAuthAlgo() const;
     CipherAlgo getCipherAlgo() const;
     uint getSignalQuality() const;
+
+public:
+    Network& operator=(const Network &other);
 
 public:
     bool operator==(const Network &other) const;

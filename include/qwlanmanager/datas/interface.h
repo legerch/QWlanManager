@@ -9,8 +9,6 @@
 
 #include <QUuid>
 
-//TODO: add destructor definitions for all public classes
-
 /*****************************/
 /* Namespace instructions    */
 /*****************************/
@@ -36,9 +34,9 @@ class QWLANMAN_EXPORT Interface
 
 public:
     Interface();
-
     Interface(const Interface &other);
-    Interface& operator=(const Interface &other);
+
+    ~Interface();
 
 public:
     bool isValid() const;
@@ -55,6 +53,9 @@ public:
     ListNetworks getListNetworks() const;
     Network getNetwork(const QString &ssid) const;
     Network getNetworkConnected() const;
+
+public:
+    Interface& operator=(const Interface &other);
 
 public:
     bool operator==(const Interface &other) const;

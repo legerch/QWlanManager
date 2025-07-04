@@ -29,7 +29,7 @@ Interface::Interface()
 }
 
 Interface::Interface(const Interface &other) = default;
-Interface &Interface::operator=(const Interface &other) = default;
+Interface::~Interface() = default;
 
 bool Interface::isValid() const
 {
@@ -98,6 +98,8 @@ Network Interface::getNetworkConnected() const
     QMutexLocker locker(&d_ptr->m_mutex);
     return d_ptr->m_mapNets.value(d_ptr->m_connectedSsid);
 }
+
+Interface &Interface::operator=(const Interface &other) = default;
 
 bool Interface::operator==(const Interface &other) const
 {

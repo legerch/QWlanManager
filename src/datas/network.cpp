@@ -30,7 +30,7 @@ Network::Network()
 }
 
 Network::Network(const Network &other) = default;
-Network &Network::operator=(const Network &other) = default;
+Network::~Network() = default;
 
 bool Network::isValid() const
 {
@@ -70,6 +70,8 @@ uint Network::getSignalQuality() const
     QMutexLocker locker(&d_ptr->m_mutex);
     return d_ptr->m_signalQuality;
 }
+
+Network &Network::operator=(const Network &other) = default;
 
 bool Network::operator==(const Network &other) const
 {
