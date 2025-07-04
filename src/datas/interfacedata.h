@@ -20,7 +20,6 @@ namespace qwm
 /* Class definitions         */
 /*****************************/
 
-//TODO: implement cache on network list (some scan give 1 or 2 network insteads of all available)
 class InterfaceData
 {
 

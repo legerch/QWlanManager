@@ -38,12 +38,12 @@ void CacheInfo::markUnseen()
 bool CacheInfo::isExpired(const CachePolicy &policy, const QDateTime &now) const
 {
     /* Verify if we reach maximum number of missed scans */
-    if(m_nbScansMiss >= policy.getMaxScans()){
+    if(m_nbScansMiss > policy.getMaxScans()){
         return true;
     }
 
     /* Verify if we reach maximum delays since we seen it */
-    if(m_lastSeen.secsTo(now) >= policy.getMaxDelay()){
+    if(m_lastSeen.secsTo(now) > policy.getMaxDelay()){
         return true;
     }
 

@@ -98,6 +98,8 @@ const QVersionNumber &libSemver = libnamespace::MyClass::getLibraryVersion();
 - Thread-safe
 - QML compatible
 - Permission supported : explain in which case, even when using Windows Native API, we still need WinRT (winnative required for windows version earlier than Windows 10 (10.0.10240.0) and still compatible with later, except that since Windows 11 24H2, winnative required location permission to be granted (permission that we can check programmatically only via WinRT api))
+- Implicit shared
+- Cache feature
 
 Currently not supported :
 - hidden networks

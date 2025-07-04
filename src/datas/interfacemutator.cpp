@@ -1,6 +1,7 @@
 #include "interfacemutator.h"
 
 #include "interfacedata.h"
+#include "networkmutator.h"
 
 /*****************************/
 /* Class documentations      */
@@ -109,6 +110,27 @@ const std::any& InterfaceMutator::getDataEngine() const
 {
     QMutexLocker locker(&d_ptr->m_mutex);
     return d_ptr->m_dataEngine;
+}
+
+void InterfaceMutator::updateNetworksCached(const MapNetworks &oldNets, const QDateTime &now)
+{
+    for(auto it = oldNets.cbegin(); it != oldNets.cend(); ++it){
+        Network net = it.value();
+        NetworkMutator munet(net);
+
+        CacheInfo &cache = munet.getCacheRef();
+
+        // Update cache
+        cache.markUnseen();
+
+        // Do cache is expired ?
+        if(cache.isExpired(d_ptr->m_cachePolicy, now)){
+            continue;
+        }
+
+        // Cache not expired, keep the network
+        d_ptr->m_mapNets.insert(net.getSsid(), net);
+    }
 }
 
 /*****************************/
