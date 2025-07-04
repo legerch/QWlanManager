@@ -34,7 +34,7 @@ public:
     const std::any& getDataEngine() const;
 
 private:
-    Network m_network;
+    QSharedPointer<NetworkData> d_ptr;
 };
 
 /*****************************/

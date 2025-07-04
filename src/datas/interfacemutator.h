@@ -39,7 +39,7 @@ public:
     const std::any& getDataEngine() const;
 
 private:
-    Interface m_iface;
+    QSharedPointer<InterfaceData> d_ptr;
 };
 
 /*****************************/

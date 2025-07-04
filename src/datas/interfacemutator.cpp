@@ -22,27 +22,27 @@ namespace qwm
 /*****************************/
 
 InterfaceMutator::InterfaceMutator(const Interface &iface)
-    : m_iface(iface)
+    : d_ptr(iface.d_ptr)
 {
     /* Nothing to do */
 }
 
 void InterfaceMutator::setState(IfaceState idState)
 {
-    QMutexLocker locker(&m_iface.d_ptr->m_mutex);
-    m_iface.d_ptr->m_state = idState;
+    QMutexLocker locker(&d_ptr->m_mutex);
+    d_ptr->m_state = idState;
 }
 
 void InterfaceMutator::setUid(const QUuid &uid)
 {
-    QMutexLocker locker(&m_iface.d_ptr->m_mutex);
-    m_iface.d_ptr->m_uid = uid;
+    QMutexLocker locker(&d_ptr->m_mutex);
+    d_ptr->m_uid = uid;
 }
 
 void InterfaceMutator::setHwAddress(const QString &hwAddr)
 {
-    QMutexLocker locker(&m_iface.d_ptr->m_mutex);
-    m_iface.d_ptr->m_hwAddress = hwAddr;
+    QMutexLocker locker(&d_ptr->m_mutex);
+    d_ptr->m_hwAddress = hwAddr;
 }
 
 void InterfaceMutator::setHwAddress(const uchar *buffer, int lenBuffer)
@@ -65,50 +65,50 @@ void InterfaceMutator::setHwAddress(const uchar *buffer, int lenBuffer)
 
 void InterfaceMutator::setName(const QString &name)
 {
-    QMutexLocker locker(&m_iface.d_ptr->m_mutex);
-    m_iface.d_ptr->m_name = name;
+    QMutexLocker locker(&d_ptr->m_mutex);
+    d_ptr->m_name = name;
 }
 
 void InterfaceMutator::setDescription(const QString &desc)
 {
-    QMutexLocker locker(&m_iface.d_ptr->m_mutex);
-    m_iface.d_ptr->m_description = desc;
+    QMutexLocker locker(&d_ptr->m_mutex);
+    d_ptr->m_description = desc;
 }
 
 void InterfaceMutator::setConnectedSsid(const QString &ssid)
 {
-    QMutexLocker locker(&m_iface.d_ptr->m_mutex);
-    m_iface.d_ptr->m_connectedSsid = ssid;
+    QMutexLocker locker(&d_ptr->m_mutex);
+    d_ptr->m_connectedSsid = ssid;
 }
 
 MapNetworks& InterfaceMutator::getMapNetworksRef()
 {
-    QMutexLocker locker(&m_iface.d_ptr->m_mutex);
-    return m_iface.d_ptr->m_mapNets;
+    QMutexLocker locker(&d_ptr->m_mutex);
+    return d_ptr->m_mapNets;
 }
 
 void InterfaceMutator::setCachePolicy(const CachePolicy &cachePolicy)
 {
-    QMutexLocker locker(&m_iface.d_ptr->m_mutex);
-    m_iface.d_ptr->m_cachePolicy = cachePolicy;
+    QMutexLocker locker(&d_ptr->m_mutex);
+    d_ptr->m_cachePolicy = cachePolicy;
 }
 
 CachePolicy& InterfaceMutator::getCachePolicyRef()
 {
-    QMutexLocker locker(&m_iface.d_ptr->m_mutex);
-    return m_iface.d_ptr->m_cachePolicy;
+    QMutexLocker locker(&d_ptr->m_mutex);
+    return d_ptr->m_cachePolicy;
 }
 
 void InterfaceMutator::setDataEngine(const std::any &data)
 {
-    QMutexLocker locker(&m_iface.d_ptr->m_mutex);
-    m_iface.d_ptr->m_dataEngine = data;
+    QMutexLocker locker(&d_ptr->m_mutex);
+    d_ptr->m_dataEngine = data;
 }
 
 const std::any& InterfaceMutator::getDataEngine() const
 {
-    QMutexLocker locker(&m_iface.d_ptr->m_mutex);
-    return m_iface.d_ptr->m_dataEngine;
+    QMutexLocker locker(&d_ptr->m_mutex);
+    return d_ptr->m_dataEngine;
 }
 
 /*****************************/
