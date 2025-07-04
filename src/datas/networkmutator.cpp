@@ -57,6 +57,12 @@ void NetworkMutator::setSignalQuality(uint quality)
     m_network.d_ptr->m_signalQuality = quality;
 }
 
+CacheInfo& NetworkMutator::getCacheRef()
+{
+    QMutexLocker locker(&m_network.d_ptr->m_mutex);
+    return m_network.d_ptr->m_cache;
+}
+
 void NetworkMutator::setDataEngine(const std::any &data)
 {
     QMutexLocker locker(&m_network.d_ptr->m_mutex);
