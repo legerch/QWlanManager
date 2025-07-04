@@ -32,11 +32,17 @@ public:
     void setConnectedSsid(const QString &ssid = QString());
     MapNetworks& getMapNetworksRef();
 
+    void setCachePolicy(const CachePolicy &cachePolicy);
+    CachePolicy& getCachePolicyRef();
+
     void setDataEngine(const std::any &data);
     const std::any& getDataEngine() const;
 
+public:
+    void updateNetworksCached(const MapNetworks &oldNets, const QDateTime &now);
+
 private:
-    Interface m_iface;
+    QSharedPointer<InterfaceData> d_ptr;
 };
 
 /*****************************/

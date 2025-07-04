@@ -1,6 +1,7 @@
 #ifndef QWLANMAN_DATAS_NETWORKMUTATOR_H
 #define QWLANMAN_DATAS_NETWORKMUTATOR_H
 
+#include "cache/cacheinfo.h"
 #include "qwlanmanager/datas/network.h"
 
 #include <any>
@@ -27,11 +28,13 @@ public:
     void setCipherAlgo(CipherAlgo idCipher);
     void setSignalQuality(uint quality);
 
+    CacheInfo& getCacheRef();
+
     void setDataEngine(const std::any &data);
     const std::any& getDataEngine() const;
 
 private:
-    Network m_network;
+    QSharedPointer<NetworkData> d_ptr;
 };
 
 /*****************************/

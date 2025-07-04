@@ -37,6 +37,22 @@ Manager::~Manager()
     d_ptr->terminate();
 }
 
+WlanError Manager::setCachePolicy(const QUuid &idInterface, const CachePolicy &cachePolicy)
+{
+    /* Retrieve associated interface */
+    Interface iface = getInterface(idInterface);
+    if(!iface.isValid()){
+        qWarning("Unable to set cache policy, unknown interface ID [uuid: %s]", qUtf8Printable(idInterface.toString()));
+        return WlanError::WERR_ITEM_INVALID;
+    }
+
+    /* Set cache policy */
+    InterfaceMutator miface(iface);
+    miface.setCachePolicy(cachePolicy);
+
+    return WlanError::WERR_NO_ERROR;
+}
+
 void Manager::doScan(const QUuid &idInterface)
 {
     /* Emit start signal */

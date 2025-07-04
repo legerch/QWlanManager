@@ -6,6 +6,7 @@
 
 #include <any>
 
+#include "cache/cacheinfo.h"
 #include "qwlanmanager/qwlantypes.h"
 
 /*****************************/
@@ -36,6 +37,8 @@ public:
     AuthAlgo m_idAuth;
     CipherAlgo m_idCipher;
     uint m_signalQuality;
+
+    CacheInfo m_cache;
 
     std::any m_dataEngine;
 };

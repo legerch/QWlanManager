@@ -3,10 +3,13 @@
 
 #include "qwlanmanager/qwlanman_global.h"
 
+#include "qwlanmanager/cache/cachepolicy.h"
 #include "qwlanmanager/datas/network.h"
 #include "qwlanmanager/qwlantypes.h"
 
 #include <QUuid>
+
+//TODO: add destructor definitions for all public classes
 
 /*****************************/
 /* Namespace instructions    */
@@ -27,6 +30,7 @@ class QWLANMAN_EXPORT Interface
     Q_PROPERTY(QString hwAddress READ getHwAddress)
     Q_PROPERTY(QString name READ getName)
     Q_PROPERTY(QString description READ getDescription)
+    Q_PROPERTY(CachePolicy cachePolicy READ getCachePolicy)
 
     friend class InterfaceMutator;
 
@@ -44,6 +48,7 @@ public:
     const QString& getHwAddress() const;
     const QString& getName() const;
     const QString& getDescription() const;
+    const CachePolicy& getCachePolicy() const;
 
     const MapNetworks& getMapNetworks() const;
 

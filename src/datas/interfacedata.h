@@ -1,6 +1,7 @@
 #ifndef QWLANMAN_DATAS_INTERFACEDATA_H
 #define QWLANMAN_DATAS_INTERFACEDATA_H
 
+#include "qwlanmanager/cache/cachepolicy.h"
 #include "qwlanmanager/datas/network.h"
 #include "qwlanmanager/qwlantypes.h"
 
@@ -19,7 +20,6 @@ namespace qwm
 /* Class definitions         */
 /*****************************/
 
-//TODO: implement cache on network list (some scan give 1 or 2 network insteads of all available)
 class InterfaceData
 {
 
@@ -41,6 +41,8 @@ public:
 
     MapNetworks m_mapNets;
     QString m_connectedSsid;
+
+    CachePolicy m_cachePolicy;
 
     std::any m_dataEngine;
 };

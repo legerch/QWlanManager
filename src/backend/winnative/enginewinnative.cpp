@@ -384,6 +384,7 @@ WlanError EngineWinNative::interfaceNetworksUpdate(Interface interface)
     }
 
     /* Register networks */
+    const QDateTime now = QDateTime::currentDateTimeUtc();
     for(apiNetList->dwIndex = 0; apiNetList->dwIndex < apiNetList->dwNumberOfItems; ++apiNetList->dwIndex){
         PWLAN_AVAILABLE_NETWORK apiNet = &apiNetList->Network[apiNetList->dwIndex];
 
@@ -417,7 +418,7 @@ WlanError EngineWinNative::interfaceNetworksUpdate(Interface interface)
         // Manage known network
         Network net;
         if(prevNets.contains(ssid)){
-            net = prevNets.value(ssid);
+            net = prevNets.take(ssid);
         }
 
         // Update network properties
@@ -429,11 +430,14 @@ WlanError EngineWinNative::interfaceNetworksUpdate(Interface interface)
         munet.setCipherAlgo(WinNative::convertCipherFromApi(apiNet->dot11DefaultCipherAlgorithm));
         munet.setSignalQuality(apiNet->wlanSignalQuality);
 
+        munet.getCacheRef().markSeen(now);
+
         mapNets.insert(ssid, net);
     }
 
-    /* Update interface connected network */
+    /* Update interface properties */
     miface.setConnectedSsid(connectedSsid);
+    miface.updateNetworksCached(prevNets, now);
 
     /* Clean used ressources */
     WlanFreeMemory(apiNetList);
