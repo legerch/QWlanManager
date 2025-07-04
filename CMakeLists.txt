@@ -84,6 +84,8 @@ set(PROJECT_HEADERS_PUBLIC
     permissions.h
     qwlantypes.h
 
+    cache/cachepolicy.h
+
     datas/interface.h
     datas/network.h
 )
@@ -96,6 +98,8 @@ set(PROJECT_HEADERS_PRIVATE
 
     backend/mock/enginemock.h
     backend/mock/permissionsmock.h
+
+    cache/cachepolicy_priv.h
 
     datas/interfacedata.h
     datas/interfacemutator.h
@@ -113,6 +117,9 @@ set(PROJECT_SOURCES
 
     backend/mock/enginemock.cpp
     backend/mock/permissionsmock.cpp
+
+    cache/cachepolicy.cpp
+    cache/cachepolicy_priv.cpp
 
     datas/interface.cpp
     datas/interfacedata.cpp
