@@ -43,6 +43,16 @@ namespace qwm
 
     QWLANMAN_EXPORT QString wlanPermToString(WlanPerm idPerm);
 
+    enum class RequestType
+    {
+        REQ_SCAN = 0,
+        REQ_CONNECT,
+        REQ_DISCONNECT
+    };
+    Q_ENUM_NS(RequestType);
+
+    QWLANMAN_EXPORT QString requestTypeToString(RequestType idReq);
+
     enum class IfaceState
     {
         IFACE_STS_IDLE = 0,
@@ -95,6 +105,11 @@ inline uint qHash(qwm::WlanError key, uint seed = 0)
 inline uint qHash(qwm::WlanPerm key, uint seed = 0)
 {
     return ::qHash(static_cast<std::underlying_type<qwm::WlanPerm>::type>(key), seed);
+}
+
+inline uint qHash(qwm::RequestType key, uint seed = 0)
+{
+    return ::qHash(static_cast<std::underlying_type<qwm::RequestType>::type>(key), seed);
 }
 
 inline uint qHash(qwm::IfaceState key, uint seed = 0)
