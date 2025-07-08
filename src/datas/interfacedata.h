@@ -5,6 +5,8 @@
 #include "qwlanmanager/datas/network.h"
 #include "qwlanmanager/qwlantypes.h"
 
+#include "requests/requestsqueue.h"
+
 #include <QMutex>
 #include <QUuid>
 
@@ -44,6 +46,7 @@ public:
 
     CachePolicy m_cachePolicy;
 
+    RequestsQueue m_reqsQueue;
     std::any m_dataEngine;
 };
 

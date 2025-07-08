@@ -100,6 +100,12 @@ CachePolicy& InterfaceMutator::getCachePolicyRef()
     return d_ptr->m_cachePolicy;
 }
 
+RequestsQueue& InterfaceMutator::getRequestsQueueRef()
+{
+    QMutexLocker locker(&d_ptr->m_mutex);
+    return d_ptr->m_reqsQueue;
+}
+
 void InterfaceMutator::setDataEngine(const std::any &data)
 {
     QMutexLocker locker(&d_ptr->m_mutex);

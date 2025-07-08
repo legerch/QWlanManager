@@ -42,6 +42,11 @@ bool Interface::isValid() const
     return !getUid().isNull();
 }
 
+bool Interface::isBusy() const
+{
+    return getState() != IfaceState::IFACE_STS_IDLE;
+}
+
 IfaceState Interface::getState() const
 {
     QMutexLocker locker(&d_ptr->m_mutex);

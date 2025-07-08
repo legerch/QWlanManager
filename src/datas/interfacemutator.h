@@ -2,6 +2,7 @@
 #define QWLANMAN_DATAS_INTERFACEMUTATOR_H
 
 #include "qwlanmanager/datas/interface.h"
+#include "requests/requestsqueue.h"
 
 #include <any>
 
@@ -34,6 +35,8 @@ public:
 
     void setCachePolicy(const CachePolicy &cachePolicy);
     CachePolicy& getCachePolicyRef();
+
+    RequestsQueue& getRequestsQueueRef();
 
     void setDataEngine(const std::any &data);
     const std::any& getDataEngine() const;

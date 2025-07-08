@@ -42,6 +42,7 @@ public:
 
 public:
     bool isValid() const;
+    bool isBusy() const;
 
     IfaceState getState() const;
     const QUuid& getUid() const;
