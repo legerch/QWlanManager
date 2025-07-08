@@ -19,10 +19,21 @@ namespace qwm
 /* Functions implementation  */
 /*****************************/
 
+Request::Request()
+    : Request(RequestType::REQ_INVALID)
+{
+    /* Nothing to do, use constructor delegation */
+}
+
 Request::Request(RequestType idReq, const QVariant &data)
     : m_type(idReq), m_data(data)
 {
     /* Nothing to do */
+}
+
+bool Request::isValid() const
+{
+    return m_type != RequestType::REQ_INVALID;
 }
 
 RequestType Request::getType() const

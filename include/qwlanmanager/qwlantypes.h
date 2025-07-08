@@ -45,7 +45,9 @@ namespace qwm
 
     enum class RequestType
     {
-        REQ_SCAN = 0,
+        REQ_INVALID = 0,
+
+        REQ_SCAN,
         REQ_CONNECT,
         REQ_DISCONNECT
     };

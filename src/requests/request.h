@@ -18,10 +18,13 @@ namespace qwm
 
 class Request
 {
-private:
+public:
+    Request();
     Request(RequestType idReq, const QVariant &data = QVariant());
 
 public:
+    bool isValid() const;
+
     RequestType getType() const;
     const QVariant& getData() const;
 

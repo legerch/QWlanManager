@@ -56,7 +56,7 @@ QString requestTypeToString(RequestType idReq)
         {RequestType::REQ_DISCONNECT, "disconnect"},
     };
 
-    return MAP_STR_REQS.value(idReq, "unknown");
+    return MAP_STR_REQS.value(idReq, "invalid");
 }
 
 QString ifaceStateToString(IfaceState idState)
