@@ -528,72 +528,20 @@ void EngineWinNative::interfaceScanFinished(const QUuid &idInterface, WlanError 
         result = interfaceNetworksUpdate(iface);
     }
 
-    /* Reset interface state */
-    InterfaceMutator miface(iface);
-    miface.setState(IfaceState::IFACE_STS_IDLE);
-
-    /* Send associated signals */
-    if(result == WlanError::WERR_NO_ERROR){
-        emit q_ptr->sScanSucceed(idInterface, iface.getListNetworks());
-
-    }else{
-        qCritical("Scan request has failed [uuid: %s, err: %s (%d)]",
-                  qUtf8Printable(idInterface.toString()),
-                  qUtf8Printable(wlanErrorToString(result)),
-                  result
-        );
-
-        emit q_ptr->sScanFailed(idInterface, result);
-    }
+    /* Manage end of request */
+    handleScanDone(iface, result);
 }
 
 void EngineWinNative::interfaceConnectionFinished(const QUuid &idInterface, const QString &ssid, WlanError result)
 {
-    /* Update interface properties */
     Interface iface = m_interfaces.value(idInterface);
-
-    InterfaceMutator miface(iface);
-    miface.setState(IfaceState::IFACE_STS_IDLE);
-
-    /* Send associated signals */
-    if(result == WlanError::WERR_NO_ERROR){
-        miface.setConnectedSsid(ssid);
-        emit q_ptr->sConnectionSucceed(idInterface, ssid);
-
-    }else{
-        qCritical("Connection request has failed [uuid: %s, ssid: %s, err: %s (%d)]",
-                  qUtf8Printable(idInterface.toString()),
-                  qUtf8Printable(ssid),
-                  qUtf8Printable(wlanErrorToString(result)),
-                  result
-        );
-
-        emit q_ptr->sConnectionFailed(idInterface, ssid, result);
-    }
+    handleConnectDone(iface, ssid, result);
 }
 
 void EngineWinNative::interfaceDisconnectionFinished(const QUuid &idInterface, WlanError result)
 {
-    /* Update interface properties */
     Interface iface = m_interfaces.value(idInterface);
-
-    InterfaceMutator miface(iface);
-    miface.setState(IfaceState::IFACE_STS_IDLE);
-
-    /* Send associated signals */
-    if(result == WlanError::WERR_NO_ERROR){
-        miface.setConnectedSsid();
-        emit q_ptr->sDisconnectionSucceed(idInterface);
-
-    }else{
-        qCritical("Disconnection request has failed [uuid: %s, err: %s (%d)]",
-                  qUtf8Printable(idInterface.toString()),
-                  qUtf8Printable(wlanErrorToString(result)),
-                  result
-        );
-
-        emit q_ptr->sDisconnectionFailed(idInterface, result);
-    }
+    handleDisconnectDone(iface, result);
 }
 
 void EngineWinNative::interfaceSignalQualityReceived(const QUuid &idInterface, uint percent)

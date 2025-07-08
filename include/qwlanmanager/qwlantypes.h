@@ -43,6 +43,18 @@ namespace qwm
 
     QWLANMAN_EXPORT QString wlanPermToString(WlanPerm idPerm);
 
+    enum class RequestType
+    {
+        REQ_INVALID = 0,
+
+        REQ_SCAN,
+        REQ_CONNECT,
+        REQ_DISCONNECT
+    };
+    Q_ENUM_NS(RequestType);
+
+    QWLANMAN_EXPORT QString requestTypeToString(RequestType idReq);
+
     enum class IfaceState
     {
         IFACE_STS_IDLE = 0,
@@ -53,6 +65,15 @@ namespace qwm
     Q_ENUM_NS(IfaceState);
 
     QWLANMAN_EXPORT QString ifaceStateToString(IfaceState idState);
+
+    enum IfaceOption
+    {
+        IFACE_OPT_NONE      = 0,
+
+        IFACE_OPT_REQUEST   = 1 << 0
+    };
+    Q_DECLARE_FLAGS(IfaceOptions, IfaceOption)
+    Q_FLAG_NS(IfaceOptions)
 
     enum class AuthAlgo
     {
@@ -97,6 +118,11 @@ inline uint qHash(qwm::WlanPerm key, uint seed = 0)
     return ::qHash(static_cast<std::underlying_type<qwm::WlanPerm>::type>(key), seed);
 }
 
+inline uint qHash(qwm::RequestType key, uint seed = 0)
+{
+    return ::qHash(static_cast<std::underlying_type<qwm::RequestType>::type>(key), seed);
+}
+
 inline uint qHash(qwm::IfaceState key, uint seed = 0)
 {
     return ::qHash(static_cast<std::underlying_type<qwm::IfaceState>::type>(key), seed);
@@ -119,5 +145,11 @@ inline uint qHash(qwm::CipherAlgo key, uint seed = 0)
 /*****************************/
 
 } // namespace qwm
+
+/*****************************/
+/* Qt specific meta-system   */
+/*****************************/
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(qwm::IfaceOptions)
 
 #endif // QWLANMAN_QWLANTYPES_H

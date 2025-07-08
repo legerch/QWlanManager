@@ -29,6 +29,8 @@ Interface::Interface()
 }
 
 Interface::Interface(const Interface &other) = default;
+Interface::Interface(Interface &&other) = default;
+
 Interface::~Interface() = default;
 
 bool Interface::isValid() const
@@ -40,10 +42,21 @@ bool Interface::isValid() const
     return !getUid().isNull();
 }
 
+bool Interface::isBusy() const
+{
+    return getState() != IfaceState::IFACE_STS_IDLE;
+}
+
 IfaceState Interface::getState() const
 {
     QMutexLocker locker(&d_ptr->m_mutex);
     return d_ptr->m_state;
+}
+
+IfaceOptions Interface::getOptions() const
+{
+    QMutexLocker locker(&d_ptr->m_mutex);
+    return d_ptr->m_opts;
 }
 
 const QUuid& Interface::getUid() const
@@ -99,7 +112,8 @@ Network Interface::getNetworkConnected() const
     return d_ptr->m_mapNets.value(d_ptr->m_connectedSsid);
 }
 
-Interface &Interface::operator=(const Interface &other) = default;
+Interface& Interface::operator=(const Interface &other) = default;
+Interface& Interface::operator=(Interface &&other) noexcept = default;
 
 bool Interface::operator==(const Interface &other) const
 {
@@ -141,7 +155,9 @@ QDebug operator<<(QDebug debug, const Interface &interface)
                     << "uid: " << interface.getUid() << ", "
                     << "hw address: " << interface.getHwAddress() << ", "
                     << "name: " << interface.getName() << ", "
-                    << "description: " << interface.getDescription() << ")";
+                    << "description: " << interface.getDescription() << ","
+                    << "options: " << interface.getOptions() << ","
+                    << "cache policy: " << interface.getCachePolicy() << ")";
     return debug;
 }
 

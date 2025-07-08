@@ -30,6 +30,8 @@ Network::Network()
 }
 
 Network::Network(const Network &other) = default;
+Network::Network(Network &&other) = default;
+
 Network::~Network() = default;
 
 bool Network::isValid() const
@@ -71,7 +73,8 @@ uint Network::getSignalQuality() const
     return d_ptr->m_signalQuality;
 }
 
-Network &Network::operator=(const Network &other) = default;
+Network& Network::operator=(const Network &other) = default;
+Network& Network::operator=(Network &&other) = default;
 
 bool Network::operator==(const Network &other) const
 {
@@ -112,7 +115,8 @@ QDebug operator<<(QDebug debug, const Network &net)
                     << "ssid: " << net.getSsid() << ", "
                     << "profile name: " << net.getProfileName() << ", "
                     << "auth algo: " << net.getAuthAlgo() << ", "
-                    << "cipher algo: " << net.getCipherAlgo() << ")";
+                    << "cipher algo: " << net.getCipherAlgo() << ","
+                    << "signal: " << net.getSignalQuality() << ")";
     return debug;
 }
 

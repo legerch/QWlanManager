@@ -47,6 +47,18 @@ QString wlanPermToString(WlanPerm idPerm)
     return MAP_STR_PERMISSIONS.value(idPerm, "unknown");
 }
 
+QString requestTypeToString(RequestType idReq)
+{
+    static const QHash<RequestType, QString> MAP_STR_REQS =
+    {
+        {RequestType::REQ_SCAN, "scan"},
+        {RequestType::REQ_CONNECT, "connect"},
+        {RequestType::REQ_DISCONNECT, "disconnect"},
+    };
+
+    return MAP_STR_REQS.value(idReq, "invalid");
+}
+
 QString ifaceStateToString(IfaceState idState)
 {
     static const QHash<IfaceState, QString> MAP_STR_IFACE_STS =

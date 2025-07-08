@@ -106,6 +106,9 @@ set(PROJECT_HEADERS_PRIVATE
     datas/interfacemutator.h
     datas/networkdata.h
     datas/networkmutator.h
+
+    requests/request.h
+    requests/requestsqueue.h
 )
 
 set(PROJECT_SOURCES
@@ -129,6 +132,9 @@ set(PROJECT_SOURCES
     datas/network.cpp
     datas/networkdata.cpp
     datas/networkmutator.cpp
+
+    requests/request.cpp
+    requests/requestsqueue.cpp
 )
 
 # Manage platform differences

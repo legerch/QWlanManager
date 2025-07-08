@@ -53,6 +53,22 @@ WlanError Manager::setCachePolicy(const QUuid &idInterface, const CachePolicy &c
     return WlanError::WERR_NO_ERROR;
 }
 
+WlanError Manager::setOptions(const QUuid &idInterface, IfaceOptions opts)
+{
+    /* Retrieve associated interface */
+    Interface iface = getInterface(idInterface);
+    if(!iface.isValid()){
+        qWarning("Unable to set options, unknown interface ID [uuid: %s]", qUtf8Printable(idInterface.toString()));
+        return WlanError::WERR_ITEM_INVALID;
+    }
+
+    /* Set options */
+    InterfaceMutator miface(iface);
+    miface.setOptions(opts);
+
+    return WlanError::WERR_NO_ERROR;
+}
+
 void Manager::doScan(const QUuid &idInterface)
 {
     /* Emit start signal */

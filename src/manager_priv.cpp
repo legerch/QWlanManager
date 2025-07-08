@@ -33,14 +33,18 @@ ManagerPrivate::~ManagerPrivate()
 void ManagerPrivate::interfaceScanNetworks(Interface interface)
 {
     /* Verify that interface can perform a scan */
-    if(interface.getState() != IfaceState::IFACE_STS_IDLE){
-        qWarning("Unable to perform scan, interface is busy [uuid: %s, state: %s (%d)]",
-                 qUtf8Printable(interface.getUid().toString()),
-                 qUtf8Printable(ifaceStateToString(interface.getState())),
-                 interface.getState()
-        );
+    if(interface.isBusy()){
+        if(interface.getOptions() & IFACE_OPT_REQUEST){
+            requestAdd(interface, Request::createReqScan());
+        }else{
+            qWarning("Unable to perform scan, interface is busy [uuid: %s, state: %s (%d)]",
+                     qUtf8Printable(interface.getUid().toString()),
+                     qUtf8Printable(ifaceStateToString(interface.getState())),
+                     interface.getState()
+            );
 
-        emit q_ptr->sScanFailed(interface.getUid(), WlanError::WERR_IFACE_BUSY);
+            emit q_ptr->sScanFailed(interface.getUid(), WlanError::WERR_IFACE_BUSY);
+        }
         return;
     }
 
@@ -48,7 +52,6 @@ void ManagerPrivate::interfaceScanNetworks(Interface interface)
     interfaceScanNetworksAsync(interface);
 }
 
-//TODO: enqueue connection request (because, performing connection during scan is undefined behaviour but hard to be out this window !)
 void ManagerPrivate::interfaceConnect(Interface interface, Network network, const QString &password)
 {
     /* Verify that interface is not already connected */
@@ -61,14 +64,18 @@ void ManagerPrivate::interfaceConnect(Interface interface, Network network, cons
     }
 
     /* Verify that interface can perform connection */
-    if(interface.getState() != IfaceState::IFACE_STS_IDLE){
-        qWarning("Unable to perform connection, interface is busy [uuid: %s, state: %s (%d)]",
-                 qUtf8Printable(interface.getUid().toString()),
-                 qUtf8Printable(ifaceStateToString(interface.getState())),
-                 interface.getState()
-        );
+    if(interface.isBusy()){
+        if(interface.getOptions() & IFACE_OPT_REQUEST){
+            requestAdd(interface, Request::createReqConnect(network, password));
+        }else{
+            qWarning("Unable to perform connection, interface is busy [uuid: %s, state: %s (%d)]",
+                     qUtf8Printable(interface.getUid().toString()),
+                     qUtf8Printable(ifaceStateToString(interface.getState())),
+                     interface.getState()
+            );
 
-        emit q_ptr->sConnectionFailed(interface.getUid(), network.getSsid(), WlanError::WERR_IFACE_BUSY);
+            emit q_ptr->sConnectionFailed(interface.getUid(), network.getSsid(), WlanError::WERR_IFACE_BUSY);
+        }
         return;
     }
 
@@ -88,14 +95,18 @@ void ManagerPrivate::interfaceDisconnect(Interface interface)
     }
 
     /* Verify that interface can perform disconnection */
-    if(interface.getState() != IfaceState::IFACE_STS_IDLE){
-        qWarning("Unable to perform disconnection, interface is busy [uuid: %s, state: %s (%d)]",
-                 qUtf8Printable(interface.getUid().toString()),
-                 qUtf8Printable(ifaceStateToString(interface.getState())),
-                 interface.getState()
-        );
+    if(interface.isBusy()){
+        if(interface.getOptions() & IFACE_OPT_REQUEST){
+            requestAdd(interface, Request::createReqDisconnect());
+        }else{
+            qWarning("Unable to perform disconnection, interface is busy [uuid: %s, state: %s (%d)]",
+                     qUtf8Printable(interface.getUid().toString()),
+                     qUtf8Printable(ifaceStateToString(interface.getState())),
+                     interface.getState()
+            );
 
-        emit q_ptr->sDisconnectionFailed(interface.getUid(), WlanError::WERR_IFACE_BUSY);
+            emit q_ptr->sDisconnectionFailed(interface.getUid(), WlanError::WERR_IFACE_BUSY);
+        }
         return;
     }
 
@@ -115,6 +126,127 @@ void ManagerPrivate::interfaceForget(Interface interface, Network network)
 
     /* Start forgot request */
     interfaceForgetAsync(interface, network);
+}
+
+void ManagerPrivate::handleScanDone(const Interface &interface, WlanError idErr)
+{
+    requestHandleDone(interface, [this, &interface, idErr]
+    {
+        const QUuid idInterface = interface.getUid();
+
+        if(idErr == WlanError::WERR_NO_ERROR){
+            emit q_ptr->sScanSucceed(idInterface, interface.getListNetworks());
+        }else{
+
+            qCritical("Scan request has failed [uuid: %s, err: %s (%d)]",
+                      qUtf8Printable(idInterface.toString()),
+                      qUtf8Printable(wlanErrorToString(idErr)),
+                      idErr
+            );
+
+            emit q_ptr->sScanFailed(idInterface, idErr);
+        }
+    });
+}
+
+void ManagerPrivate::handleConnectDone(const Interface &interface, const QString &ssid, WlanError idErr)
+{
+    requestHandleDone(interface, [this, &interface, &ssid, idErr]
+    {
+        const QUuid idInterface = interface.getUid();
+
+        if(idErr == WlanError::WERR_NO_ERROR){
+            InterfaceMutator miface(interface);
+            miface.setConnectedSsid(ssid);
+
+            emit q_ptr->sConnectionSucceed(idInterface, ssid);
+
+        }else{
+            qCritical("Connection request has failed [uuid: %s, ssid: %s, err: %s (%d)]",
+                      qUtf8Printable(idInterface.toString()),
+                      qUtf8Printable(ssid),
+                      qUtf8Printable(wlanErrorToString(idErr)),
+                      idErr
+            );
+
+            emit q_ptr->sConnectionFailed(idInterface, ssid, idErr);
+        }
+    });
+}
+
+void ManagerPrivate::handleDisconnectDone(const Interface &interface, WlanError idErr)
+{
+    requestHandleDone(interface, [this, &interface, idErr]
+    {
+        const QUuid idInterface = interface.getUid();
+
+        if(idErr == WlanError::WERR_NO_ERROR){
+            InterfaceMutator miface(interface);
+            miface.setConnectedSsid();
+
+            emit q_ptr->sDisconnectionSucceed(idInterface);
+
+        }else{
+            qCritical("Disconnection request has failed [uuid: %s, err: %s (%d)]",
+                      qUtf8Printable(idInterface.toString()),
+                      qUtf8Printable(wlanErrorToString(idErr)),
+                      idErr
+            );
+
+            emit q_ptr->sDisconnectionFailed(idInterface, idErr);
+        }
+    });
+}
+
+void ManagerPrivate::requestAdd(const Interface &interface, const Request &req)
+{
+    InterfaceMutator miface(interface);
+    RequestsQueue &reqsQueue = miface.getRequestsQueueRef();
+
+    reqsQueue.enqueue(req);
+}
+
+void ManagerPrivate::requestPerform(const Interface &interface, const Request &req)
+{
+    switch(req.getType())
+    {
+    case RequestType::REQ_SCAN:{
+        interfaceScanNetworks(interface);
+    }break;
+
+    case RequestType::REQ_CONNECT:{
+        const QVariantMap data = req.getData().toMap();
+        const Network net = data.value("network").value<Network>();
+        const QString passwd =  data.value("password").toString();
+
+        interfaceConnect(interface, net, passwd);
+    }break;
+
+    case qwm::RequestType::REQ_DISCONNECT:{
+        interfaceDisconnect(interface);
+    }break;
+
+    default: break;
+    }
+}
+
+void ManagerPrivate::requestHandleDone(const Interface &interface, std::function<void()> cbSignals)
+{
+    /* Reset interface state */
+    InterfaceMutator miface(interface);
+    miface.setState(IfaceState::IFACE_STS_IDLE);
+
+    /* Call associated signals */
+    cbSignals();
+
+    /* Do we have request in pending */
+    RequestsQueue &reqsQueue = miface.getRequestsQueueRef();
+    if(!reqsQueue.isEmpty()){
+        auto req = reqsQueue.dequeue();
+        if(req.has_value()){
+            requestPerform(interface, req.value());
+        }
+    }
 }
 
 /*****************************/

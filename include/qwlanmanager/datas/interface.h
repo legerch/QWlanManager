@@ -34,14 +34,19 @@ class QWLANMAN_EXPORT Interface
 
 public:
     Interface();
+
     Interface(const Interface &other);
+    Interface(Interface &&other);
 
     ~Interface();
 
 public:
     bool isValid() const;
+    bool isBusy() const;
 
     IfaceState getState() const;
+    IfaceOptions getOptions() const;
+
     const QUuid& getUid() const;
     const QString& getHwAddress() const;
     const QString& getName() const;
@@ -56,6 +61,7 @@ public:
 
 public:
     Interface& operator=(const Interface &other);
+    Interface& operator=(Interface &&other) noexcept;
 
 public:
     bool operator==(const Interface &other) const;
@@ -83,5 +89,11 @@ using MapInterfaces = QHash<QUuid, Interface>; /**< Key is interface UID */
 /*****************************/
 
 } // namespace qwm
+
+/*****************************/
+/* Qt specific meta-system   */
+/*****************************/
+
+Q_DECLARE_METATYPE(qwm::Interface)
 
 #endif // QWLANMAN_DATAS_INTERFACE_H
