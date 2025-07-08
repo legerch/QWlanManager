@@ -78,4 +78,10 @@ using MapNetworks = QHash<QString, Network>; /**< Key is network SSID */
 
 } // namespace qwm
 
+/*****************************/
+/* Qt specific meta-system   */
+/*****************************/
+
+Q_DECLARE_METATYPE(qwm::Network)
+
 #endif // QWLANMAN_DATAS_NETWORK_H

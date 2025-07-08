@@ -65,4 +65,10 @@ QWLANMAN_EXPORT QDebug operator<<(QDebug debug, const CachePolicy &policy);
 
 } // namespace qwm
 
+/*****************************/
+/* Qt specific meta-system   */
+/*****************************/
+
+Q_DECLARE_METATYPE(qwm::CachePolicy)
+
 #endif // QWLANMAN_CACHE_CACHEPOLICY_H

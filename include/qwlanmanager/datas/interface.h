@@ -84,4 +84,10 @@ using MapInterfaces = QHash<QUuid, Interface>; /**< Key is interface UID */
 
 } // namespace qwm
 
+/*****************************/
+/* Qt specific meta-system   */
+/*****************************/
+
+Q_DECLARE_METATYPE(qwm::Interface)
+
 #endif // QWLANMAN_DATAS_INTERFACE_H
