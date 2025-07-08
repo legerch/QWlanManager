@@ -35,7 +35,9 @@ class QWLANMAN_EXPORT Network
 
 public:
     Network();
+
     Network(const Network &other);
+    Network(Network &&other);
 
     ~Network();
 
@@ -50,6 +52,7 @@ public:
 
 public:
     Network& operator=(const Network &other);
+    Network& operator=(Network &&other);
 
 public:
     bool operator==(const Network &other) const;

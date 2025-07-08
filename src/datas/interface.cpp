@@ -29,6 +29,8 @@ Interface::Interface()
 }
 
 Interface::Interface(const Interface &other) = default;
+Interface::Interface(Interface &&other) = default;
+
 Interface::~Interface() = default;
 
 bool Interface::isValid() const
@@ -99,7 +101,8 @@ Network Interface::getNetworkConnected() const
     return d_ptr->m_mapNets.value(d_ptr->m_connectedSsid);
 }
 
-Interface &Interface::operator=(const Interface &other) = default;
+Interface& Interface::operator=(const Interface &other) = default;
+Interface& Interface::operator=(Interface &&other) noexcept = default;
 
 bool Interface::operator==(const Interface &other) const
 {

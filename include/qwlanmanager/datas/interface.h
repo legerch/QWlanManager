@@ -34,7 +34,9 @@ class QWLANMAN_EXPORT Interface
 
 public:
     Interface();
+
     Interface(const Interface &other);
+    Interface(Interface &&other);
 
     ~Interface();
 
@@ -56,6 +58,7 @@ public:
 
 public:
     Interface& operator=(const Interface &other);
+    Interface& operator=(Interface &&other) noexcept;
 
 public:
     bool operator==(const Interface &other) const;

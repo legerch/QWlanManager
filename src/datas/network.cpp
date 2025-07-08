@@ -30,6 +30,8 @@ Network::Network()
 }
 
 Network::Network(const Network &other) = default;
+Network::Network(Network &&other) = default;
+
 Network::~Network() = default;
 
 bool Network::isValid() const
@@ -71,7 +73,8 @@ uint Network::getSignalQuality() const
     return d_ptr->m_signalQuality;
 }
 
-Network &Network::operator=(const Network &other) = default;
+Network& Network::operator=(const Network &other) = default;
+Network& Network::operator=(Network &&other) = default;
 
 bool Network::operator==(const Network &other) const
 {
