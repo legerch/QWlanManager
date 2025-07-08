@@ -45,6 +45,8 @@ public:
     bool isBusy() const;
 
     IfaceState getState() const;
+    IfaceOptions getOptions() const;
+
     const QUuid& getUid() const;
     const QString& getHwAddress() const;
     const QString& getName() const;

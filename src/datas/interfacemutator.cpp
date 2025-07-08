@@ -34,6 +34,12 @@ void InterfaceMutator::setState(IfaceState idState)
     d_ptr->m_state = idState;
 }
 
+void InterfaceMutator::setOptions(IfaceOptions opts)
+{
+    QMutexLocker locker(&d_ptr->m_mutex);
+    d_ptr->m_opts = opts;
+}
+
 void InterfaceMutator::setUid(const QUuid &uid)
 {
     QMutexLocker locker(&d_ptr->m_mutex);

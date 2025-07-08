@@ -66,6 +66,15 @@ namespace qwm
 
     QWLANMAN_EXPORT QString ifaceStateToString(IfaceState idState);
 
+    enum IfaceOption
+    {
+        IFACE_OPT_NONE      = 0,
+
+        IFACE_OPT_REQUEST   = 1 << 0
+    };
+    Q_DECLARE_FLAGS(IfaceOptions, IfaceOption)
+    Q_FLAG_NS(IfaceOptions)
+
     enum class AuthAlgo
     {
         AUTH_ALGO_UNKNOWN = 0,
@@ -136,5 +145,11 @@ inline uint qHash(qwm::CipherAlgo key, uint seed = 0)
 /*****************************/
 
 } // namespace qwm
+
+/*****************************/
+/* Qt specific meta-system   */
+/*****************************/
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(qwm::IfaceOptions)
 
 #endif // QWLANMAN_QWLANTYPES_H

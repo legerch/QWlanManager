@@ -24,6 +24,7 @@ public:
 
 public:
     void setState(IfaceState idState);
+    void setOptions(IfaceOptions opts);
     void setUid(const QUuid &uid);
     void setHwAddress(const QString &hwAddr);
     void setHwAddress(const uchar *buffer, int lenBuffer);

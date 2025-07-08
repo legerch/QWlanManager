@@ -115,7 +115,8 @@ QDebug operator<<(QDebug debug, const Network &net)
                     << "ssid: " << net.getSsid() << ", "
                     << "profile name: " << net.getProfileName() << ", "
                     << "auth algo: " << net.getAuthAlgo() << ", "
-                    << "cipher algo: " << net.getCipherAlgo() << ")";
+                    << "cipher algo: " << net.getCipherAlgo() << ","
+                    << "signal: " << net.getSignalQuality() << ")";
     return debug;
 }
 

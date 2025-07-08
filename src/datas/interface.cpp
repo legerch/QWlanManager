@@ -53,6 +53,12 @@ IfaceState Interface::getState() const
     return d_ptr->m_state;
 }
 
+IfaceOptions Interface::getOptions() const
+{
+    QMutexLocker locker(&d_ptr->m_mutex);
+    return d_ptr->m_opts;
+}
+
 const QUuid& Interface::getUid() const
 {
     QMutexLocker locker(&d_ptr->m_mutex);
@@ -149,7 +155,9 @@ QDebug operator<<(QDebug debug, const Interface &interface)
                     << "uid: " << interface.getUid() << ", "
                     << "hw address: " << interface.getHwAddress() << ", "
                     << "name: " << interface.getName() << ", "
-                    << "description: " << interface.getDescription() << ")";
+                    << "description: " << interface.getDescription() << ","
+                    << "options: " << interface.getOptions() << ","
+                    << "cache policy: " << interface.getCachePolicy() << ")";
     return debug;
 }
 

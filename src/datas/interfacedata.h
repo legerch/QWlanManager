@@ -44,6 +44,7 @@ public:
     MapNetworks m_mapNets;
     QString m_connectedSsid;
 
+    IfaceOptions m_opts;
     CachePolicy m_cachePolicy;
 
     RequestsQueue m_reqsQueue;
