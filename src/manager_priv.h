@@ -51,6 +51,7 @@ protected:
     void handleDisconnectDone(const Interface &interface, WlanError idErr);
 
 private:
+    void requestAdd(const Interface &interface, const Request &req);
     void requestPerform(const Interface &interface, const Request &req);
     void requestHandleDone(const Interface &interface, std::function<void()> cbSignals);
 
