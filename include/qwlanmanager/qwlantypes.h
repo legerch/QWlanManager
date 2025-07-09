@@ -4,6 +4,7 @@
 #include "qwlanman_global.h"
 
 #include <QObject>
+#include <QVersionNumber>
 
 /*****************************/
 /* Namespace instructions    */
@@ -12,6 +13,10 @@
 namespace qwm
 {
     Q_NAMESPACE_EXPORT(QWLANMAN_EXPORT)
+
+/*****************************/
+/* Library types             */
+/*****************************/
 
     enum class WlanError
     {
@@ -101,6 +106,12 @@ namespace qwm
     Q_ENUM_NS(CipherAlgo);
 
     QWLANMAN_EXPORT QString cipherAlgoToString(CipherAlgo idCipher);
+
+/*****************************/
+/* Library methods           */
+/*****************************/
+
+    QWLANMAN_EXPORT QVersionNumber getLibraryVersion();
 
 /*****************************/
 /* Qt related methods        */

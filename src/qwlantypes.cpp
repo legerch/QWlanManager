@@ -98,6 +98,11 @@ QString cipherAlgoToString(CipherAlgo idCipher)
     return MAP_STR_CIPHER.value(idCipher, "Unknown cipher algorithm");
 }
 
+QVersionNumber getLibraryVersion()
+{
+    return QVersionNumber(QWLANMAN_VERSION_MAJOR, QWLANMAN_VERSION_MINOR, QWLANMAN_VERSION_PATCH);
+}
+
 /*****************************/
 /* Functions implementation  */
 /*****************************/
