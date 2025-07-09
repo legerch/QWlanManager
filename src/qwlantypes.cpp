@@ -6,6 +6,13 @@
 /* Class documentations      */
 /*****************************/
 
+/*!
+ * \namespace qwm
+ * \brief Namespace used for \b QWlanManager library
+ *
+ * \sa getLibraryVersion()
+ */
+
 /*****************************/
 /* Signals documentations    */
 /*****************************/
@@ -17,6 +24,16 @@
 namespace qwm
 {
 
+/*!
+ * \brief Use to convert wlan errors to string.
+ *
+ * \param[in] idErr
+ * Error ID to convert. \n
+ * If unknown, string "unknown error" will be returned.
+ *
+ * \return
+ * Returns string equivalent.
+ */
 QString wlanErrorToString(WlanError idErr)
 {
     static const QHash<WlanError, QString> MAP_STR_ERR =
@@ -35,6 +52,16 @@ QString wlanErrorToString(WlanError idErr)
     return MAP_STR_ERR.value(idErr, "unknown error");
 }
 
+/*!
+ * \brief Use to convert wlan permissions to string.
+ *
+ * \param[in] idPerm
+ * Permission ID to convert. \n
+ * If unknown, string "unknown" will be returned.
+ *
+ * \return
+ * Returns string equivalent.
+ */
 QString wlanPermToString(WlanPerm idPerm)
 {
     static const QHash<WlanPerm, QString> MAP_STR_PERMISSIONS =
@@ -47,6 +74,16 @@ QString wlanPermToString(WlanPerm idPerm)
     return MAP_STR_PERMISSIONS.value(idPerm, "unknown");
 }
 
+/*!
+ * \brief Use to convert request type to string.
+ *
+ * \param[in] idReq
+ * Request ID to convert. \n
+ * If unknown or invalid, string "invalid" will be returned.
+ *
+ * \return
+ * Returns string equivalent.
+ */
 QString requestTypeToString(RequestType idReq)
 {
     static const QHash<RequestType, QString> MAP_STR_REQS =
@@ -59,6 +96,16 @@ QString requestTypeToString(RequestType idReq)
     return MAP_STR_REQS.value(idReq, "invalid");
 }
 
+/*!
+ * \brief Use to convert interface states to string.
+ *
+ * \param[in] idState
+ * State ID to convert. \n
+ * If unknown, string "unknown state" will be returned.
+ *
+ * \return
+ * Returns string equivalent.
+ */
 QString ifaceStateToString(IfaceState idState)
 {
     static const QHash<IfaceState, QString> MAP_STR_IFACE_STS =
@@ -71,6 +118,16 @@ QString ifaceStateToString(IfaceState idState)
     return MAP_STR_IFACE_STS.value(idState, "unknown state");
 }
 
+/*!
+ * \brief Use to convert authentication algorithms to string.
+ *
+ * \param[in] idAuth
+ * Authentication algorithm ID to convert. \n
+ * If unknown, string "Unknown authentication algorithm" will be returned.
+ *
+ * \return
+ * Returns string equivalent.
+ */
 QString authAlgoToString(AuthAlgo idAuth)
 {
     static const QHash<AuthAlgo, QString> MAP_STR_AUTH =
@@ -85,6 +142,16 @@ QString authAlgoToString(AuthAlgo idAuth)
     return MAP_STR_AUTH.value(idAuth, "Unknown authentication algorithm");
 }
 
+/*!
+ * \brief Use to convert cipher algorithms to string.
+ *
+ * \param[in] idCipher
+ * Cipher algorithm ID to convert. \n
+ * If unknown, string "Unknown cipher algorithm" will be returned.
+ *
+ * \return
+ * Returns string equivalent.
+ */
 QString cipherAlgoToString(CipherAlgo idCipher)
 {
     static const QHash<CipherAlgo, QString> MAP_STR_CIPHER =
@@ -98,6 +165,13 @@ QString cipherAlgoToString(CipherAlgo idCipher)
     return MAP_STR_CIPHER.value(idCipher, "Unknown cipher algorithm");
 }
 
+/*!
+ * \brief Used to retrieve \b QWlanManager library
+ * version.
+ *
+ * \return
+ * Returns semantic version of the library.
+ */
 QVersionNumber getLibraryVersion()
 {
     return QVersionNumber(QWLANMAN_VERSION_MAJOR, QWLANMAN_VERSION_MINOR, QWLANMAN_VERSION_PATCH);

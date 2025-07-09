@@ -15,7 +15,7 @@
  * Library informations
  *********************************/
 #define QWLANMAN_INFO_ID     "@PROJECT_NAME@"
-#define QWLANMAN_INFO_NAME   "@PROJECT_NAME_READABLE@"
+#define QWLANMAN_INFO_NAME   "@PRJ_READABLE_NAME@"
 
 /**********************************
  * Version management

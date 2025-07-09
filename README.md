@@ -8,137 +8,143 @@ Allow to manage WLAN interfaces and network easily without worrying about OS dep
 > - etc...
 
 **Table of contents :**
-- [1. Requirements](#1-requirements)
-  - [1.1. C++ Standards](#11-c-standards)
-  - [1.2. Dependencies](#12-dependencies)
-- [2. How to build](#2-how-to-build)
-  - [2.1. CMake usage](#21-cmake-usage)
-  - [2.2. CMake options](#22-cmake-options)
-- [3. How to use](#3-how-to-use)
-  - [3.1. A custom section](#31-a-custom-section)
-  - [3.2. Library version](#32-library-version)
-    - [3.2.1. Compilation time](#321-compilation-time)
-    - [3.2.2. Runtime](#322-runtime)
-- [4. Library details](#4-library-details)
-  - [4.1. Features](#41-features)
-  - [4.2. Supported OSes](#42-supported-oses)
+- [1. Library details](#1-library-details)
+  - [1.1. Features](#11-features)
+  - [1.2. Supported platforms](#12-supported-platforms)
+- [2. Requirements](#2-requirements)
+  - [2.1. C++ Standards](#21-c-standards)
+  - [2.2. Dependencies](#22-dependencies)
+- [3. How to build](#3-how-to-build)
+  - [3.1. CMake usage](#31-cmake-usage)
+  - [3.2. CMake options](#32-cmake-options)
+- [4. How to use](#4-how-to-use)
+  - [4.1. Usage](#41-usage)
+  - [4.2. Library version](#42-library-version)
+    - [4.2.1. Compatibility](#421-compatibility)
+    - [4.2.2. Compilation time](#422-compilation-time)
+    - [4.2.3. Runtime](#423-runtime)
 - [5. Documentation](#5-documentation)
 - [6. License](#6-license)
 
-# 1. Requirements
-## 1.1. C++ Standards
+# 1. Library details
+## 1.1. Features
+
+This cross-platform library allow to control interfaces operations (_perform a scan, connect to a network, etc..._) and manage all related events through the class `qwm::Manager`. Main features of the library are:
+- Asynchrone operations: no blocking operations, all event-driven
+- Interfaces added or removed are detected
+- UTF-8 networks are supported
+- Datas classes are **QML** compatible
+- Implicit shared datas (via `shared_ptr`) reducing number of copies (passing by _value_ is cheap)
+- Library is thread-safe, no need for external synchronisation management
+- Allow to manage permissions of the _Operating System:_ some OSes required **Wlan related authorizations**. Class `qwm::Permissions` will help to manage those.
+- Allow to enable/disable a _cache feature:_ Some OSes can return a partial scan, it doesn't fail but will be partial (_due to hardware error, wrong timing, etc..._). Having a cache can help to smooth the list of network management
+- Allow to enable/disable a _request feature:_ Performing interface operations in the same time (like a connection during a scan, a scan during connection, etc...) can trigger an unexpected behaviour. Request feature allow to queue those operations.
+
+What the library **doesn't** support (yet!):
+- WPA2/WPA3 enterprise networks
+- _Hidden networks_ are ignored
+- _Peer-to-peer/ad-hoc networks_ are ignored
+
+## 1.2. Supported platforms
+
+One OS can have multiple backend or differ according to the OS version used, this table will reflect those differences:
+
+| OS | Backend engine | Permissions backend | Status | Comments |
+|:-:|:-:|:-:|:-:|:-:|
+| Windows 7/8 | [WlanAPI][windows-wlanapi]<br>[IpHlpAPI][windows-iphlpapi] | 🚫 | ✅ | Custom _CMake options_ [`QWLANMANAGER_WINDOWS_COMPAT_PREWIN10`][anchor-cmake-opts] required |
+| Windows 10/11 | [WlanAPI][windows-wlanapi]<br>[IpHlpAPI][windows-iphlpapi] | [WinRT][windows-runtime]<br>(via [AppCapabilityAccess][windows-runtime-perms]) | ✅ | Package `cppwinrt` required for _permissions backend_ |
+| Windows 11 | [WinRT][windows-runtime]<br>(via [WifiAdapter][windows-runtime-perms]) | [WinRT][windows-runtime]<br>(via [AppCapabilityAccess][windows-runtime-perms]) | 🕚 | Package `cppwinrt` required for _wifi and permissions backend_ |
+| MacOS | [CoreWlan][mac-corewlan] | ❓ | 📝 | / |
+| Linux | NetworkManager | ❓ | 🕚 | / |
+
+> [!NOTE]
+> Legends:
+> - 🚫: No support on native API
+> - 🕚: Planned
+> - 📝: In progress
+> - ✅: Complete support
+
+# 2. Requirements
+## 2.1. C++ Standards
 
 This library requires at least **C++ 17** standard
 
-## 1.2. Dependencies
+## 2.2. Dependencies
 
 Below, list of required dependencies:
 
 | Dependencies | VCPKG package | Comments |
 |:-:|:-:|:-:|
 | [Qt][qt-official] | / | Library built with **Qt framework** |
-| [Google Tests][gtest-repo] | `gtest` | Only needed to run unit-tests |
+| Native APIs | / | Please refer to section [supported platform][anchor-platforms] for more details |
 
+> [!NOTE]
 > Dependency manager [VCPKG][vcpkg-tutorial] is not mandatory, this is only a note to be able to list needed packages
 
-# 2. How to build
-## 2.1. CMake usage
+# 3. How to build
+## 3.1. CMake usage
+
 This library can be use as an _embedded library_ in a subdirectory of your project (like a _git submodule_ for example) :
 1. In the **root** CMakeLists, add instructions :
 ```cmake
-add_subdirectory(qwlanmanager) # Or if library is put in a folder "dependencies" : add_subdirectory(dependencies/qwlanmanager)
+add_subdirectory(qwlanmanager) # Or if library is put in a folder "dependencies": add_subdirectory(dependencies/qwlanmanager)
 ```
 
-1. In the **application/library** CMakeLists, add instructions :
+2. In the **application/library** CMakeLists, add instructions :
 ```cmake
 # Link needed libraries
 target_link_libraries(${PROJECT_NAME} PRIVATE qwlanmanager)
 ```
 
-## 2.2. CMake options
+## 3.2. CMake options
 
-This library provide some build options:
-- `QWLANMANAGER_WINDOWS_COMPAT_PREWIN10` (default: `OFF`) : Use this option to enable compatibility with Windows version earlier than _Windows 10_. Enabling this option will disable some features in order to keep compatibility, so better to disable it for Windows 10 and newer. Internally, this is due to the missing support of _C++/WinRT_ library, impacted features will be :
-  - `qwm:Permissions` : no support for permissions control, each permissions method will use a _mock_ version, allowing users of the library to not have to make distinction code, permissions will simply return an _unknown status_.
+This library provide some **CMake** build options:
+- `QWLANMANAGER_WINDOWS_COMPAT_PREWIN10` (default: `OFF`): Use this option to enable compatibility with Windows version earlier than _Windows 10_. Enabling this option will disable some features in order to keep compatibility, so better to disable it for Windows 10 and newer. Internally, this is due to the missing support of _C++/WinRT_ library, impacted features will be :
+  - `qwm:Permissions`: no support for permissions control, each permissions method will use a _mock_ version, allowing users of the library to not have to make distinction code, permissions will simply return an _unknown status_.
 
-# 3. How to use
-## 3.1. A custom section
+# 4. How to use
+## 4.1. Usage
 
-To use it, you must refer to the `QWlanManager` class, which is responsible of WLAN management for each OS.
+Please refer to `qwm::Manager` class documentation for more details.
 
-## 3.2. Library version
-### 3.2.1. Compilation time
+## 4.2. Library version
+### 4.2.1. Compatibility
 
-In order to easily check at compilation time library version (to manage compatibility between multiple versions for example), macro `LIBRARYNAME_VERSION_ENCODE` (defined inside _libraryglobal.h_ file) can be used:
+This library use the [PImpl Idiom][pimpl-doc-cpp] in order to preserve _ABI compatibility_ (_Qt wiki_ also have a [great tutorial on the PImpl idiom][pimpl-doc-qt]).  
+So only **major** release (this project use the [semantic versioning][semver-home]) _should_ break the ABI.
+
+### 4.2.2. Compilation time
+
+In order to easily check at compilation time library version (to manage compatibility between multiple versions for example), macro `QWLANMAN_VERSION_ENCODE` (defined inside _qwlanman_global.h_ file) can be used:
 ```cpp
-#if LIBRARYNAME_VERSION >= LIBRARYNAME_VERSION_ENCODE(2,0,0)
+#if QWLANMAN_VERSION >= QWLANMAN_VERSION_ENCODE(2,0,0)
     // Do stuff for version 2.0.0 or higher
 #else
     // Do stuff for earlier versions
 #endif
 ```
 
-### 3.2.2. Runtime
+### 4.2.3. Runtime
 
-At runtime, it is recommended to use the static method:
+Since library header used during final application build could differ from the actual library version, it is recommended to use the method:
 ```cpp
-#include "libname/myclass.h"
+#include "qwlanmanager/qwlantypes.h"
 
-const QVersionNumber &libSemver = libnamespace::MyClass::getLibraryVersion();
+const QVersionNumber libSemver = qwm::getLibraryVersion();
 ```
-
-# 4. Library details
-## 4.1. Features
-
-// TODO: add more details and unsupported features
-
-- UT8 SSID based supported
-- Asynchrone operations
-- Detect added/removed interfaces
-- Thread-safe
-- QML compatible
-- Permission supported : explain in which case, even when using Windows Native API, we still need WinRT (winnative required for windows version earlier than Windows 10 (10.0.10240.0) and still compatible with later, except that since Windows 11 24H2, winnative required location permission to be granted (permission that we can check programmatically only via WinRT api))
-- Implicit shared
-- Cache feature
-- Queue request
-
-Currently not supported :
-- hidden networks
-- enterprise WPA2/3 networks
-- Ad-hoc (peer-to-peer / independant) not supported, only infrastured-based supported
-- On Windows, newer WINRT wlan related API not supported (yet !)
-
-Tmp notes :
-- Winrt permission introduced in :
-  - Windows 10, version 1903 (introduced in 10.0.18362.0)
-  - https://learn.microsoft.com/en-us/uwp/api/windows.security.authorization.appcapabilityaccess.appcapabilityaccessstatus?view=winrt-26100
-- WinRT wlanapi introduced in :
-
-
-## 4.2. Supported OSes
-
-| OS | Support |
-|:-:|:-:|
-| Windows | :white_check_mark: |
-| MacOS | :clock11: |
-| Linux | :clock11: |
-
-> Syntax:
-> - :white_check_mark: Supported
-> - :clock11: Planned but no current implementation
-> - :x: Not planned
 
 # 5. Documentation
 
-All classes/methods has been documented with [Doxygen][doxygen-official] utility and automatically generated at [online website documentation][example-doc-web].
+All classes/methods has been documented with [Doxygen][doxygen-official] utility and automatically generated at [online website documentation][repo-doc-web].
+
+> [!NOTE]
+> This repository contains two kinds of documentation:
+> - **Public API:** Available via [online website documentation][repo-doc-web] or locally via Doxyfile `docs/fragments/Doxyfile-public-api.in`
+> - **Internal:** Available locally only via `docs/fragments/Doxyfile-internal.in`
 
 To generate documentation locally, we can use:
 ```shell
-# Run documentation generation
-doxygen ./Doxyfile
-
-# Under Windows OS, maybe doxygen is not added to the $PATH
-"C:\Program Files\doxygen\bin\doxygen.exe" ./Doxyfile
+doxygen ./docs/fragments/Doxyfile-name
 ```
 > [!TIP]
 > You can also load the _Doxyfile_ into _Doxywizard_ (Doxygen GUI) and run generation.
@@ -147,15 +153,30 @@ doxygen ./Doxyfile
 
 This library is licensed under [MIT license][repo-license].
 
+<!-- Anchor of this page -->
+[anchor-platforms]: #12-supported-platforms
+[anchor-cmake-opts]: #32-cmake-options
+
 <!-- Links of this repository -->
+[repo-doc-web]: https://legerch.github.io/QWlanManager/
 [repo-license]: LICENSE
 
 <!-- External links -->
 [doxygen-official]: https://www.doxygen.nl/index.html
 [example-doc-web]: https://www.google.com/
-[gtest-repo]: https://github.com/google/googletest
 
 [qt-official]: https://www.qt.io/
-[qt-installer]: https://www.qt.io/download-qt-installer
 
 [vcpkg-tutorial]: https://github.com/legerch/develop-memo/tree/master/Toolchains/Build%20systems/VCPKG
+
+[semver-home]: https://semver.org
+[pimpl-doc-cpp]: https://en.cppreference.com/w/cpp/language/pimpl
+[pimpl-doc-qt]: https://wiki.qt.io/D-Pointer
+
+[mac-corewlan]: https://developer.apple.com/documentation/corewlan
+
+[windows-wlanapi]: https://docs.microsoft.com/en-us/windows/win32/api/wlanapi/
+[windows-iphlpapi]: https://learn.microsoft.com/en-us/windows/win32/api/iphlpapi/
+[windows-runtime]: https://learn.microsoft.com/en-us/windows/uwp/cpp-and-winrt-apis/intro-to-using-cpp-with-winrt
+[windows-runtime-perms]: https://learn.microsoft.com/en-us/uwp/api/windows.security.authorization.appcapabilityaccess?view=winrt-26100
+[windows-runtime-wifi]: https://learn.microsoft.com/fr-fr/uwp/api/windows.devices.wifi.wifiadapter?view=winrt-26100
