@@ -1,4 +1,4 @@
-Allow to manage WLAN interfaces and network easily without worrying about OS dependencies.
+[QWlanManager][repo-home] is a Qt library allowing to manage WLAN interfaces and network easily without worrying about OS dependencies.
 
 > [!TIP]
 > Latest development/pull requests will be committed into `main` branch.  
@@ -30,7 +30,7 @@ Allow to manage WLAN interfaces and network easily without worrying about OS dep
 ## 1.1. Features
 
 This cross-platform library allow to control interfaces operations (_perform a scan, connect to a network, etc..._) and manage all related events through the class `qwm::Manager`. Main features of the library are:
-- Asynchrone operations: no blocking operations, all event-driven
+- Asynchronous operations: no blocking operations, all event-driven
 - Interfaces added or removed are detected
 - UTF-8 networks are supported
 - Datas classes are **QML** compatible
@@ -51,7 +51,7 @@ One OS can have multiple backend or differ according to the OS version used, thi
 
 | OS | Backend engine | Permissions backend | Status | Comments |
 |:-:|:-:|:-:|:-:|:-:|
-| Windows 7/8 | [WlanAPI][windows-wlanapi]<br>[IpHlpAPI][windows-iphlpapi] | 🚫 | ✅ | Custom _CMake options_ [`QWLANMANAGER_WINDOWS_COMPAT_PREWIN10`][anchor-cmake-opts] required |
+| Windows 7/8 | [WlanAPI][windows-wlanapi]<br>[IpHlpAPI][windows-iphlpapi] | 🚫 | ✅ | Custom _CMake options_ [`QWLANMANAGER_WINDOWS_COMPAT_PREWIN10`][anchor-cmake-opts] required<br>**Qt5.15** will be needed for those platforms (Qt6 isn't compatible with those) |
 | Windows 10/11 | [WlanAPI][windows-wlanapi]<br>[IpHlpAPI][windows-iphlpapi] | [WinRT][windows-runtime]<br>(via [AppCapabilityAccess][windows-runtime-perms]) | ✅ | Package `cppwinrt` required for _permissions backend_ |
 | Windows 11 | [WinRT][windows-runtime]<br>(via [WifiAdapter][windows-runtime-perms]) | [WinRT][windows-runtime]<br>(via [AppCapabilityAccess][windows-runtime-perms]) | 🕚 | Package `cppwinrt` required for _wifi and permissions backend_ |
 | MacOS | [CoreWlan][mac-corewlan] | ❓ | 📝 | / |
@@ -75,7 +75,7 @@ Below, list of required dependencies:
 
 | Dependencies | VCPKG package | Comments |
 |:-:|:-:|:-:|
-| [Qt][qt-official] | / | Library built with **Qt framework** |
+| [Qt][qt-official] | / | Compatible with **Qt6.x**<b>Compatible with **Qt5.15.x** |
 | Native APIs | / | Please refer to section [supported platform][anchor-platforms] for more details |
 
 > [!NOTE]
@@ -158,6 +158,7 @@ This library is licensed under [MIT license][repo-license].
 [anchor-cmake-opts]: #32-cmake-options
 
 <!-- Links of this repository -->
+[repo-home]: https://github.com/legerch/QWlanManager
 [repo-doc-web]: https://legerch.github.io/QWlanManager/
 [repo-license]: LICENSE
 
