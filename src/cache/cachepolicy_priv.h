@@ -1,7 +1,7 @@
 #ifndef QWLANMAN_CACHE_CACHEPOLICY_PRIV_H
 #define QWLANMAN_CACHE_CACHEPOLICY_PRIV_H
 
-#include <QtTypes>
+#include <QtGlobal> // The day we drop Qt5, this include could be replaced by <QtTypes>
 
 /*****************************/
 /* Namespace instructions    */

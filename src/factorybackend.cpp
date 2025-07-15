@@ -40,6 +40,10 @@ namespace qwm
 
 std::unique_ptr<ManagerPrivate> FactoryBackend::createEngine(Manager *parent)
 {
+    /* Register custom types to Qt */
+    registerTypesQt();
+
+    /* Create engine backend */
 #if defined(Q_OS_WINDOWS)
     qDebug("Use engine \"Windows Native\"");
     return std::make_unique<EngineWinNative>(parent);
@@ -73,6 +77,22 @@ std::unique_ptr<PermissionsPrivate> FactoryBackend::createPermissions(Permission
 #else
     qDebug("Use permissions \"Mock\"");
     return std::make_unique<PermissionsMock>(parent);
+#endif
+}
+
+void FactoryBackend::registerTypesQt()
+{
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    static bool isInit = false;
+    if(!isInit){
+        isInit = true;
+
+        qRegisterMetaType<qwm::ListInterfaces>("ListInterfaces");
+        qRegisterMetaType<qwm::MapInterfaces>("MapInterfaces");
+
+        qRegisterMetaType<qwm::ListNetworks>("ListNetworks");
+        qRegisterMetaType<qwm::MapNetworks>("MapNetworks");
+    }
 #endif
 }
 

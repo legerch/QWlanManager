@@ -112,7 +112,7 @@
  * Qt Compatibility workaround
  *********************************/
 
- #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #   define QWLANMAN_QTCOMPAT_VARIANT_TYPE(var)    (var.type())
 #else
 #   define QWLANMAN_QTCOMPAT_VARIANT_TYPE(var)    (var.metaType())
