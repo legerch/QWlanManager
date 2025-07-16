@@ -106,6 +106,7 @@ set(PROJECT_HEADERS_PRIVATE
     factorybackend.h
     manager_priv.h
     permissions_priv.h
+    qwlanhelper.h
 
     backend/mock/enginemock.h
     backend/mock/permissionsmock.h
@@ -128,6 +129,7 @@ set(PROJECT_SOURCES
     manager_priv.cpp
     permissions.cpp
     permissions_priv.cpp
+    qwlanhelper.cpp
     qwlantypes.cpp
 
     backend/mock/enginemock.cpp

@@ -3,7 +3,7 @@
 #include <QHash>
 
 /*****************************/
-/* Class documentations      */
+/* Namespace documentations  */
 /*****************************/
 
 /*!
@@ -23,6 +23,10 @@
 
 namespace qwm
 {
+
+/*****************************/
+/* Functions implementation  */
+/*****************************/
 
 /*!
  * \brief Use to convert wlan errors to string.
@@ -176,10 +180,6 @@ QVersionNumber getLibraryVersion()
 {
     return QVersionNumber(QWLANMAN_VERSION_MAJOR, QWLANMAN_VERSION_MINOR, QWLANMAN_VERSION_PATCH);
 }
-
-/*****************************/
-/* Functions implementation  */
-/*****************************/
 
 /*****************************/
 /* End namespace             */
