@@ -44,7 +44,7 @@ void EngineMock::terminate()
 void EngineMock::interfaceListRefresh()
 {
     /* Reset list of interfaces */
-    m_interfaces.clear();
+    m_currentIfaces.clear();
 
     /* Fill with mock values */
     Interface iface1;
@@ -62,8 +62,8 @@ void EngineMock::interfaceListRefresh()
     miface2.setDescription("Example of adapter 2");
 
     /* Add interface to map */
-    m_interfaces.insert(iface1.getUid(), iface1);
-    m_interfaces.insert(iface2.getUid(), iface2);
+    m_currentIfaces.insert(iface1.getUid(), iface1);
+    m_currentIfaces.insert(iface2.getUid(), iface2);
 }
 
 void EngineMock::interfaceScanNetworksAsync(Interface interface)

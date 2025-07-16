@@ -250,7 +250,7 @@ Manager::Manager(QObject *parent) :
     d_ptr(FactoryBackend::createEngine(this))
 {
     d_ptr->initialize();
-    d_ptr->interfaceListRefresh();
+    d_ptr->interfaceListUpdate();
 }
 
 Manager::~Manager()
@@ -485,7 +485,7 @@ void Manager::doForget(const QUuid &idInterface, const QString &ssid)
  */
 ListInterfaces Manager::getInterfaces() const
 {
-    return d_ptr->m_interfaces.values();
+    return d_ptr->m_currentIfaces.values();
 }
 
 /*!
@@ -503,7 +503,7 @@ ListInterfaces Manager::getInterfaces() const
  */
 Interface Manager::getInterface(const QUuid &idInterface) const
 {
-    return d_ptr->m_interfaces.value(idInterface);
+    return d_ptr->m_currentIfaces.value(idInterface);
 }
 
 /*****************************/

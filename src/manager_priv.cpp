@@ -30,6 +30,19 @@ ManagerPrivate::~ManagerPrivate()
     /* Nothing to do */
 }
 
+void ManagerPrivate::interfaceListUpdate()
+{
+    /* Prepare list of interfaces */
+    m_prevIfaces = m_currentIfaces;
+    m_currentIfaces.clear();
+
+    /* Fill list of interfaces */
+    interfaceListRefresh();
+
+    /* Manage interfaces events */
+    handleInterfacesListUpdateDone();
+}
+
 void ManagerPrivate::interfaceScanNetworks(Interface interface)
 {
     /* Verify that interface can perform a scan */
@@ -126,6 +139,33 @@ void ManagerPrivate::interfaceForget(Interface interface, Network network)
 
     /* Start forgot request */
     interfaceForgetAsync(interface, network);
+}
+
+void ManagerPrivate::handleInterfacesListUpdateDone()
+{
+    /* Do we need to manage events */
+    if(m_prevIfaces.isEmpty()){
+        return;
+    }
+
+    /* Retrieve keys allowing to perform comparaisons */
+    const auto newIds = QSet<QUuid>(m_currentIfaces.keyBegin(), m_currentIfaces.keyEnd());
+    const auto oldIds = QSet<QUuid>(m_prevIfaces.keyBegin(), m_prevIfaces.keyEnd());
+
+    /* Do interfaces has been added ? */
+    const QSet<QUuid> setAdded = newIds - oldIds;
+    for(auto it = setAdded.cbegin(); it != setAdded.cend(); ++it){
+        emit q_ptr->sInterfaceAdded(m_currentIfaces.value(*it));
+    }
+
+    /* Do interfaces has been removed ? */
+    const QSet<QUuid> setRemoved = oldIds - newIds;
+    for(auto it = setRemoved.cbegin(); it != setRemoved.cend(); ++it){
+        emit q_ptr->sInterfaceRemoved(m_prevIfaces.value(*it));
+    }
+
+    /* Clear previous interfaces references */
+    m_prevIfaces.clear();
 }
 
 void ManagerPrivate::handleScanDone(const Interface &interface, WlanError idErr)

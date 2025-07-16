@@ -88,10 +88,6 @@ void EngineWinNative::interfaceListRefresh()
     DWORD res = 0;
     int nbTrials = 0;
 
-    /* Prepare list of interfaces */
-    MapInterfaces prevIfaces = m_interfaces;
-    m_interfaces.clear();
-
     /* Retrieve interfaces list */
     do{
         // Allocate memory fo adapter list
@@ -136,8 +132,8 @@ void EngineWinNative::interfaceListRefresh()
         const QUuid uid = QUuid(pAdapter->AdapterName);
 
         Interface iface;
-        if(prevIfaces.contains(uid)){
-            iface = prevIfaces.value(uid);
+        if(m_prevIfaces.contains(uid)){
+            iface = m_prevIfaces.value(uid);
 
         // Register an interface
         }else{
@@ -149,11 +145,8 @@ void EngineWinNative::interfaceListRefresh()
             miface.setDescription(desc);
         }
 
-        m_interfaces.insert(iface.getUid(), iface);
+        m_currentIfaces.insert(iface.getUid(), iface);
     }
-
-    /* Manage interface events */
-    interfaceListHandleEvents(prevIfaces, m_interfaces);
 
 stat_free:
     free(listAdapters);
@@ -335,30 +328,6 @@ bool EngineWinNative::interfaceIsVirtual(const QString &description)
         || description.contains("vmware", Qt::CaseInsensitive);
 }
 
-void EngineWinNative::interfaceListHandleEvents(const MapInterfaces &oldMap, const MapInterfaces &newMap)
-{
-    /* Do we need to manage events */
-    if(oldMap.size() == 0){
-        return;
-    }
-
-    /* Retrieve keys allowing to perform comparaisons */
-    const auto newIds = QSet<QUuid>(newMap.keyBegin(), newMap.keyEnd());
-    const auto oldIds = QSet<QUuid>(oldMap.keyBegin(), oldMap.keyEnd());
-
-    /* Do interfaces has been added ? */
-    const QSet<QUuid> setAdded = newIds - oldIds;
-    for(auto it = setAdded.cbegin(); it != setAdded.cend(); ++it){
-        emit q_ptr->sInterfaceAdded(newMap.value(*it));
-    }
-
-    /* Do interfaces has been removed ? */
-    const QSet<QUuid> setRemoved = oldIds - newIds;
-    for(auto it = setRemoved.cbegin(); it != setRemoved.cend(); ++it){
-        emit q_ptr->sInterfaceRemoved(oldMap.value(*it));
-    }
-}
-
 WlanError EngineWinNative::interfaceNetworksUpdate(Interface interface)
 {
     InterfaceMutator miface(interface);
@@ -521,7 +490,7 @@ WlanError EngineWinNative::interfaceNetworkProfileDelete(Interface interface, Ne
 void EngineWinNative::interfaceScanFinished(const QUuid &idInterface, WlanError result)
 {
     /* Retrieve interface */
-    Interface iface = m_interfaces.value(idInterface);
+    Interface iface = m_currentIfaces.value(idInterface);
 
     /* Retrieve list of scanned networks */
     if(result == WlanError::WERR_NO_ERROR){
@@ -534,20 +503,20 @@ void EngineWinNative::interfaceScanFinished(const QUuid &idInterface, WlanError 
 
 void EngineWinNative::interfaceConnectionFinished(const QUuid &idInterface, const QString &ssid, WlanError result)
 {
-    Interface iface = m_interfaces.value(idInterface);
+    Interface iface = m_currentIfaces.value(idInterface);
     handleConnectDone(iface, ssid, result);
 }
 
 void EngineWinNative::interfaceDisconnectionFinished(const QUuid &idInterface, WlanError result)
 {
-    Interface iface = m_interfaces.value(idInterface);
+    Interface iface = m_currentIfaces.value(idInterface);
     handleDisconnectDone(iface, result);
 }
 
 void EngineWinNative::interfaceSignalQualityReceived(const QUuid &idInterface, uint percent)
 {
     /* Retrieve associated interface */
-    Interface iface = m_interfaces.value(idInterface);
+    Interface iface = m_currentIfaces.value(idInterface);
     if(!iface.isValid()){
         qWarning("Unable to update signal quality, invalid interface [uuid: %s]", qUtf8Printable(idInterface.toString()));
         return;
@@ -614,7 +583,7 @@ void EngineWinNative::cbNotifAcm(PWLAN_NOTIFICATION_DATA ptrDataNotif, PVOID ptr
     {
         case wlan_notification_acm_interface_arrival:
         case wlan_notification_acm_interface_removal:{
-            engine->interfaceListRefresh();
+            engine->interfaceListUpdate();
         }break;
 
         case wlan_notification_acm_scan_complete:{

@@ -99,10 +99,6 @@ void EngineCoreWlan::terminate()
 
 void EngineCoreWlan::interfaceListRefresh()
 {
-    /* Prepare list of interfaces */
-    MapInterfaces prevIfaces = m_interfaces;
-    m_interfaces.clear();
-
     /* Retrieve available interfaces */
     CWWiFiClient *client = HandleCoreWlan::instance();
     NSArray<CWInterface *> *listInterfaces = [client interfaces];
@@ -114,8 +110,8 @@ void EngineCoreWlan::interfaceListRefresh()
         const QUuid uid = QUuid::createUuidV5(NS_UID, hwAddr);
 
         Interface iface;
-        if(prevIfaces.contains(uid)){
-            iface = prevIfaces.value(uid);
+        if(m_prevIfaces.contains(uid)){
+            iface = m_prevIfaces.value(uid);
 
         // Register an interface
         }else{
@@ -129,12 +125,8 @@ void EngineCoreWlan::interfaceListRefresh()
             miface.setDataEngine(std::any(apiIface));
         }
 
-        m_interfaces.insert(iface.getUid(), iface);
+        m_currentIfaces.insert(iface.getUid(), iface);
     }
-
-    /* Manage interface events */
-    //TODO: move this part to manager private instance
-    //interfaceListHandleEvents(prevIfaces, m_interfaces);
 }
 
 void EngineCoreWlan::interfaceScanNetworksAsync(Interface interface)
