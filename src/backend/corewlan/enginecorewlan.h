@@ -53,6 +53,9 @@ protected:
 private:
     QThread m_thread;
     WorkerCoreWlan *m_worker = nullptr;
+
+private:
+    static const QUuid NS_UID;
 };
 
 /*****************************/
