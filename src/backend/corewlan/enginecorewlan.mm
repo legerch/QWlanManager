@@ -135,6 +135,27 @@ void EngineCoreWlan::interfaceListRefresh()
     /* Manage interface events */
     //TODO: move this part to manager private instance
     //interfaceListHandleEvents(prevIfaces, m_interfaces);
+
+#if 0
+      const int noise = [apiIface noiseMeasurement];
+      const int rssi = [apiIface rssiValue];
+      const bool isOn = [apiIface powerOn];
+      const CWSecurity security = [apiIface security];
+
+      qDebug() << name << hwAddr << noise << rssi << isOn << security;
+
+      const NSOrderedSet<CWNetworkProfile *> *listProfiles = [[apiIface configuration] networkProfiles];
+      qDebug() << "Profiles: ";
+      for(const CWNetworkProfile *profile : listProfiles){
+          const QString ssid = QString::fromNSString([profile ssid]);
+          const CWSecurity security2 = [profile security];
+
+          qDebug() << ssid << security2;
+      }
+
+
+      // No description
+#endif
 }
 
 void EngineCoreWlan::interfaceScanNetworksAsync(Interface interface)
