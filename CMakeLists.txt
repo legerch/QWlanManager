@@ -204,6 +204,21 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     else()
         message(STATUS "Project \"${PROJECT_NAME}\" have enabled pre-windows10 compatibility")
     endif()
+
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    set(PROJECT_HEADERS_PRIVATE ${PROJECT_HEADERS_PRIVATE}
+        backend/corewlan/enginecorewlan.h
+    )
+
+    set(PROJECT_SOURCES ${PROJECT_SOURCES}
+        backend/corewlan/enginecorewlan.mm
+    )
+
+    set(PROJECT_LINKING_LIB ${PROJECT_LINKING_LIB}
+        "-framework CoreFoundation"
+        "-framework Foundation"
+        "-framework CoreWLAN"
+    )
 endif()
 
 # Manage options

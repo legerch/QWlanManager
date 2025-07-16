@@ -16,6 +16,8 @@
 #   if defined(QWLANMAN_HAVE_WINRT)
 #       include "backend/winrt/permissionwinrt.h"
 #   endif
+#elif defined(Q_OS_MACOS)
+#   include "backend/corewlan/enginecorewlan.h"
 #endif
 
 
@@ -47,6 +49,10 @@ std::unique_ptr<ManagerPrivate> FactoryBackend::createEngine(Manager *parent)
 #if defined(Q_OS_WINDOWS)
     qDebug("Use engine \"Windows Native\"");
     return std::make_unique<EngineWinNative>(parent);
+
+#elif defined(Q_OS_MACOS)
+    qDebug("Use engine \"CoreWlan\"");
+    return std::make_unique<EngineCoreWlan>(parent);
 
 #else
     qDebug("Use engine \"Mock\"");
