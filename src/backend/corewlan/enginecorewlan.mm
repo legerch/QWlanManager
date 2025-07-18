@@ -23,6 +23,78 @@ namespace qwm
 const QUuid EngineCoreWlan::NS_UID = QUuid("{019812a3-ce07-7259-8f98-046be5b56d6e}");
 
 /*****************************/
+/* Helper definitions        */
+/*****************************/
+
+namespace CoreWlan
+{
+    CWInterface* getApiInterface(const Interface &interface);
+    CWNetwork* getApiNetwork(const Network &network);
+
+    WlanError convertErrFromApi(const NSError *apiErr);
+    void logErrFromApi(const NSError *apiErr);
+
+} // CoreWlan
+
+/*****************************/
+/* Helper implementations    */
+/*****************************/
+
+CWInterface* CoreWlan::getApiInterface(const Interface &interface)
+{
+    InterfaceMutator miface(interface);
+    return std::any_cast<CWInterface*>(miface.getDataEngine());
+}
+
+CWNetwork* CoreWlan::getApiNetwork(const Network &network)
+{
+    NetworkMutator munet(network);
+    return std::any_cast<CWNetwork*>(munet.getDataEngine());
+}
+
+WlanError CoreWlan::convertErrFromApi(const NSError *apiErr)
+{
+    /* Do error is set ? */
+    if(!apiErr){
+        return WlanError::WERR_NO_ERROR;
+    }
+
+    /* Do error came from CoreWlan API ? */
+    if(![[apiErr domain] isEqualToString:CWErrorDomain]){
+        logErrFromApi(apiErr);
+        return WlanError::WERR_API_INTERNAL;
+    }
+
+    /* Convert code error to their equivalent */
+    WlanError idErr = WlanError::WERR_API_INTERNAL;
+    switch(apiErr.code)
+    {
+        case kCWNoErr:                      idErr = WlanError::WERR_NO_ERROR; break;
+
+        case kCWInvalidParameterErr:
+        case kCWInvalidFormatErr:           idErr = WlanError::WERR_ITEM_INVALID; break;
+
+        case kCWNotSupportedErr:
+        case kCWUnsupportedCapabilitiesErr: idErr = WlanError::WERR_OPERATION_UNSUPPORTED; break;
+
+        case kCWTimeoutErr:                 idErr = WlanError::WERR_OPERATION_TIMEOUT; break;
+
+        default:                            logErrFromApi(apiErr); break;
+    }
+
+    return idErr;
+}
+
+void CoreWlan::logErrFromApi(const NSError *apiErr)
+{
+    const QString domain = QString::fromNSString(apiErr.domain);
+    const QString desc = QString::fromNSString(apiErr.localizedDescription);
+    const int idErr = static_cast<int>(apiErr.code);
+
+    qWarning("Unable to convert NSError [domain: '%s', code: %d, description: '%s']", qUtf8Printable(domain), idErr, qUtf8Printable(desc));
+}
+
+/*****************************/
 /* Class definitions         */
 /* HandleCoreWlan            */
 /*****************************/

@@ -37,7 +37,7 @@ namespace qwm::WinNative
  */
 WlanError convertErrFromApi(WLAN_REASON_CODE apiErr)
 {
-    WlanError idErr = WlanError::WERR_UNKNOWN;
+    WlanError idErr = WlanError::WERR_API_INTERNAL;
 
     switch(apiErr)
     {
