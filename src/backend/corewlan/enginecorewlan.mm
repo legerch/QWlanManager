@@ -2,6 +2,8 @@
 
 #import <CoreWLAN/CoreWLAN.h>
 
+#include "qwlanhelper.h"
+
 /*****************************/
 /* Class documentations      */
 /*****************************/
@@ -180,6 +182,79 @@ WorkerCoreWlan::~WorkerCoreWlan()
     /* Nothing to do */
 }
 
+//FIXME: lifetime of CWNetwork* not properly managed
+//FIXME: lifetime of CWInterface* not properly managed
+void WorkerCoreWlan::performScan(const Interface &interface)
+{
+    /* Retrieve list of available networks */
+    CWInterface *apiIface = CoreWlan::getApiInterface(interface);
+
+    NSError *apiErr = nil;
+    NSSet<CWNetwork*> *apiListNets = [apiIface scanForNetworksWithName:nil error:&apiErr];
+
+    const WlanError scanResult = CoreWlan::convertErrFromApi(apiErr);
+    if(scanResult != WlanError::WERR_NO_ERROR){
+        emit sScanDone(interface, scanResult);
+        return;
+    }
+
+    /* Prepare list of networks */
+    InterfaceMutator miface(interface);
+    MapNetworks &mapNets = miface.getMapNetworksRef();
+
+    MapNetworks prevNets = mapNets;
+
+    miface.setConnectedSsid();
+    mapNets.clear();
+
+    /* Register networks */
+    const QDateTime now = QDateTime::currentDateTimeUtc();
+    for(const CWNetwork *apiNet : apiListNets){
+        // Verify that network is infrastructure-based (is an access-point)
+        if(!apiNet.ibss){
+            continue;
+        }
+
+        // Filter hidden networks
+        const QString ssid = QString::fromNSString(apiNet.ssid);
+        if(ssid.isEmpty()){
+            continue;
+        }
+
+        // Set profile infos
+        //TODO: retrieve profiles infos
+
+        // Manage known networks
+        Network net;
+        if(prevNets.contains(ssid)){
+            net = prevNets.take(ssid);
+        }
+
+        // Update network properties
+        NetworkMutator munet(net);
+
+        munet.setSsid(ssid);
+        munet.setProfileName("");
+        munet.setAuthAlgo(CoreWlan::searchAuthFromNet(apiNet));
+        munet.setCipherAlgo(CipherAlgo::CIPHER_ALGO_UNKNOWN);
+        munet.setSignalQuality(Helper::calcSignalPercent(apiNet.rssiValue, apiNet.noiseMeasurement));
+
+        munet.getCacheRef().markSeen(now);
+        munet.setDataEngine(std::any(apiNet));
+
+        mapNets.insert(ssid, net);
+    }
+
+    /* Update interface properties */
+    const QString currentSsid = QString::fromNSString(apiIface.ssid);
+
+    miface.setConnectedSsid(currentSsid);
+    miface.updateNetworksCached(prevNets, now);
+
+    /* Worker has finished the scan request */
+    emit sScanDone(interface, scanResult);
+}
+
 /*****************************/
 /* Functions implementation  */
 /*      EngineCoreWlan       */
@@ -205,7 +280,7 @@ void EngineCoreWlan::initialize()
     QObject::connect(&m_thread, &QThread::finished, m_worker, &QObject::deleteLater);
 
     /* Connect worker signals */
-    //TODO: add worker signals
+    registerWorkerEvents();
 
     /* Start worker thread */
     m_thread.start();
@@ -251,7 +326,7 @@ void EngineCoreWlan::interfaceListRefresh()
 
 void EngineCoreWlan::interfaceScanNetworksAsync(Interface interface)
 {
-
+    QMetaObject::invokeMethod(m_worker, &WorkerCoreWlan::performScan, Qt::QueuedConnection, interface);
 }
 
 void EngineCoreWlan::interfaceConnectAsync(Interface interface, Network network, const QString &password)
@@ -267,6 +342,13 @@ void EngineCoreWlan::interfaceDisconnectAsync(Interface interface)
 void EngineCoreWlan::interfaceForgetAsync(Interface interface, Network network)
 {
 
+}
+
+void EngineCoreWlan::registerWorkerEvents()
+{
+    QObject::connect(m_worker, &WorkerCoreWlan::sScanDone, q_ptr, [this](const Interface &interface, WlanError err) {
+        handleScanDone(interface, err);
+    });
 }
 
 /*****************************/

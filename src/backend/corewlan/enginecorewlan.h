@@ -24,6 +24,12 @@ class WorkerCoreWlan : public QObject
 public:
     explicit WorkerCoreWlan(QObject *parent = nullptr);
     ~WorkerCoreWlan();
+
+signals:
+    void sScanDone(const Interface &interface, WlanError result);
+
+public slots:
+    void performScan(const Interface &interface);
 };
 
 /*****************************/
@@ -49,6 +55,9 @@ protected:
     void interfaceConnectAsync(Interface interface, Network network, const QString &password) override;
     void interfaceDisconnectAsync(Interface interface) override;
     void interfaceForgetAsync(Interface interface, Network network) override;
+
+private:
+    void registerWorkerEvents();
 
 private:
     QThread m_thread;
