@@ -9,7 +9,7 @@
 #endif
 
 #include "backend/mock/enginemock.h"        // IWYU pragma: keep
-#include "backend/mock/permissionsmock.h"
+#include "backend/mock/permissionsmock.h"   // IWYU pragma: keep
 
 #if defined(Q_OS_WINDOWS)
 #   include "backend/winnative/enginewinnative.h"
@@ -18,6 +18,7 @@
 #   endif
 #elif defined(Q_OS_MACOS)
 #   include "backend/corewlan/enginecorewlan.h"
+#   include "backend/corewlan/permissioncorewlan.h"
 #endif
 
 
@@ -79,6 +80,10 @@ std::unique_ptr<PermissionsPrivate> FactoryBackend::createPermissions(Permission
     /* WinRT not supported */
     qDebug("Use permissions \"Mock\"");
     return std::make_unique<PermissionsMock>(parent);
+
+#elif defined(Q_OS_MACOS)
+    qDebug("Use permissions \"CoreWlan\"");
+    return std::make_unique<PermissionCoreWlan>(parent);
 
 #else
     qDebug("Use permissions \"Mock\"");
