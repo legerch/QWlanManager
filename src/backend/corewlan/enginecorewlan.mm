@@ -30,6 +30,12 @@ const QUuid EngineCoreWlan::NS_UID = QUuid("{019812a3-ce07-7259-8f98-046be5b56d6
 
 namespace CoreWlan
 {
+    using CWInterfacePtr = std::shared_ptr<CWInterface>;
+    using CWNetworkPtr = std::shared_ptr<CWNetwork>;
+
+    CWInterfacePtr makeApiPtrInterface(CWInterface *apiIface);
+    CWNetworkPtr makeApiPtrNetwork(CWNetwork *apiNet);
+
     CWInterface* getApiInterface(const Interface &interface);
     CWNetwork* getApiNetwork(const Network &network);
 
@@ -45,16 +51,34 @@ namespace CoreWlan
 /* Helper implementations    */
 /*****************************/
 
+CoreWlan::CWInterfacePtr CoreWlan::makeApiPtrInterface(CWInterface *apiIface)
+{
+    return CWInterfacePtr(apiIface, [](CWInterface *ptr){
+        [ptr release]; // ARC will release it correctly
+    });
+}
+
+CoreWlan::CWNetworkPtr CoreWlan::makeApiPtrNetwork(CWNetwork *apiNet)
+{
+    return CWNetworkPtr(apiNet, [](CWNetwork *ptr){
+        [ptr release]; // ARC will release it correctly
+    });
+}
+
 CWInterface* CoreWlan::getApiInterface(const Interface &interface)
 {
     InterfaceMutator miface(interface);
-    return std::any_cast<CWInterface*>(miface.getDataEngine());
+
+    CWInterfacePtr iface = std::any_cast<CWInterfacePtr>(miface.getDataEngine());
+    return iface.get();
 }
 
 CWNetwork* CoreWlan::getApiNetwork(const Network &network)
 {
     NetworkMutator munet(network);
-    return std::any_cast<CWNetwork*>(munet.getDataEngine());
+
+    CWNetworkPtr net = std::any_cast<CWNetworkPtr>(munet.getDataEngine());
+    return net.get();
 }
 
 WlanError CoreWlan::convertErrFromApi(const NSError *apiErr)
@@ -182,15 +206,13 @@ WorkerCoreWlan::~WorkerCoreWlan()
     /* Nothing to do */
 }
 
-//FIXME: lifetime of CWNetwork* not properly managed
-//FIXME: lifetime of CWInterface* not properly managed
 void WorkerCoreWlan::performScan(const Interface &interface)
 {
     /* Retrieve list of available networks */
     CWInterface *apiIface = CoreWlan::getApiInterface(interface);
 
     NSError *apiErr = nil;
-    NSSet<CWNetwork*> *apiListNets = [apiIface scanForNetworksWithName:nil error:&apiErr];
+    NSSet<CWNetwork*> *apiListNets = [apiIface scanForNetworksWithName:nil includeHidden:FALSE error:&apiErr];
 
     const WlanError scanResult = CoreWlan::convertErrFromApi(apiErr);
     if(scanResult != WlanError::WERR_NO_ERROR){
@@ -240,7 +262,7 @@ void WorkerCoreWlan::performScan(const Interface &interface)
         munet.setSignalQuality(Helper::calcSignalPercent(apiNet.rssiValue, apiNet.noiseMeasurement));
 
         munet.getCacheRef().markSeen(now);
-        munet.setDataEngine(std::any(apiNet));
+        munet.setDataEngine(CoreWlan::makeApiPtrNetwork(apiNet));
 
         mapNets.insert(ssid, net);
     }
@@ -299,7 +321,7 @@ void EngineCoreWlan::interfaceListRefresh()
     NSArray<CWInterface *> *listInterfaces = [client interfaces];
 
     /* Parse each interface */
-    for(const CWInterface *apiIface : listInterfaces){
+    for(CWInterface *apiIface : listInterfaces){
         // Manage known interfaces
         const QString hwAddr = QString::fromNSString([apiIface hardwareAddress]);
         const QUuid uid = QUuid::createUuidV5(NS_UID, hwAddr);
@@ -317,7 +339,7 @@ void EngineCoreWlan::interfaceListRefresh()
             miface.setName(QString::fromNSString([apiIface interfaceName]));
             miface.setDescription("");
 
-            miface.setDataEngine(std::any(apiIface));
+            miface.setDataEngine(CoreWlan::makeApiPtrInterface(apiIface));
         }
 
         m_currentIfaces.insert(iface.getUid(), iface);
