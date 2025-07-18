@@ -34,6 +34,9 @@ namespace CoreWlan
     WlanError convertErrFromApi(const NSError *apiErr);
     void logErrFromApi(const NSError *apiErr);
 
+    AuthAlgo convertAuthFromApi(CWSecurity apiAuth);
+    AuthAlgo searchAuthFromNet(const CWNetwork *apiNet);
+
 } // CoreWlan
 
 /*****************************/
@@ -92,6 +95,51 @@ void CoreWlan::logErrFromApi(const NSError *apiErr)
     const int idErr = static_cast<int>(apiErr.code);
 
     qWarning("Unable to convert NSError [domain: '%s', code: %d, description: '%s']", qUtf8Printable(domain), idErr, qUtf8Printable(desc));
+}
+
+AuthAlgo CoreWlan::convertAuthFromApi(CWSecurity apiAuth)
+{
+    AuthAlgo idAuth = AuthAlgo::AUTH_ALGO_UNKNOWN;
+
+    switch(apiAuth)
+    {
+        case kCWSecurityNone:           idAuth = AuthAlgo::AUTH_ALGO_OPEN; break;
+
+        case kCWSecurityWPA2Personal:
+        case kCWSecurityPersonal:       idAuth = AuthAlgo::AUTH_ALGO_WPA2_PERSONAL; break;
+
+        case kCWSecurityWPA2Enterprise:
+        case kCWSecurityEnterprise:     idAuth = AuthAlgo::AUTH_ALGO_WPA2_ENTERPRISE; break;
+
+        case kCWSecurityWPA3Personal:
+        case kCWSecurityWPA3Transition: idAuth = AuthAlgo::AUTH_ALGO_WPA3_PERSONAL; break;
+
+        case kCWSecurityWPA3Enterprise: idAuth = AuthAlgo::AUTH_ALGO_WPA3_ENTERPRISE; break;
+
+        default:                        qWarning("Unable to convert authentication algorithm from API [id: %d]", static_cast<int>(apiAuth)); break;
+    }
+
+    return idAuth;
+}
+
+AuthAlgo CoreWlan::searchAuthFromNet(const CWNetwork *apiNet)
+{
+    /* Define list of tracked auth algorithms (order is important since a network can support multiple auth algos !) */
+    static const QList<CWSecurity> TRACKED_AUTHS = {
+        kCWSecurityNone,
+        kCWSecurityWPA2Enterprise, kCWSecurityWPA2Personal,
+        kCWSecurityWPA3Enterprise, kCWSecurityWPA3Personal, kCWSecurityWPA3Transition,
+        kCWSecurityEnterprise, kCWSecurityPersonal
+    };
+
+    /* Find current security type */
+    for(auto it = TRACKED_AUTHS.cbegin(); it != TRACKED_AUTHS.cend(); ++it){
+        if([apiNet supportsSecurity:*it]){
+            return convertAuthFromApi(*it);
+        }
+    }
+
+    return AuthAlgo::AUTH_ALGO_UNKNOWN;
 }
 
 /*****************************/
@@ -192,7 +240,7 @@ void EngineCoreWlan::interfaceListRefresh()
             miface.setUid(uid);
             miface.setHwAddress(hwAddr);
             miface.setName(QString::fromNSString([apiIface interfaceName]));
-            // Note: no interface description available
+            miface.setDescription("");
 
             miface.setDataEngine(std::any(apiIface));
         }
