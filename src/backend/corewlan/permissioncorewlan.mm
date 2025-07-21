@@ -114,6 +114,14 @@ WlanPerm PermissionCoreWlan::wlanRetrieve()
 
 bool PermissionCoreWlan::wlanOpenParams()
 {
+    /* Do current status hasn't been prompted ? */
+    if(m_currentPerm == WlanPerm::WPERM_PROMPT_REQUIRED){
+        CLLocationManager *locManager = CoreWlan::getPermLocation(m_permsWlan);
+        [locManager requestWhenInUseAuthorization];
+        return true;
+    }
+
+    /* Open parameter window */
     return QDesktopServices::openUrl(QUrl("x-apple.systempreferences:com.apple.preference.security?Privacy_LocationServices"));
 }
 
