@@ -26,10 +26,10 @@ public:
     ~WorkerCoreWlan();
 
 signals:
-    void sScanDone(const Interface &interface, WlanError result);
+    void sScanDone(const qwm::Interface &interface, qwm::WlanError result);
 
 public slots:
-    void performScan(const Interface &interface);
+    void performScan(const qwm::Interface &interface);
 };
 
 /*****************************/

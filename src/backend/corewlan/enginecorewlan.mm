@@ -206,7 +206,7 @@ WorkerCoreWlan::~WorkerCoreWlan()
     /* Nothing to do */
 }
 
-void WorkerCoreWlan::performScan(const Interface &interface)
+void WorkerCoreWlan::performScan(const qwm::Interface &interface)
 {
     /* Retrieve list of available networks */
     CWInterface *apiIface = CoreWlan::getApiInterface(interface);
@@ -231,15 +231,20 @@ void WorkerCoreWlan::performScan(const Interface &interface)
 
     /* Register networks */
     const QDateTime now = QDateTime::currentDateTimeUtc();
-    for(const CWNetwork *apiNet : apiListNets){
+    for(CWNetwork *apiNet : apiListNets){
         // Verify that network is infrastructure-based (is an access-point)
-        if(!apiNet.ibss){
+        if([apiNet ibss]){
             continue;
         }
 
-        // Filter hidden networks
+        /*
+         * Verify that network is not already registered
+         * CoreWlan returns duplicated networks when SSID uses multiple
+         * BSSIDs, so we have to filter them.
+         * Also filter hidden networks
+         */
         const QString ssid = QString::fromNSString(apiNet.ssid);
-        if(ssid.isEmpty()){
+        if(ssid.isEmpty() || mapNets.contains(ssid)){
             continue;
         }
 
