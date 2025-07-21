@@ -14,6 +14,7 @@ namespace qwm
 /*****************************/
 
 //TODO: don't duplicate "m_currentPerm" attribution in each backend
+//TODO: do a first initialization at construction
 class PermissionsPrivate
 {
     QWLANMAN_DISABLE_COPY(PermissionsPrivate)

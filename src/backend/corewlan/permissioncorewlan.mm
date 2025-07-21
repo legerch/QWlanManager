@@ -2,6 +2,9 @@
 
 #import <CoreLocation/CLLocationManager.h>
 
+#include <QDesktopServices>
+#include <QUrl>
+
 /*****************************/
 /* Macro definitions         */
 /*****************************/
@@ -111,8 +114,7 @@ WlanPerm PermissionCoreWlan::wlanRetrieve()
 
 bool PermissionCoreWlan::wlanOpenParams()
 {
-    //TODO: implement
-    return false;
+    return QDesktopServices::openUrl(QUrl("x-apple.systempreferences:com.apple.preference.security?Privacy_LocationServices"));
 }
 
 /*****************************/
