@@ -26,8 +26,9 @@ public:
     void terminate() override;
 
 public:
-    WlanPerm wlanRetrieve() override;
-    bool wlanOpenParams() override;
+    WlanPerm updateStatus() override;
+    WlanError prompt() override;
+    WlanError openParams() override;
 
 private:
     WinRt::PermissionApp m_permsWlan{nullptr};

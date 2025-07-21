@@ -3,6 +3,8 @@
 
 #include "qwlanmanager/permissions.h"
 
+#include <QMutex>
+
 /*****************************/
 /* Namespace instructions    */
 /*****************************/
@@ -26,14 +28,20 @@ public:
     virtual ~PermissionsPrivate();
 
 public:
+    WlanPerm getStatus() const;
+    void setStatus(WlanPerm idPerm);
+
+public:
     virtual void initialize() = 0;
     virtual void terminate() = 0;
 
 public:
-    virtual WlanPerm wlanRetrieve() = 0;
-    virtual bool wlanOpenParams() = 0;
+    virtual WlanPerm updateStatus() = 0;
+    virtual WlanError prompt() = 0;
+    virtual WlanError openParams() = 0;
 
 protected:
+    mutable QMutex m_mutex;
     WlanPerm m_currentPerm;
 
     Permissions *q_ptr;

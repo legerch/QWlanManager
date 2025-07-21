@@ -19,6 +19,16 @@
 /* Signals documentations    */
 /*****************************/
 
+/*!
+ * \fn Permissions::sPermissionsChanged()
+ * \brief Emitted when permissions status changes.
+ *
+ * \param[in] idPerm
+ * New permission status.
+ *
+ * \sa retrieveWlanPermissions(), askWlanPermissions()
+ */
+
 /*****************************/
 /* Start namespace           */
 /*****************************/
@@ -44,6 +54,7 @@ Permissions::Permissions(QObject *parent) :
     d_ptr(FactoryBackend::createPermissions(this))
 {
     d_ptr->initialize();
+    d_ptr->updateStatus();
 }
 
 Permissions::~Permissions()
@@ -57,29 +68,41 @@ Permissions::~Permissions()
  * \return
  * Returns permissions status.
  *
- * \sa wlanOpenParams()
+ * \sa askWlanPermissions()
  */
-WlanPerm Permissions::wlanRetrieve()
+WlanPerm Permissions::retrieveWlanPermissions()
 {
-    return d_ptr->wlanRetrieve();
+    return d_ptr->updateStatus();
 }
 
 /*!
- * \brief Allow to open associated OS parameters
+ * \brief Allow to ask for needed permissions
  * \details
  * Permissions cannot be set via native API, it's the user
  * responsibility to give your application required permissions. \n
- * But we can ease the process by opening the related parameter
+ * So this method will ease the process by opening the related parameter
  * window.
  *
  * \return
- * Returns \c true if succeed to open permission parameter window.
+ * Returns \c WlanError::WERR_NO_ERROR if succeed,
+ * otherwise see \c WlanError for more details.
  *
- * \sa wlanRetrieve()
+ * \sa retrieveWlanPermissions()
+ * \sa sPermissionsChanged()
  */
-bool Permissions::wlanOpenParams()
+WlanError Permissions::askWlanPermissions()
 {
-    return d_ptr->wlanOpenParams();
+    /* Do user has set permission status ? */
+    if(d_ptr->getStatus() == WlanPerm::WPERM_PROMPT_REQUIRED){
+        const WlanError promptStatus = d_ptr->prompt();
+
+        if(promptStatus == WlanError::WERR_NO_ERROR){
+            return promptStatus; // Return only if supported, otherwise open parameters
+        }
+    }
+
+    /* Open parameter windows */
+    return d_ptr->openParams();
 }
 
 /*****************************/

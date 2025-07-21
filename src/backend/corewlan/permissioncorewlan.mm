@@ -102,27 +102,33 @@ void PermissionCoreWlan::terminate()
     /* Nothing to do */
 }
 
-WlanPerm PermissionCoreWlan::wlanRetrieve()
+WlanPerm PermissionCoreWlan::updateStatus()
 {
     CLLocationManager *locManager = CoreWlan::getPermLocation(m_permsWlan);
     const CLAuthorizationStatus apiPerm = [locManager authorizationStatus];
 
-    m_currentPerm = CoreWlan::convertPermFromApi(apiPerm);
+    setStatus(CoreWlan::convertPermFromApi(apiPerm));
 
     return m_currentPerm;
 }
 
-bool PermissionCoreWlan::wlanOpenParams()
+WlanError PermissionCoreWlan::prompt()
 {
-    /* Do current status hasn't been prompted ? */
-    if(m_currentPerm == WlanPerm::WPERM_PROMPT_REQUIRED){
-        CLLocationManager *locManager = CoreWlan::getPermLocation(m_permsWlan);
-        [locManager requestWhenInUseAuthorization];
-        return true;
+    CLLocationManager *locManager = CoreWlan::getPermLocation(m_permsWlan);
+    [locManager requestWhenInUseAuthorization];
+
+    return WlanError::WERR_NO_ERROR;
+}
+
+WlanError PermissionCoreWlan::openParams()
+{
+    const bool succeed = QDesktopServices::openUrl(QUrl("x-apple.systempreferences:com.apple.preference.security?Privacy_LocationServices"));
+    if(!succeed){
+        qWarning("Unable to open location privacy parameters");
+        return WlanError::WERR_API_INTERNAL;
     }
 
-    /* Open parameter window */
-    return QDesktopServices::openUrl(QUrl("x-apple.systempreferences:com.apple.preference.security?Privacy_LocationServices"));
+    return WlanError::WERR_NO_ERROR;
 }
 
 /*****************************/

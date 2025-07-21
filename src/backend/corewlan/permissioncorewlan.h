@@ -27,8 +27,9 @@ public:
     void terminate() override;
 
 public:
-    WlanPerm wlanRetrieve() override;
-    bool wlanOpenParams() override;
+    WlanPerm updateStatus() override;
+    WlanError prompt() override;
+    WlanError openParams() override;
 
 private:
     std::any m_permsWlan{nullptr};  // Use "std::any" type since type needed is an objective-c++ type
