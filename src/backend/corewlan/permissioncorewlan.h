@@ -3,6 +3,8 @@
 
 #include "permissions_priv.h"
 
+#include <any>
+
 /*****************************/
 /* Namespace instructions    */
 /*****************************/
@@ -27,6 +29,9 @@ public:
 public:
     WlanPerm wlanRetrieve() override;
     bool wlanOpenParams() override;
+
+private:
+    std::any m_permsWlan{nullptr};  // Use "std::any" type since type needed is an objective-c++ type
 };
 
 /*****************************/

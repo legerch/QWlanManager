@@ -222,6 +222,7 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
         "-framework CoreFoundation"
         "-framework Foundation"
         "-framework CoreWLAN"
+        "-framework CoreLocation"
     )
 endif()
 

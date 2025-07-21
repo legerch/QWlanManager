@@ -50,7 +50,9 @@ void PermissionWinRt::terminate()
 WlanPerm PermissionWinRt::wlanRetrieve()
 {
     const WinRt::PermissionId apiPerm = m_permsWlan.CheckAccess();
-    return WinRt::convertPermFromApi(apiPerm);
+    m_currentPerm = WinRt::convertPermFromApi(apiPerm);
+
+    return m_currentPerm;
 }
 
 bool PermissionWinRt::wlanOpenParams()

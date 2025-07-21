@@ -13,6 +13,7 @@ namespace qwm
 /* Class definitions         */
 /*****************************/
 
+//TODO: don't duplicate "m_currentPerm" attribution in each backend
 class PermissionsPrivate
 {
     QWLANMAN_DISABLE_COPY(PermissionsPrivate)
@@ -31,7 +32,9 @@ public:
     virtual WlanPerm wlanRetrieve() = 0;
     virtual bool wlanOpenParams() = 0;
 
-private:
+protected:
+    WlanPerm m_currentPerm;
+
     Permissions *q_ptr;
 };
 
