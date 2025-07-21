@@ -32,7 +32,9 @@ public:
     WlanError openParams() override;
 
 private:
-    std::any m_permsWlan{nullptr};  // Use "std::any" type since type needed is an objective-c++ type
+    // Use "std::any" since needed types are objective-c++ types
+    std::any m_manager{nullptr};
+    std::any m_delegate{nullptr};
 };
 
 /*****************************/
