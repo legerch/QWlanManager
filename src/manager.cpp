@@ -259,68 +259,6 @@ Manager::~Manager()
 }
 
 /*!
- * \brief Allow to set the cache policy of an interface.
- *
- * \param[in] idInterface
- * Interface ID to use. \n
- * If invalid, error \c WlanError::WERR_ITEM_INVALID will be returned.
- * \param[in] cachePolicy
- * Cache policy to use.
- *
- * \return
- * Returns \c WlanError::WERR_NO_ERROR if succeed, otherwise see
- * \c qwm::WlanError for more details
- *
- * \sa setOptions()
- */
-WlanError Manager::setCachePolicy(const QUuid &idInterface, const CachePolicy &cachePolicy)
-{
-    /* Retrieve associated interface */
-    Interface iface = getInterface(idInterface);
-    if(!iface.isValid()){
-        qWarning("Unable to set cache policy, unknown interface ID [uuid: %s]", qUtf8Printable(idInterface.toString()));
-        return WlanError::WERR_ITEM_INVALID;
-    }
-
-    /* Set cache policy */
-    InterfaceMutator miface(iface);
-    miface.setCachePolicy(cachePolicy);
-
-    return WlanError::WERR_NO_ERROR;
-}
-
-/*!
- * \brief Allow to set options of an interface.
- *
- * \param[in] idInterface
- * Interface ID to use. \n
- * If invalid, error \c WlanError::WERR_ITEM_INVALID will be returned.
- * \param[in] opts
- * Options to use.
- *
- * \return
- * Returns \c WlanError::WERR_NO_ERROR if succeed, otherwise see
- * \c qwm::WlanError for more details
- *
- * \sa setCachePolicy()
- */
-WlanError Manager::setOptions(const QUuid &idInterface, IfaceOptions opts)
-{
-    /* Retrieve associated interface */
-    Interface iface = getInterface(idInterface);
-    if(!iface.isValid()){
-        qWarning("Unable to set options, unknown interface ID [uuid: %s]", qUtf8Printable(idInterface.toString()));
-        return WlanError::WERR_ITEM_INVALID;
-    }
-
-    /* Set options */
-    InterfaceMutator miface(iface);
-    miface.setOptions(opts);
-
-    return WlanError::WERR_NO_ERROR;
-}
-
-/*!
  * \brief Allow to perform a scan
  * \details
  * This request is asynchronous, use associated signals
@@ -482,6 +420,7 @@ void Manager::doForget(const QUuid &idInterface, const QString &ssid)
  * Returns list of available interfaces.
  *
  * \sa getInterface()
+ * \sa sInterfaceAdded(), sInterfaceRemoved()
  */
 ListInterfaces Manager::getInterfaces() const
 {

@@ -15,17 +15,17 @@
  * of networks, etc...). \n
  * This class use <b>implicit sharing</b> memory (via <em>shared pointer</em>), this allow to:
  * - Always have an interface object with "last" known properties without having to fetch them from `qwm::Manager`
+ * - When setting properties, they are propagated to all instances
  * - Passing this class by value is cheap
  * This class is also compatible with \b QML.
  *
- * \note
- * From the user point of view, this object is immutable, thus all interfaces
- * instances will be retrieved via \c qwm::Manager class.
+ * \sa Manager::getInterfaces()
  *
  * \cond INTERNAL
  *
  * \note
- * To modify this object, use the class qwm::InterfaceMutator
+ * To modify internal properties of this object,
+ * use the class \c qwm::InterfaceMutator
  *
  * \endcond
  */
@@ -235,6 +235,34 @@ Network Interface::getNetworkConnected() const
 {
     QMutexLocker locker(&d_ptr->m_mutex);
     return d_ptr->m_mapNets.value(d_ptr->m_connectedSsid);
+}
+
+/*!
+ * \brief Allow to set the cache policy of an interface.
+ *
+ * \param[in] cachePolicy
+ * Cache policy to use.
+ *
+ * \sa setOptions()
+ */
+void Interface::setCachePolicy(const CachePolicy &cachePolicy)
+{
+    QMutexLocker locker(&d_ptr->m_mutex);
+    d_ptr->m_cachePolicy = cachePolicy;
+}
+
+/*!
+ * \brief Allow to set options of an interface.
+ *
+ * \param[in] opts
+ * Options to use.
+ *
+ * \sa setCachePolicy()
+ */
+void Interface::setOptions(IfaceOptions opts)
+{
+    QMutexLocker locker(&d_ptr->m_mutex);
+    d_ptr->m_opts = opts;
 }
 
 Interface& Interface::operator=(const Interface &other) = default;
