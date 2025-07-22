@@ -23,7 +23,7 @@ namespace qwm
 InterfaceData::InterfaceData()
 {
     m_state = IfaceState::IFACE_STS_IDLE;
-    m_opts = IFACE_OPT_NONE;
+    m_opts = IFACE_OPT_DEFAULT;
 }
 
 bool InterfaceData::operator==(const InterfaceData &other) const

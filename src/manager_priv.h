@@ -61,6 +61,7 @@ private:
 protected:
     MapInterfaces m_currentIfaces;
     MapInterfaces m_prevIfaces;
+    WlanOptions m_opts;
 
     Manager *q_ptr;
 };

@@ -101,6 +101,8 @@ IfaceState Interface::getState() const
  *
  * \return
  * Returns options of interface
+ *
+ * \sa setOptions()
  */
 IfaceOptions Interface::getOptions() const
 {
@@ -257,6 +259,7 @@ void Interface::setCachePolicy(const CachePolicy &cachePolicy)
  * \param[in] opts
  * Options to use.
  *
+ * \sa getOptions()
  * \sa setCachePolicy()
  */
 void Interface::setOptions(IfaceOptions opts)

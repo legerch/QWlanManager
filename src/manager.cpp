@@ -259,6 +259,63 @@ Manager::~Manager()
 }
 
 /*!
+ * \brief Allow to set options of the manager.
+ *
+ * \param[in] opts
+ * Options to use.
+ *
+ * \sa getOptions()
+ */
+void Manager::setOptions(WlanOptions opts)
+{
+    d_ptr->m_opts = opts;
+}
+
+/*!
+ * \brief Retrieve current manager options
+ *
+ * \return
+ * Returns options of manager
+ *
+ * \sa setOptions()
+ */
+WlanOptions Manager::getOptions() const
+{
+    return d_ptr->m_opts;
+}
+
+/*!
+ * \brief Allow to retrieve list of interfaces
+ * \return
+ * Returns list of available interfaces.
+ *
+ * \sa getInterface()
+ * \sa sInterfaceAdded(), sInterfaceRemoved()
+ */
+ListInterfaces Manager::getInterfaces() const
+{
+    return d_ptr->m_currentIfaces.values();
+}
+
+/*!
+ * \brief Allow to retrieve an interface via its ID
+ *
+ * \param[in] idInterface
+ * Interface ID to use. \n
+ * If ID is unknown, returned interface will be invalid.
+ *
+ * \return
+ * Returns interface related to the ID.
+ *
+ * \sa getInterfaces()
+ * \sa Interface::isValid()
+ */
+Interface Manager::getInterface(const QUuid &idInterface) const
+{
+    return d_ptr->m_currentIfaces.value(idInterface);
+}
+
+/*!
  * \brief Allow to perform a scan
  * \details
  * This request is asynchronous, use associated signals
@@ -311,6 +368,14 @@ void Manager::doScan(const QUuid &idInterface)
  * Recommended scenario is to call this method once with empty password
  * and ask the user for the password only if \c WlanError::WERR_NET_PASSKEY
  * error is received.
+ *
+ * \remark
+ * On \b CoreWlan backend, when an empty password is provided in
+ * order to use internal credentials, a temporary admin access will be
+ * asked in order to retrieve the network passkey from the keychain
+ * subsystem (and only for that). \n
+ * Otherwise, option \c WlanOption::WOPT_ALLOW_ADMIN_REQUESTS can be disabled, if so,
+ * caller will always have to provide network password.
  *
  * \sa sConnectionStarted()
  * \sa sConnectionSucceed(), sConnectionFailed()
@@ -412,37 +477,6 @@ void Manager::doForget(const QUuid &idInterface, const QString &ssid)
 
     /* Start connection request */
     d_ptr->interfaceForget(iface, net);
-}
-
-/*!
- * \brief Allow to retrieve list of interfaces
- * \return
- * Returns list of available interfaces.
- *
- * \sa getInterface()
- * \sa sInterfaceAdded(), sInterfaceRemoved()
- */
-ListInterfaces Manager::getInterfaces() const
-{
-    return d_ptr->m_currentIfaces.values();
-}
-
-/*!
- * \brief Allow to retrieve an interface via its ID
- *
- * \param[in] idInterface
- * Interface ID to use. \n
- * If ID is unknown, returned interface will be invalid.
- *
- * \return
- * Returns interface related to the ID.
- *
- * \sa getInterfaces()
- * \sa Interface::isValid()
- */
-Interface Manager::getInterface(const QUuid &idInterface) const
-{
-    return d_ptr->m_currentIfaces.value(idInterface);
 }
 
 /*****************************/

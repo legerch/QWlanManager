@@ -22,7 +22,7 @@ namespace qwm
 ManagerPrivate::ManagerPrivate(Manager *parent)
     : q_ptr(parent)
 {
-    /* Nothing to do */
+    m_opts = WlanOption::WOPT_DEFAULT;
 }
 
 ManagerPrivate::~ManagerPrivate()

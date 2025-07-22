@@ -60,6 +60,31 @@ namespace qwm
     QWLANMAN_EXPORT QString wlanPermToString(WlanPerm idPerm);
 
     /*!
+     * \brief Wlan manager options
+     * \details
+     * Those options concerns \c qwm::Manager global
+     * available features. \n
+     * Options are flags, so they can be combined.
+     *
+     * \sa IfaceOption
+     */
+    enum WlanOption
+    {
+        WOPT_NONE                   = 0,        /**< No option set */
+
+        WOPT_ALLOW_ADMIN_REQUESTS   = 1 << 0,   /**< Enable this option to allow administration request (will ask user for a temporary admin access)
+                                                    often needed when managing wifi credentials. \n
+                                                    Disable it to be sure that admin access will never be asked.
+                                                    \note
+                                                    Currently, only \b CoreWlan backend is concerned by this feature
+                                                */
+
+        WOPT_DEFAULT                = WOPT_ALLOW_ADMIN_REQUESTS     /**< Default manager options */
+    };
+    Q_DECLARE_FLAGS(WlanOptions, WlanOption)
+    Q_FLAG_NS(WlanOptions)
+
+    /*!
      * \brief Type of interface asynchrone request
      *
      * \sa requestTypeToString()
@@ -96,15 +121,20 @@ namespace qwm
      * \brief Available interface options
      * \details
      * Options are flags, so they can be combined.
+     *
+     * \sa qwm::Interface
+     * \sa WlanOption
      */
     enum IfaceOption
     {
         IFACE_OPT_NONE      = 0,        /**< No option set */
 
-        IFACE_OPT_REQUEST   = 1 << 0    /**< Allow to queue interface operations (wait for the scan to finish before trying to connect for example), which
+        IFACE_OPT_REQUEST   = 1 << 0,   /**< Allow to queue interface operations (wait for the scan to finish before trying to connect for example), which
                                             will reduce \c WlanError::WERR_IFACE_BUSY occurrences. \n
                                             Note that enabling this will delay operations start.
                                         */
+
+        IFACE_OPT_DEFAULT   = IFACE_OPT_NONE    /**< Default interface option, currently no option set */
     };
     Q_DECLARE_FLAGS(IfaceOptions, IfaceOption)
     Q_FLAG_NS(IfaceOptions)
@@ -219,5 +249,6 @@ inline uint qHash(qwm::CipherAlgo key, uint seed = 0)
 /*****************************/
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(qwm::IfaceOptions)
+Q_DECLARE_OPERATORS_FOR_FLAGS(qwm::WlanOptions)
 
 #endif // QWLANMAN_QWLANTYPES_H
