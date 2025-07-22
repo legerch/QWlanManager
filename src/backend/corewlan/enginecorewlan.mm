@@ -90,25 +90,21 @@ WlanError CoreWlan::convertErrFromApi(const NSError *apiErr)
         return WlanError::WERR_NO_ERROR;
     }
 
-    /* Do error came from CoreWlan API ? */
-    if(![[apiErr domain] isEqualToString:CWErrorDomain]){
-        logErrFromApi(apiErr);
-        return WlanError::WERR_API_INTERNAL;
-    }
-
     /* Convert code error to their equivalent */
     WlanError idErr = WlanError::WERR_API_INTERNAL;
     switch(apiErr.code)
     {
         case kCWNoErr:                      idErr = WlanError::WERR_NO_ERROR; break;
 
-        case kCWInvalidParameterErr:
         case kCWInvalidFormatErr:           idErr = WlanError::WERR_ITEM_INVALID; break;
 
         case kCWNotSupportedErr:
         case kCWUnsupportedCapabilitiesErr: idErr = WlanError::WERR_OPERATION_UNSUPPORTED; break;
 
         case kCWTimeoutErr:                 idErr = WlanError::WERR_OPERATION_TIMEOUT; break;
+
+        case kCWInvalidParameterErr:
+        case kCWSupplicantTimeoutErr:       idErr = WlanError::WERR_NET_PASSKEY; break;
 
         default:                            logErrFromApi(apiErr); break;
     }
