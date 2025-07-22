@@ -297,7 +297,7 @@ void WorkerCoreWlan::performScan(const qwm::Interface &interface)
     emit sScanDone(interface, scanResult);
 }
 
-void WorkerCoreWlan::performConnect(const Interface &interface, const Network &network, const QString &passwd)
+void WorkerCoreWlan::performConnect(const Interface &interface, const Network &network, const QString &passwd, qwm::WlanOptions opts)
 {
     /* Prepare connection request arguments */
     CWInterface *apiIface = CoreWlan::getApiInterface(interface);
@@ -306,6 +306,11 @@ void WorkerCoreWlan::performConnect(const Interface &interface, const Network &n
     /* Do provided password is valid ? */
     NSString *apiPwd = nil;
     if(passwd.isEmpty()){
+        // Do we allow to ask for admin access ?
+        if(!opts.testFlag(WlanOption::WOPT_ALLOW_ADMIN_REQUESTS)){
+            emit sConnectDone(interface, network, WlanError::WERR_NET_PASSKEY);
+            return;
+        }
 
         // Do we have a known network profile ?
         if(network.getProfileName().isEmpty()){
@@ -416,7 +421,7 @@ void EngineCoreWlan::interfaceScanNetworksAsync(Interface interface)
 
 void EngineCoreWlan::interfaceConnectAsync(Interface interface, Network network, const QString &password)
 {
-    QMetaObject::invokeMethod(m_worker, &WorkerCoreWlan::performConnect, Qt::QueuedConnection, interface, network, password);
+    QMetaObject::invokeMethod(m_worker, &WorkerCoreWlan::performConnect, Qt::QueuedConnection, interface, network, password, m_opts);
 }
 
 void EngineCoreWlan::interfaceDisconnectAsync(Interface interface)

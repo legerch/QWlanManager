@@ -31,7 +31,7 @@ signals:
 
 public slots:
     void performScan(const qwm::Interface &interface);
-    void performConnect(const qwm::Interface &interface, const qwm::Network &network, const QString &passwd);
+    void performConnect(const qwm::Interface &interface, const qwm::Network &network, const QString &passwd, qwm::WlanOptions opts);
 };
 
 /*****************************/
