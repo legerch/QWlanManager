@@ -422,12 +422,14 @@ void EngineCoreWlan::interfaceConnectAsync(Interface interface, Network network,
 
 void EngineCoreWlan::interfaceDisconnectAsync(Interface interface)
 {
-
+    //TODO: implement
+    handleDisconnectDone(interface, WlanError::WERR_OPERATION_UNSUPPORTED);
 }
 
 void EngineCoreWlan::interfaceForgetAsync(Interface interface, Network network)
 {
-
+    //TODO: implement
+    handleForgetDone(interface, network, WlanError::WERR_OPERATION_UNSUPPORTED);
 }
 
 void EngineCoreWlan::registerWorkerEvents()

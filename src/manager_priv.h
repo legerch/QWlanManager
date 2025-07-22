@@ -52,6 +52,7 @@ protected:
     void handleScanDone(const Interface &interface, WlanError idErr);
     void handleConnectDone(const Interface &interface, const QString &ssid, WlanError idErr);
     void handleDisconnectDone(const Interface &interface, WlanError idErr);
+    void handleForgetDone(const Interface &interface, const Network &network, WlanError idErr);
 
 private:
     void requestAdd(const Interface &interface, const Request &req);

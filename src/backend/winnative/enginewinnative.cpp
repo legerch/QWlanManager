@@ -245,12 +245,7 @@ void EngineWinNative::interfaceForgetAsync(Interface interface, Network network)
 {
     /* Forget network */
     const WlanError idErr = interfaceNetworkProfileDelete(interface, network);
-    if(idErr != WlanError::WERR_NO_ERROR){
-        emit q_ptr->sForgetFailed(interface.getUid(), network.getSsid(), idErr);
-        return;
-    }
-
-    emit q_ptr->sForgetSucceed(interface.getUid(), network.getSsid());
+    handleForgetDone(interface, network, idErr);
 }
 
 bool EngineWinNative::apiOpen()
@@ -479,10 +474,6 @@ WlanError EngineWinNative::interfaceNetworkProfileDelete(Interface interface, Ne
         );
         return WlanError::WERR_API_INTERNAL;
     }
-
-    /* Update network informations */
-    NetworkMutator munet(network);
-    munet.setProfileName("");
 
     return WlanError::WERR_NO_ERROR;
 }

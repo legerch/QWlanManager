@@ -238,6 +238,21 @@ void ManagerPrivate::handleDisconnectDone(const Interface &interface, WlanError 
     });
 }
 
+void ManagerPrivate::handleForgetDone(const Interface &interface, const Network &network, WlanError idErr)
+{
+    /* Do operation succeed ? */
+    if(idErr != WlanError::WERR_NO_ERROR){
+        emit q_ptr->sForgetFailed(interface.getUid(), network.getSsid(), idErr);
+        return;
+    }
+
+    /* Update network informations */
+    NetworkMutator munet(network);
+    munet.setProfileName("");
+
+    emit q_ptr->sForgetSucceed(interface.getUid(), network.getSsid());
+}
+
 void ManagerPrivate::requestAdd(const Interface &interface, const Request &req)
 {
     InterfaceMutator miface(interface);
