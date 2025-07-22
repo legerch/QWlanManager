@@ -229,6 +229,15 @@ void WorkerCoreWlan::performScan(const qwm::Interface &interface)
     miface.setConnectedSsid();
     mapNets.clear();
 
+    /* Retrieve list of known profiles (and put in cache) */
+    const NSOrderedSet<CWNetworkProfile *> *apiListProfiles = [[apiIface configuration] networkProfiles];
+
+    QSet<QString> cacheProfiles;
+    for(const CWNetworkProfile *profile : apiListProfiles){
+        const QString ssid = QString::fromNSString(profile.ssid);
+        cacheProfiles.insert(ssid);
+    }
+
     /* Register networks */
     const QDateTime now = QDateTime::currentDateTimeUtc();
     for(CWNetwork *apiNet : apiListNets){
@@ -249,7 +258,10 @@ void WorkerCoreWlan::performScan(const qwm::Interface &interface)
         }
 
         // Set profile infos
-        //TODO: retrieve profiles infos
+        QString profile;
+        if(cacheProfiles.contains(ssid)){
+            profile = ssid;
+        }
 
         // Manage known networks
         Network net;
@@ -261,7 +273,7 @@ void WorkerCoreWlan::performScan(const qwm::Interface &interface)
         NetworkMutator munet(net);
 
         munet.setSsid(ssid);
-        munet.setProfileName("");
+        munet.setProfileName(profile);
         munet.setAuthAlgo(CoreWlan::searchAuthFromNet(apiNet));
         munet.setCipherAlgo(CipherAlgo::CIPHER_ALGO_UNKNOWN);
         munet.setSignalQuality(Helper::calcSignalPercent(apiNet.rssiValue, apiNet.noiseMeasurement));
