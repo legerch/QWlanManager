@@ -1,6 +1,8 @@
 #include "enginecorewlan.h"
 
-#import <CoreWLAN/CoreWLAN.h>
+extern "C" {  // Otherwise it won't find CWKeychain* symbols at link time
+#   import <CoreWLAN/CoreWLAN.h>
+}
 
 #include "qwlanhelper.h"
 
@@ -297,20 +299,35 @@ void WorkerCoreWlan::performScan(const qwm::Interface &interface)
 
 void WorkerCoreWlan::performConnect(const Interface &interface, const Network &network, const QString &passwd)
 {
-    /* Do we have a valid profile ? */
-    if(passwd.isEmpty() && network.getProfileName().isEmpty()){
-        emit sConnectDone(interface, network, WlanError::WERR_NET_PASSKEY);
-        return;
-    }
-
     /* Prepare connection request arguments */
     CWInterface *apiIface = CoreWlan::getApiInterface(interface);
     CWNetwork *apiNet = CoreWlan::getApiNetwork(network);
-    NSString *apiPwd = (passwd.isEmpty() ? nil : passwd.toNSString());
 
-    NSError *apiErr = nil;
+    /* Do provided password is valid ? */
+    NSString *apiPwd = nil;
+    if(passwd.isEmpty()){
+
+        // Do we have a known network profile ?
+        if(network.getProfileName().isEmpty()){
+            emit sConnectDone(interface, network, WlanError::WERR_NET_PASSKEY);
+            return;
+        }
+
+        // Retrieve password from system credential (require temporary admin access)
+        OSStatus idResult = CWKeychainFindWiFiPassword(kCWKeychainDomainSystem, [apiNet ssidData], &apiPwd);
+        if(idResult != errSecSuccess){
+            qWarning("Unable to retrieve wifi credentials from keychain [id-err: 0x%08X]", idResult);
+            emit sConnectDone(interface, network, WlanError::WERR_NET_PASSKEY);
+            return;
+        }
+
+    /* Use an explicit password */
+    }else{
+        apiPwd = passwd.toNSString();
+    }
 
     /* Perform connection request */
+    NSError *apiErr = nil;
     bool succeed = [apiIface associateToNetwork:apiNet password:apiPwd error:&apiErr];
     if(!succeed){
         const WlanError idErr = CoreWlan::convertErrFromApi(apiErr);
