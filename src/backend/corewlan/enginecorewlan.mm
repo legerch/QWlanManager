@@ -53,14 +53,14 @@ namespace CoreWlan
 
 CoreWlan::CWInterfacePtr CoreWlan::makeApiPtrInterface(CWInterface *apiIface)
 {
-    return CWInterfacePtr(apiIface, [](CWInterface *ptr){
+    return CWInterfacePtr([apiIface retain], [](CWInterface *ptr){
         [ptr release];
     });
 }
 
 CoreWlan::CWNetworkPtr CoreWlan::makeApiPtrNetwork(CWNetwork *apiNet)
 {
-    return CWNetworkPtr(apiNet, [](CWNetwork *ptr){
+    return CWNetworkPtr([apiNet retain], [](CWNetwork *ptr){
         [ptr release];
     });
 }
