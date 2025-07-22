@@ -216,6 +216,7 @@ void WorkerCoreWlan::performScan(const qwm::Interface &interface)
 
     const WlanError scanResult = CoreWlan::convertErrFromApi(apiErr);
     if(scanResult != WlanError::WERR_NO_ERROR){
+        qCritical("Failed to perform scan request [err: %d]", scanResult);
         emit sScanDone(interface, scanResult);
         return;
     }
@@ -294,6 +295,34 @@ void WorkerCoreWlan::performScan(const qwm::Interface &interface)
     emit sScanDone(interface, scanResult);
 }
 
+void WorkerCoreWlan::performConnect(const Interface &interface, const Network &network, const QString &passwd)
+{
+    /* Do we have a valid profile ? */
+    if(passwd.isEmpty() && network.getProfileName().isEmpty()){
+        emit sConnectDone(interface, network, WlanError::WERR_NET_PASSKEY);
+        return;
+    }
+
+    /* Prepare connection request arguments */
+    CWInterface *apiIface = CoreWlan::getApiInterface(interface);
+    CWNetwork *apiNet = CoreWlan::getApiNetwork(network);
+    NSString *apiPwd = (passwd.isEmpty() ? nil : passwd.toNSString());
+
+    NSError *apiErr = nil;
+
+    /* Perform connection request */
+    bool succeed = [apiIface associateToNetwork:apiNet password:apiPwd error:&apiErr];
+    if(!succeed){
+        const WlanError idErr = CoreWlan::convertErrFromApi(apiErr);
+
+        qCritical("Failed to perform connection request [err: %d]", idErr);
+        emit sConnectDone(interface, network, idErr);
+        return;
+    }
+
+    emit sConnectDone(interface, network, WlanError::WERR_NO_ERROR);
+}
+
 /*****************************/
 /* Functions implementation  */
 /*      EngineCoreWlan       */
@@ -370,7 +399,7 @@ void EngineCoreWlan::interfaceScanNetworksAsync(Interface interface)
 
 void EngineCoreWlan::interfaceConnectAsync(Interface interface, Network network, const QString &password)
 {
-
+    QMetaObject::invokeMethod(m_worker, &WorkerCoreWlan::performConnect, Qt::QueuedConnection, interface, network, password);
 }
 
 void EngineCoreWlan::interfaceDisconnectAsync(Interface interface)
@@ -385,8 +414,12 @@ void EngineCoreWlan::interfaceForgetAsync(Interface interface, Network network)
 
 void EngineCoreWlan::registerWorkerEvents()
 {
-    QObject::connect(m_worker, &WorkerCoreWlan::sScanDone, q_ptr, [this](const Interface &interface, WlanError err) {
-        handleScanDone(interface, err);
+    QObject::connect(m_worker, &WorkerCoreWlan::sScanDone, q_ptr, [this](const Interface &interface, WlanError result){
+        handleScanDone(interface, result);
+    });
+
+    QObject::connect(m_worker, &WorkerCoreWlan::sConnectDone, q_ptr, [this](const qwm::Interface &interface, const qwm::Network &network, qwm::WlanError result){
+        handleConnectDone(interface, network.getSsid(), result);
     });
 }
 
