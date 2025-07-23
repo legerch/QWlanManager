@@ -5,6 +5,8 @@
 
 #include <QQueue>
 
+#include <optional>
+
 /*****************************/
 /* Namespace instructions    */
 /*****************************/

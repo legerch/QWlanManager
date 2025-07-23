@@ -6,6 +6,8 @@
 
 #include <QObject>
 
+#include <memory>
+
 /*****************************/
 /* Namespace instructions    */
 /*****************************/
