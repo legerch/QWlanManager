@@ -103,7 +103,7 @@ CoreWlan::WlanDelegatePtr CoreWlan::createApiPtrWlanDelegate(EngineCoreWlan *eng
 
     /* Set events to manage */
     const QList<CWEventType> events = {
-        CWEventTypeSSIDDidChange,
+        CWEventTypeSSIDDidChange
     };
 
     NSError *apiErr = nil;
@@ -387,7 +387,7 @@ void WorkerCoreWlan::performConnect(const Interface &interface, const Network &n
         // Retrieve password from system credential (require temporary admin access)
         OSStatus idResult = CWKeychainFindWiFiPassword(kCWKeychainDomainSystem, [apiNet ssidData], &apiPwd);
         if(idResult != errSecSuccess){
-            qWarning("Unable to retrieve wifi credentials from keychain [id-err: 0x%08X]", idResult);
+            qWarning("Unable to retrieve wifi credentials from keychain [ssid: '%s', id-err: %d]", qUtf8Printable(network.getSsid()), idResult);
             emit sConnectDone(interface, network, WlanError::WERR_NET_PASSKEY);
             return;
         }
@@ -417,6 +417,36 @@ void WorkerCoreWlan::performDisconnect(const Interface &interface)
     [apiIface disassociate];
 
     emit sDisconnectDone(interface, WlanError::WERR_NO_ERROR);
+}
+
+/*!
+ * \brief WorkerCoreWlan::performForget
+ * \param interface
+ * \param network
+ * \param opts
+ *
+ * \warning
+ * We can't use this method since that would require too high level privileges.
+ * So keep it just as a reminder
+ */
+void WorkerCoreWlan::performForget(const Interface &interface, const Network &network, WlanOptions opts)
+{
+    /* Do we allow to ask for admin access ? */
+    if(!opts.testFlag(WlanOption::WOPT_ALLOW_ADMIN_REQUESTS)){
+        emit sForgetDone(interface, network, WlanError::WERR_OPERATION_DENIED);
+        return;
+    }
+
+    /* Delete password for network (require temporary admin access) */
+    CWNetwork *apiNet = CoreWlan::getApiNetwork(network);
+    OSStatus idResult = CWKeychainDeleteWiFiPassword(kCWKeychainDomainSystem, [apiNet ssidData]);
+    if(idResult != errSecSuccess){
+        qWarning("Unable to delete wifi credentials from keychain [ssid: '%s', id-err: %d]", qUtf8Printable(network.getSsid()), idResult);
+        emit sForgetDone(interface, network, WlanError::WERR_OPERATION_DENIED);
+        return;
+    }
+
+    emit sForgetDone(interface, network, WlanError::WERR_NO_ERROR);
 }
 
 /*****************************/
@@ -511,7 +541,10 @@ void EngineCoreWlan::interfaceDisconnectAsync(Interface interface)
 
 void EngineCoreWlan::interfaceForgetAsync(Interface interface, Network network)
 {
-    //TODO: implement
+    /**
+     * CoreWlan doesn't allow to programmatically forget a network (or required too high level
+     * of permissions), so consider the method as unsupported.
+     */
     handleForgetDone(interface, network, WlanError::WERR_OPERATION_UNSUPPORTED);
 }
 
@@ -532,7 +565,7 @@ void EngineCoreWlan::registerWorkerEvents()
 
 void EngineCoreWlan::handleEventSsidChanged(const QString &ifaceName)
 {
-    /* Retrieve interface associated to event */
+    /* Retrieve associated interface */
     Interface iface = m_currentIfaces.value(createUidInterface(ifaceName));
     if(!iface.isValid()){
         qWarning("Received event 'SSID changed' on unknown interface '%s'", qUtf8Printable(ifaceName));
