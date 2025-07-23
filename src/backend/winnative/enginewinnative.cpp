@@ -169,14 +169,10 @@ void EngineWinNative::interfaceScanNetworksAsync(Interface interface)
     const GUID ifaceUuid = interface.getUid();
     const DWORD res = WlanScan(m_handle, &ifaceUuid, nullptr, nullptr, nullptr);
     if(res != ERROR_SUCCESS){
-        qCritical("Failed to perform scan request [err: %d]", res);
-        emit q_ptr->sScanFailed(interface.getUid(), WlanError::WERR_API_INTERNAL);
+        const WlanError idErr = WinNative::convertErrWinFromApi(res);
+        handleScanDone(interface, idErr);
         return;
     }
-
-    /* Update interface state */
-    InterfaceMutator miface(interface);
-    miface.setState(IfaceState::IFACE_STS_SCANNING);
 }
 
 void EngineWinNative::interfaceConnectAsync(Interface interface, Network network, const QString &password)
@@ -185,7 +181,7 @@ void EngineWinNative::interfaceConnectAsync(Interface interface, Network network
     if(!password.isEmpty()){
         const WlanError errProfile = interfaceNetworkProfileCreate(interface, network, password);
         if(errProfile != WlanError::WERR_NO_ERROR){
-            emit q_ptr->sConnectionFailed(interface.getUid(), network.getSsid(), errProfile);
+            handleConnectDone(interface, network.getSsid(), errProfile);
             return;
         }
     }
@@ -193,7 +189,7 @@ void EngineWinNative::interfaceConnectAsync(Interface interface, Network network
     /* Do we have a valid profile ? */
     const QString &profileName = network.getProfileName();
     if(profileName.isEmpty()){
-        emit q_ptr->sConnectionFailed(interface.getUid(), network.getSsid(), WlanError::WERR_NET_PASSKEY);
+        handleConnectDone(interface, network.getSsid(), WlanError::WERR_NET_PASSKEY);
         return;
     }
 
@@ -215,14 +211,10 @@ void EngineWinNative::interfaceConnectAsync(Interface interface, Network network
     /* Perform connection request */
     const DWORD res = WlanConnect(m_handle, &ifaceUuid, ptrParams, nullptr);
     if(res != ERROR_SUCCESS){
-        qCritical("Failed to perform connection request [err: %d]", res);
-        emit q_ptr->sConnectionFailed(interface.getUid(), network.getSsid(), WlanError::WERR_API_INTERNAL);
+        const WlanError idErr = WinNative::convertErrWinFromApi(res);
+        handleConnectDone(interface, network.getSsid(), idErr);
         return;
     }
-
-    /* Update interface state */
-    InterfaceMutator miface(interface);
-    miface.setState(IfaceState::IFACE_STS_CONNECTING);
 }
 
 void EngineWinNative::interfaceDisconnectAsync(Interface interface)
@@ -231,14 +223,10 @@ void EngineWinNative::interfaceDisconnectAsync(Interface interface)
     const GUID ifaceUuid = interface.getUid();
     const DWORD res = WlanDisconnect(m_handle, &ifaceUuid, nullptr);
     if(res != ERROR_SUCCESS){
-        qCritical("Failed to perform disconnection request [err: %d]", res);
-        emit q_ptr->sDisconnectionFailed(interface.getUid(), WlanError::WERR_API_INTERNAL);
+        const WlanError idErr = WinNative::convertErrWinFromApi(res);
+        handleDisconnectDone(interface, idErr);
         return;
     }
-
-    /* Update interface state */
-    InterfaceMutator miface(interface);
-    miface.setState(IfaceState::IFACE_STS_DISCONNECTING);
 }
 
 void EngineWinNative::interfaceForgetAsync(Interface interface, Network network)
@@ -253,9 +241,10 @@ bool EngineWinNative::apiOpen()
     DWORD verAsked = WLAN_API_VERSION;
     DWORD verReturned = 0;
 
-    DWORD res = WlanOpenHandle(verAsked, NULL, &verReturned, &m_handle);
+    const DWORD res = WlanOpenHandle(verAsked, NULL, &verReturned, &m_handle);
     if(res != ERROR_SUCCESS){
-        qCritical("Unable to open WLAN API [err: %d, version-asked: %d, version-returned: %d]", res, verAsked, verReturned);
+        const WlanError idErr = WinNative::convertErrWinFromApi(res);
+        qCritical("Unable to open WLAN API [id-err: %d, version-asked: %d, version-returned: %d]", idErr, verAsked, verReturned);
         return false;
     }
 
@@ -264,9 +253,10 @@ bool EngineWinNative::apiOpen()
 
 void EngineWinNative::apiClose()
 {
-    DWORD res = WlanCloseHandle(m_handle, NULL);
+    const DWORD res = WlanCloseHandle(m_handle, NULL);
     if(res != ERROR_SUCCESS){
-        qCritical("Unable to close WLAN API [err: %d]", res);
+        const WlanError idErr = WinNative::convertErrWinFromApi(res);
+        qCritical("Unable to close WLAN API [id-err: %d]", idErr);
         return;
     }
 }
@@ -280,12 +270,13 @@ void EngineWinNative::apiClose()
  */
 bool EngineWinNative::eventRegister()
 {
-    DWORD res = WlanRegisterNotification(m_handle, WLAN_NOTIFICATION_SOURCE_ACM | WLAN_NOTIFICATION_SOURCE_MSM, true,
+    const DWORD res = WlanRegisterNotification(m_handle, WLAN_NOTIFICATION_SOURCE_ACM | WLAN_NOTIFICATION_SOURCE_MSM, true,
                                          &EngineWinNative::cbNotif, this, nullptr, nullptr
     );
 
     if(res != ERROR_SUCCESS){
-        qCritical("Unable to register for WLAN notifications events [err: %d]", res);
+        const WlanError idErr = WinNative::convertErrWinFromApi(res);
+        qCritical("Unable to register for WLAN notifications events [id-err: %d]", idErr);
         return false;
     }
 
@@ -294,12 +285,13 @@ bool EngineWinNative::eventRegister()
 
 void EngineWinNative::eventUnregister()
 {
-    DWORD res = WlanRegisterNotification(m_handle, WLAN_NOTIFICATION_SOURCE_NONE, false,
+    const DWORD res = WlanRegisterNotification(m_handle, WLAN_NOTIFICATION_SOURCE_NONE, false,
                                          nullptr, this, nullptr, nullptr
                                          );
 
     if(res != ERROR_SUCCESS){
-        qCritical("Unable to unregister WLAN notifications events [err: %d]", res);
+        const WlanError idErr = WinNative::convertErrWinFromApi(res);
+        qCritical("Unable to unregister WLAN notifications events [id-err: %d]", idErr);
         return;
     }
 }
@@ -343,7 +335,8 @@ WlanError EngineWinNative::interfaceNetworksUpdate(Interface interface)
     /* Perform request */
     DWORD res = WlanGetAvailableNetworkList(m_handle, &ifaceUuid, flags, nullptr, &apiNetList);
     if(res != ERROR_SUCCESS){
-        qCritical("Unable to retrieve list of networks [uuid: %s, err: %d]", qUtf8Printable(interface.getUid().toString()), res);
+        const WlanError idErr = WinNative::convertErrWinFromApi(res);
+        qCritical("Unable to retrieve list of networks [uuid: %s, id-err: %d]", qUtf8Printable(interface.getUid().toString()), idErr);
         return WlanError::WERR_API_INTERNAL;
     }
 
@@ -467,12 +460,14 @@ WlanError EngineWinNative::interfaceNetworkProfileDelete(Interface interface, Ne
     /* Perform request */
     const DWORD res = WlanDeleteProfile(m_handle, &ifaceUuid, strProfile, nullptr);
     if(res != ERROR_SUCCESS){
-        qCritical("Unable to delete profile [uuid: %s, ssid: %s, id-result: %d]",
+        const WlanError idErr = WinNative::convertErrWinFromApi(res);
+
+        qCritical("Unable to delete profile [uuid: %s, ssid: %s, id-err: %d]",
                   qUtf8Printable(interface.getUid().toString()),
                   qUtf8Printable(network.getSsid()),
-                  res
+                  idErr
         );
-        return WlanError::WERR_API_INTERNAL;
+        return idErr;
     }
 
     return WlanError::WERR_NO_ERROR;

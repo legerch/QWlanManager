@@ -61,6 +61,10 @@ void ManagerPrivate::interfaceScanNetworks(Interface interface)
         return;
     }
 
+    /* Update interface state */
+    InterfaceMutator miface(interface);
+    miface.setState(IfaceState::IFACE_STS_SCANNING);
+
     /* Start scan request */
     interfaceScanNetworksAsync(interface);
 }
@@ -92,6 +96,10 @@ void ManagerPrivate::interfaceConnect(Interface interface, Network network, cons
         return;
     }
 
+    /* Update interface state */
+    InterfaceMutator miface(interface);
+    miface.setState(IfaceState::IFACE_STS_CONNECTING);
+
     /* Start connection request */
     interfaceConnectAsync(interface, network, password);
 }
@@ -122,6 +130,10 @@ void ManagerPrivate::interfaceDisconnect(Interface interface)
         }
         return;
     }
+
+    /* Update interface state */
+    InterfaceMutator miface(interface);
+    miface.setState(IfaceState::IFACE_STS_DISCONNECTING);
 
     /* Start disconnection request */
     interfaceDisconnectAsync(interface);
