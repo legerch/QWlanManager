@@ -411,6 +411,14 @@ void WorkerCoreWlan::performConnect(const Interface &interface, const Network &n
     emit sConnectDone(interface, network, WlanError::WERR_NO_ERROR);
 }
 
+void WorkerCoreWlan::performDisconnect(const Interface &interface)
+{
+    CWInterface *apiIface = CoreWlan::getApiInterface(interface);
+    [apiIface disassociate];
+
+    emit sDisconnectDone(interface, WlanError::WERR_NO_ERROR);
+}
+
 /*****************************/
 /* Functions implementation  */
 /*      EngineCoreWlan       */
@@ -498,8 +506,7 @@ void EngineCoreWlan::interfaceConnectAsync(Interface interface, Network network,
 
 void EngineCoreWlan::interfaceDisconnectAsync(Interface interface)
 {
-    //TODO: implement
-    handleDisconnectDone(interface, WlanError::WERR_OPERATION_UNSUPPORTED);
+    QMetaObject::invokeMethod(m_worker, &WorkerCoreWlan::performDisconnect, Qt::QueuedConnection, interface);
 }
 
 void EngineCoreWlan::interfaceForgetAsync(Interface interface, Network network)
@@ -516,6 +523,10 @@ void EngineCoreWlan::registerWorkerEvents()
 
     QObject::connect(m_worker, &WorkerCoreWlan::sConnectDone, q_ptr, [this](const qwm::Interface &interface, const qwm::Network &network, qwm::WlanError result){
         handleConnectDone(interface, network.getSsid(), result);
+    });
+
+    QObject::connect(m_worker, &WorkerCoreWlan::sDisconnectDone, q_ptr, [this](const Interface &interface, WlanError result){
+        handleDisconnectDone(interface, result);
     });
 }
 
