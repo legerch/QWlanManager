@@ -27,15 +27,17 @@ namespace qwm::WinNative
  *
  * \param[in] apiErr
  * API error to convert. \n
- * Unknown error will be set to \c WlanError::WERR_UNKNOWN.
+ * Unknown error will be set to \c WlanError::WERR_API_INTERNAL.
  *
  * \note
  * https://learn.microsoft.com/en-us/windows/win32/nativewifi/wlan-reason-code
  *
  * \return
  * Returns library equivalent error.
+ *
+ * \sa convertErrWinFromApi()
  */
-WlanError convertErrFromApi(WLAN_REASON_CODE apiErr)
+WlanError convertErrWlanFromApi(WLAN_REASON_CODE apiErr)
 {
     WlanError idErr = WlanError::WERR_API_INTERNAL;
 
@@ -73,7 +75,63 @@ WlanError convertErrFromApi(WLAN_REASON_CODE apiErr)
                 strErr = QString::fromWCharArray(buffer);
             }
 
-            qWarning("Unable to convert error ID from API [id: 0x%08X, string: '%s']", apiErr, qUtf8Printable(strErr));
+            qWarning("Unable to convert WLAN error ID from API [id: 0x%08X, string: '%s']", apiErr, qUtf8Printable(strErr));
+        }break;
+    }
+
+    return idErr;
+}
+
+/*!
+ * \brief Use to convert <b>Windows System Error codes</b> to
+ * library equivalent error.
+ *
+ * \param[in] apiErr
+ * API error to convert. \n
+ * Unknown error will be set to \c WlanError::WERR_API_INTERNAL.
+ *
+ * \note
+ * https://learn.microsoft.com/en-us/windows/win32/debug/system-error-codes--0-499-
+ *
+ * \return
+ * Returns library equivalent error.
+ *
+ * \sa convertErrWlanFromApi()
+ */
+WlanError convertErrWinFromApi(DWORD apiErr)
+{
+    WlanError idErr = WlanError::WERR_API_INTERNAL;
+
+    switch(apiErr)
+    {
+        case ERROR_SUCCESS:             idErr = WlanError::WERR_NO_ERROR; break;
+
+        case ERROR_INVALID_FUNCTION:
+        case ERROR_INVALID_HANDLE:
+        case ERROR_BAD_FORMAT:
+        case ERROR_INVALID_DATA:        idErr = WlanError::WERR_ITEM_INVALID; break;
+
+        case ERROR_ACCESS_DENIED:       idErr = WlanError::WERR_OPERATION_DENIED; break;
+
+        default:{
+            // Convert error to string
+            WCHAR buffer[BUFFER_SIZE_MAX];
+            const DWORD size = FormatMessageW(
+                FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+                nullptr,
+                apiErr,
+                MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+                buffer, BUFFER_SIZE_MAX,
+                nullptr
+            );
+
+            // Manage result
+            QString strErr = "none";
+            if(size > 0){
+                strErr = QString::fromWCharArray(buffer).trimmed();
+            }
+
+            qWarning("Unable to convert system error ID from API [id: 0x%08X, string: '%s']", apiErr, qUtf8Printable(strErr));
         }break;
     }
 

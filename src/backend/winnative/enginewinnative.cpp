@@ -443,7 +443,7 @@ WlanError EngineWinNative::interfaceNetworkProfileCreate(Interface interface, Ne
                   qUtf8Printable(network.getSsid()),
                   res, idStatus
         );
-        return WinNative::convertErrFromApi(idStatus);
+        return WinNative::convertErrWlanFromApi(idStatus);
     }
 
     /* Update network informations */
@@ -593,7 +593,7 @@ void EngineWinNative::cbNotifAcm(PWLAN_NOTIFICATION_DATA ptrDataNotif, PVOID ptr
 
             /* Manage scan failure */
             const QUuid idInterface = QUuid(ptrDataNotif->InterfaceGuid);
-            const WlanError idErr = WinNative::convertErrFromApi(*apiErr);
+            const WlanError idErr = WinNative::convertErrWlanFromApi(*apiErr);
 
             engine->interfaceScanFinished(idInterface, idErr);
         }break;
@@ -612,7 +612,7 @@ void EngineWinNative::cbNotifAcm(PWLAN_NOTIFICATION_DATA ptrDataNotif, PVOID ptr
             const QString ssid = QString::fromUtf8(reinterpret_cast<char *>(connectData->dot11Ssid.ucSSID), connectData->dot11Ssid.uSSIDLength);
 
             const WLAN_REASON_CODE apiErr = engine->m_errConnect.value(idInterface, connectData->wlanReasonCode);
-            const WlanError idErr = WinNative::convertErrFromApi(apiErr);
+            const WlanError idErr = WinNative::convertErrWlanFromApi(apiErr);
             engine->m_errConnect.remove(idInterface);
 
             engine->interfaceConnectionFinished(idInterface, ssid, idErr);
@@ -622,7 +622,7 @@ void EngineWinNative::cbNotifAcm(PWLAN_NOTIFICATION_DATA ptrDataNotif, PVOID ptr
             const PWLAN_CONNECTION_NOTIFICATION_DATA connectData = static_cast<PWLAN_CONNECTION_NOTIFICATION_DATA>(ptrDataNotif->pData);
 
             const QUuid idInterface = QUuid(ptrDataNotif->InterfaceGuid);
-            const WlanError idErr = WinNative::convertErrFromApi(connectData->wlanReasonCode);
+            const WlanError idErr = WinNative::convertErrWlanFromApi(connectData->wlanReasonCode);
 
             engine->interfaceDisconnectionFinished(idInterface, idErr);
         }break;

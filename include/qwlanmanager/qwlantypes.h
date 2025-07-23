@@ -31,6 +31,7 @@ namespace qwm
         WERR_OPERATION_UNSUPPORTED, /**< Operation is not supported on this platform version */
         WERR_OPERATION_CANCEL,      /**< Operation has been cancelled */
         WERR_OPERATION_TIMEOUT,     /**< Operation failure due to timeout */
+        WERR_OPERATION_DENIED,      /**< Operation failure due to permissions missing */
         WERR_ITEM_INVALID,          /**< Operation cannot be performed due to an invalid item */
         WERR_IFACE_BUSY,            /**< Interface is already busy, cannot perform. Setting option \c IfaceOption::IFACE_OPT_REQUEST will help to get ride of this error */
         WERR_NET_UNAVAILABLE,       /**< Trying to connect to an unailable network */

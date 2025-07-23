@@ -46,6 +46,7 @@ QString wlanErrorToString(WlanError idErr)
         {WlanError::WERR_OPERATION_UNSUPPORTED, "operation unsupported"},
         {WlanError::WERR_OPERATION_CANCEL, "operation cancelled"},
         {WlanError::WERR_OPERATION_TIMEOUT, "operation reached timeout"},
+        {WlanError::WERR_OPERATION_DENIED, "operation denied"},
         {WlanError::WERR_ITEM_INVALID, "invalid item"},
         {WlanError::WERR_IFACE_BUSY, "interface busy"},
         {WlanError::WERR_NET_UNAVAILABLE, "network unavailable"},
