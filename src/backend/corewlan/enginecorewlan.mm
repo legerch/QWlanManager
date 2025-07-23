@@ -543,6 +543,15 @@ void EngineCoreWlan::handleEventSsidChanged(const QString &ifaceName)
     CWInterface *apiIface = CoreWlan::getApiInterface(iface);
     const QString newSsid = QString::fromNSString([apiIface ssid]);
 
+    Network prevNet = iface.getNetworkConnected();
+    const QString prevSsid = (prevNet.isValid() ? prevNet.getSsid() : "");
+
+    // Do SSID has really changed ?
+    // (perform debouncing since this event can be fired 3/4 times for one connection)
+    if(prevSsid == newSsid){
+        return;
+    }
+
     // Did we disconnect ?
     if(newSsid.isEmpty()){
         handleDisconnectDone(iface, WlanError::WERR_NO_ERROR);
