@@ -55,7 +55,7 @@ namespace qwm::CoreWlan
 /*****************************/
 /* Custom objective-C class  */
 /*     LocationDelegate      */
-/*        Implementation     */
+/*      Implementation       */
 /*****************************/
 
 @implementation LocationDelegate

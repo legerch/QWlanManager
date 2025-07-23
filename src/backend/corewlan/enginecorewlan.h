@@ -61,9 +61,17 @@ protected:
 private:
     void registerWorkerEvents();
 
+public: // Declared as public to be able to access it from delegate type
+    void handleEventSsidChanged(const QString &ifaceName);
+
+private:
+    QUuid createUidInterface(const QString &ifaceName);
+
 private:
     QThread m_thread;
-    WorkerCoreWlan *m_worker = nullptr;
+    WorkerCoreWlan *m_worker{nullptr};
+
+    std::any m_delegate{nullptr}; // Use "std::any" since needed types are objective-c++ types
 
 private:
     static const QUuid NS_UID;

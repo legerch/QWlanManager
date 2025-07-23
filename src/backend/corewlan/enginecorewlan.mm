@@ -15,25 +15,32 @@ extern "C" {  // Otherwise it won't find CWKeychain* symbols at link time
 /*****************************/
 
 /*****************************/
-/* Start namespace           */
+/* Custom objective-C class  */
+/*      WlanDelegate         */
+/*       Definitions         */
 /*****************************/
 
-namespace qwm
+@interface WlanDelegate : NSObject<CWEventDelegate>
 {
+@private
+    qwm::EngineCoreWlan *m_engine;
+}
+
+- (WlanDelegate*)init:(qwm::EngineCoreWlan *)engine;
+
+@end
 
 /*****************************/
-/* Define constants          */
-/*****************************/
-const QUuid EngineCoreWlan::NS_UID = QUuid("{019812a3-ce07-7259-8f98-046be5b56d6e}");
-
-/*****************************/
-/* Helper definitions        */
+/* C++ Helper definitions    */
 /*****************************/
 
-namespace CoreWlan
+namespace qwm::CoreWlan
 {
     using CWInterfacePtr = std::shared_ptr<CWInterface>;
     using CWNetworkPtr = std::shared_ptr<CWNetwork>;
+    using WlanDelegatePtr = std::shared_ptr<WlanDelegate>;
+
+    WlanDelegatePtr createApiPtrWlanDelegate(EngineCoreWlan *engine, CWWiFiClient *client);
 
     CWInterfacePtr makeApiPtrInterface(CWInterface *apiIface);
     CWNetworkPtr makeApiPtrNetwork(CWNetwork *apiNet);
@@ -47,11 +54,75 @@ namespace CoreWlan
     AuthAlgo convertAuthFromApi(CWSecurity apiAuth);
     AuthAlgo searchAuthFromNet(const CWNetwork *apiNet);
 
-} // CoreWlan
+} // qwm::CoreWlan
+
+/*****************************/
+/* Custom objective-C class  */
+/*      WlanDelegate         */
+/*     Implementations       */
+/*****************************/
+
+@implementation WlanDelegate
+
+- (WlanDelegate*)init:(qwm::EngineCoreWlan *)engine
+{
+    self = [super init];
+
+    m_engine = engine;
+
+    return self;
+}
+
+- (void)ssidDidChangeForWiFiInterfaceWithName:(NSString *)interfaceName
+{
+    m_engine->handleEventSsidChanged(QString::fromNSString(interfaceName));
+}
+
+@end
+
+/*****************************/
+/* Start namespace           */
+/*****************************/
+
+namespace qwm
+{
+
+/*****************************/
+/* Define constants          */
+/*****************************/
+const QUuid EngineCoreWlan::NS_UID = QUuid("{019812a3-ce07-7259-8f98-046be5b56d6e}");
 
 /*****************************/
 /* Helper implementations    */
 /*****************************/
+
+CoreWlan::WlanDelegatePtr CoreWlan::createApiPtrWlanDelegate(EngineCoreWlan *engine, CWWiFiClient *client)
+{
+    /* Create instance */
+    WlanDelegate *apiDelegate = [[WlanDelegate alloc] init:engine];
+
+    /* Set events to manage */
+    const QList<CWEventType> events = {
+        CWEventTypeSSIDDidChange,
+    };
+
+    NSError *apiErr = nil;
+    for(auto it = events.cbegin(); it != events.cend(); ++it){
+        [client startMonitoringEventWithType:*it error:&apiErr];
+        if(apiErr){
+            const WlanError idErr = CoreWlan::convertErrFromApi(apiErr);
+            qWarning("Unable to monitor event [id-event: %d, id-err: %d]", static_cast<int>(*it), idErr);
+        }
+    }
+
+    /* Associate delegate to client */
+    client.delegate = apiDelegate;
+
+    /* Create shared pointer */
+    return std::shared_ptr<WlanDelegate>(apiDelegate, [](WlanDelegate *ptr){
+        [ptr release];
+    });
+}
 
 CoreWlan::CWInterfacePtr CoreWlan::makeApiPtrInterface(CWInterface *apiIface)
 {
@@ -214,7 +285,6 @@ void WorkerCoreWlan::performScan(const qwm::Interface &interface)
 
     const WlanError scanResult = CoreWlan::convertErrFromApi(apiErr);
     if(scanResult != WlanError::WERR_NO_ERROR){
-        qCritical("Failed to perform scan request [err: %d]", scanResult);
         emit sScanDone(interface, scanResult);
         return;
     }
@@ -359,6 +429,9 @@ EngineCoreWlan::~EngineCoreWlan()
 
 void EngineCoreWlan::initialize()
 {
+    /* Create events delegate */
+    m_delegate = CoreWlan::createApiPtrWlanDelegate(this, HandleCoreWlan::instance());
+
     /* Create worker thread */
     m_worker = new WorkerCoreWlan();
     m_worker->moveToThread(&m_thread);
@@ -386,10 +459,13 @@ void EngineCoreWlan::interfaceListRefresh()
 
     /* Parse each interface */
     for(CWInterface *apiIface : listInterfaces){
-        // Manage known interfaces
+        // Generate UID
+        const QString name = QString::fromNSString([apiIface interfaceName]);
         const QString hwAddr = QString::fromNSString([apiIface hardwareAddress]);
-        const QUuid uid = QUuid::createUuidV5(NS_UID, hwAddr);
 
+        const QUuid uid = QUuid::createUuidV5(NS_UID, name);
+
+        // Manage known interfaces
         Interface iface;
         if(m_prevIfaces.contains(uid)){
             iface = m_prevIfaces.value(uid);
@@ -400,7 +476,7 @@ void EngineCoreWlan::interfaceListRefresh()
 
             miface.setUid(uid);
             miface.setHwAddress(hwAddr);
-            miface.setName(QString::fromNSString([apiIface interfaceName]));
+            miface.setName(name);
             miface.setDescription("");
 
             miface.setDataEngine(CoreWlan::makeApiPtrInterface(apiIface));
@@ -441,6 +517,52 @@ void EngineCoreWlan::registerWorkerEvents()
     QObject::connect(m_worker, &WorkerCoreWlan::sConnectDone, q_ptr, [this](const qwm::Interface &interface, const qwm::Network &network, qwm::WlanError result){
         handleConnectDone(interface, network.getSsid(), result);
     });
+}
+
+void EngineCoreWlan::handleEventSsidChanged(const QString &ifaceName)
+{
+    /* Retrieve interface associated to event */
+    Interface iface = m_currentIfaces.value(createUidInterface(ifaceName));
+    if(!iface.isValid()){
+        qWarning("Received event 'SSID changed' on unknown interface '%s'", qUtf8Printable(ifaceName));
+        return;
+    }
+
+    /**
+     *  Do we need to manage this event ?
+     *  Use those events only to track "external changes" (from
+     *  UI or other apps) since request performed by the lib itself
+     *  are already handled
+     */
+    if(iface.isBusy()){
+        return;
+    }
+
+    /* Manage event */
+    // Convert connection infos
+    CWInterface *apiIface = CoreWlan::getApiInterface(iface);
+    const QString newSsid = QString::fromNSString([apiIface ssid]);
+
+    // Did we disconnect ?
+    if(newSsid.isEmpty()){
+        handleDisconnectDone(iface, WlanError::WERR_NO_ERROR);
+        return;
+    }
+
+    // Connection has been performed, did the network has been scanned ?
+    Network net = iface.getNetwork(newSsid);
+    if(net.isValid()){
+        handleConnectDone(iface, newSsid, WlanError::WERR_NO_ERROR);
+
+    // Network has not been scanned, so we must force the scan to retrieve network properties
+    }else{
+        interfaceScanNetworks(iface);
+    }
+}
+
+QUuid EngineCoreWlan::createUidInterface(const QString &ifaceName)
+{
+    return QUuid::createUuidV5(NS_UID, ifaceName);
 }
 
 /*****************************/

@@ -34,6 +34,7 @@
 
 This cross-platform library allow to control interfaces operations (_perform a scan, connect to a network, etc..._) and manage all related events through the class `qwm::Manager`. Main features of the library are:
 - Asynchronous operations: no blocking operations, all event-driven
+- Catch "external" wifi events (wifi status changed through OS UI, from other apps, etc...)
 - Interfaces added or removed are detected
 - UTF-8 networks are supported
 - Datas classes are **QML** compatible
