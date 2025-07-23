@@ -526,17 +526,38 @@ void EngineCoreWlan::interfaceListRefresh()
 
 void EngineCoreWlan::interfaceScanNetworksAsync(Interface interface)
 {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QMetaObject::invokeMethod(m_worker, &WorkerCoreWlan::performScan, Qt::QueuedConnection, interface);
+#else
+    QMetaObject::invokeMethod(m_worker, "performScan", Qt::QueuedConnection,
+        Q_ARG(qwm::Interface, interface)
+    );
+#endif
 }
 
 void EngineCoreWlan::interfaceConnectAsync(Interface interface, Network network, const QString &password)
 {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QMetaObject::invokeMethod(m_worker, &WorkerCoreWlan::performConnect, Qt::QueuedConnection, interface, network, password, m_opts);
+#else
+    QMetaObject::invokeMethod(m_worker, "performConnect", Qt::QueuedConnection,
+        Q_ARG(qwm::Interface, interface),
+        Q_ARG(qwm::Network, network),
+        Q_ARG(QString, password),
+        Q_ARG(qwm::WlanOptions, m_opts)
+    );
+#endif
 }
 
 void EngineCoreWlan::interfaceDisconnectAsync(Interface interface)
 {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QMetaObject::invokeMethod(m_worker, &WorkerCoreWlan::performDisconnect, Qt::QueuedConnection, interface);
+#else
+    QMetaObject::invokeMethod(m_worker, "performDisconnect", Qt::QueuedConnection,
+        Q_ARG(qwm::Interface, interface)
+    );
+#endif
 }
 
 void EngineCoreWlan::interfaceForgetAsync(Interface interface, Network network)
