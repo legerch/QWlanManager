@@ -180,12 +180,18 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a91e05fef421e78d4738201dec62a162e" id="r_a91e05fef421e78d4738201dec62a162e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a91e05fef421e78d4738201dec62a162e">Manager</a> (QObject *parent=nullptr)</td></tr>
 <tr class="memdesc:a91e05fef421e78d4738201dec62a162e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a wlan manager.  <br /></td></tr>
 <tr class="separator:a91e05fef421e78d4738201dec62a162e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a98812a47739dc76d470ae463f9317a2f" id="r_a98812a47739dc76d470ae463f9317a2f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceqwm.html#ab2ca2fb5f6924b72e9c8d2c8cae93bd8">WlanError</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a98812a47739dc76d470ae463f9317a2f">setCachePolicy</a> (const QUuid &amp;idInterface, const <a class="el" href="classqwm_1_1_cache_policy.html">CachePolicy</a> &amp;cachePolicy)</td></tr>
-<tr class="memdesc:a98812a47739dc76d470ae463f9317a2f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allow to set the cache policy of an interface.  <br /></td></tr>
-<tr class="separator:a98812a47739dc76d470ae463f9317a2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a996c35e8a97f32167a7c143c2d7c7118" id="r_a996c35e8a97f32167a7c143c2d7c7118"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceqwm.html#ab2ca2fb5f6924b72e9c8d2c8cae93bd8">WlanError</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a996c35e8a97f32167a7c143c2d7c7118">setOptions</a> (const QUuid &amp;idInterface, IfaceOptions opts)</td></tr>
-<tr class="memdesc:a996c35e8a97f32167a7c143c2d7c7118"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allow to set options of an interface.  <br /></td></tr>
-<tr class="separator:a996c35e8a97f32167a7c143c2d7c7118"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2e2d0cbfd6db2e36ce488cc37abfb798" id="r_a2e2d0cbfd6db2e36ce488cc37abfb798"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2e2d0cbfd6db2e36ce488cc37abfb798">setOptions</a> (WlanOptions opts)</td></tr>
+<tr class="memdesc:a2e2d0cbfd6db2e36ce488cc37abfb798"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allow to set options of the manager.  <br /></td></tr>
+<tr class="separator:a2e2d0cbfd6db2e36ce488cc37abfb798"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a17c9d39fc80ace9d1df3bb5606c8a48f" id="r_a17c9d39fc80ace9d1df3bb5606c8a48f"><td class="memItemLeft" align="right" valign="top">WlanOptions&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a17c9d39fc80ace9d1df3bb5606c8a48f">getOptions</a> () const</td></tr>
+<tr class="memdesc:a17c9d39fc80ace9d1df3bb5606c8a48f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieve current manager options.  <br /></td></tr>
+<tr class="separator:a17c9d39fc80ace9d1df3bb5606c8a48f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afa8bbc48f011c915ae767f801589bd1d" id="r_afa8bbc48f011c915ae767f801589bd1d"><td class="memItemLeft" align="right" valign="top">ListInterfaces&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afa8bbc48f011c915ae767f801589bd1d">getInterfaces</a> () const</td></tr>
+<tr class="memdesc:afa8bbc48f011c915ae767f801589bd1d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allow to retrieve list of interfaces.  <br /></td></tr>
+<tr class="separator:afa8bbc48f011c915ae767f801589bd1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a256a823ed164020cdacc887142d47578" id="r_a256a823ed164020cdacc887142d47578"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classqwm_1_1_interface.html">Interface</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a256a823ed164020cdacc887142d47578">getInterface</a> (const QUuid &amp;idInterface) const</td></tr>
+<tr class="memdesc:a256a823ed164020cdacc887142d47578"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allow to retrieve an interface via its ID.  <br /></td></tr>
+<tr class="separator:a256a823ed164020cdacc887142d47578"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae57ea6f7b2140014bfb253e3b8c1cae7" id="r_ae57ea6f7b2140014bfb253e3b8c1cae7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae57ea6f7b2140014bfb253e3b8c1cae7">doScan</a> (const QUuid &amp;idInterface)</td></tr>
 <tr class="memdesc:ae57ea6f7b2140014bfb253e3b8c1cae7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allow to perform a scan.  <br /></td></tr>
 <tr class="separator:ae57ea6f7b2140014bfb253e3b8c1cae7"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -198,12 +204,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a96c668ab802142083558cdc3cca9f9eb" id="r_a96c668ab802142083558cdc3cca9f9eb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a96c668ab802142083558cdc3cca9f9eb">doForget</a> (const QUuid &amp;idInterface, const QString &amp;ssid)</td></tr>
 <tr class="memdesc:a96c668ab802142083558cdc3cca9f9eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allow to remove network internal credentials.  <br /></td></tr>
 <tr class="separator:a96c668ab802142083558cdc3cca9f9eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afa8bbc48f011c915ae767f801589bd1d" id="r_afa8bbc48f011c915ae767f801589bd1d"><td class="memItemLeft" align="right" valign="top">ListInterfaces&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afa8bbc48f011c915ae767f801589bd1d">getInterfaces</a> () const</td></tr>
-<tr class="memdesc:afa8bbc48f011c915ae767f801589bd1d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allow to retrieve list of interfaces.  <br /></td></tr>
-<tr class="separator:afa8bbc48f011c915ae767f801589bd1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a256a823ed164020cdacc887142d47578" id="r_a256a823ed164020cdacc887142d47578"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classqwm_1_1_interface.html">Interface</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a256a823ed164020cdacc887142d47578">getInterface</a> (const QUuid &amp;idInterface) const</td></tr>
-<tr class="memdesc:a256a823ed164020cdacc887142d47578"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allow to retrieve an interface via its ID.  <br /></td></tr>
-<tr class="separator:a256a823ed164020cdacc887142d47578"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Use to manage all <b>wlan</b> related operations. </p>
@@ -246,69 +246,103 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a98812a47739dc76d470ae463f9317a2f" name="a98812a47739dc76d470ae463f9317a2f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a98812a47739dc76d470ae463f9317a2f">&#9670;&#160;</a></span>setCachePolicy()</h2>
+<a id="a2e2d0cbfd6db2e36ce488cc37abfb798" name="a2e2d0cbfd6db2e36ce488cc37abfb798"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2e2d0cbfd6db2e36ce488cc37abfb798">&#9670;&#160;</a></span>setOptions()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespaceqwm.html#ab2ca2fb5f6924b72e9c8d2c8cae93bd8">WlanError</a> qwm::Manager::setCachePolicy </td>
+          <td class="memname">void qwm::Manager::setOptions </td>
           <td>(</td>
-          <td class="paramtype">const QUuid &amp;</td>          <td class="paramname"><span class="paramname"><em>idInterface</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramtype">WlanOptions</td>          <td class="paramname"><span class="paramname"><em>opts</em></span></td><td>)</td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="classqwm_1_1_cache_policy.html">CachePolicy</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>cachePolicy</em></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Allow to set the cache policy of an interface. </p>
+<p>Allow to set options of the manager. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">idInterface</td><td><a class="el" href="classqwm_1_1_interface.html" title="Class containing interface properties.">Interface</a> ID to use. <br  />
-If invalid, error <code><a class="el" href="namespaceqwm.html#ab2ca2fb5f6924b72e9c8d2c8cae93bd8a3174e74fecf6cb905bf1cb0c33d22cb7">WlanError::WERR_ITEM_INVALID</a></code> will be returned. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">cachePolicy</td><td>Cache policy to use.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Returns <code><a class="el" href="namespaceqwm.html#ab2ca2fb5f6924b72e9c8d2c8cae93bd8aa3e0c65f595e64122cf05440cfa616e0">WlanError::WERR_NO_ERROR</a></code> if succeed, otherwise see <code><a class="el" href="namespaceqwm.html#ab2ca2fb5f6924b72e9c8d2c8cae93bd8" title="List of all WLAN related errors.">qwm::WlanError</a></code> for more details</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a996c35e8a97f32167a7c143c2d7c7118" title="Allow to set options of an interface.">setOptions()</a> </dd></dl>
-
-</div>
-</div>
-<a id="a996c35e8a97f32167a7c143c2d7c7118" name="a996c35e8a97f32167a7c143c2d7c7118"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a996c35e8a97f32167a7c143c2d7c7118">&#9670;&#160;</a></span>setOptions()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="namespaceqwm.html#ab2ca2fb5f6924b72e9c8d2c8cae93bd8">WlanError</a> qwm::Manager::setOptions </td>
-          <td>(</td>
-          <td class="paramtype">const QUuid &amp;</td>          <td class="paramname"><span class="paramname"><em>idInterface</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">IfaceOptions</td>          <td class="paramname"><span class="paramname"><em>opts</em></span>&#160;)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Allow to set options of an interface. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">idInterface</td><td><a class="el" href="classqwm_1_1_interface.html" title="Class containing interface properties.">Interface</a> ID to use. <br  />
-If invalid, error <code><a class="el" href="namespaceqwm.html#ab2ca2fb5f6924b72e9c8d2c8cae93bd8a3174e74fecf6cb905bf1cb0c33d22cb7">WlanError::WERR_ITEM_INVALID</a></code> will be returned. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">opts</td><td>Options to use.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Returns <code><a class="el" href="namespaceqwm.html#ab2ca2fb5f6924b72e9c8d2c8cae93bd8aa3e0c65f595e64122cf05440cfa616e0">WlanError::WERR_NO_ERROR</a></code> if succeed, otherwise see <code><a class="el" href="namespaceqwm.html#ab2ca2fb5f6924b72e9c8d2c8cae93bd8" title="List of all WLAN related errors.">qwm::WlanError</a></code> for more details</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a98812a47739dc76d470ae463f9317a2f" title="Allow to set the cache policy of an interface.">setCachePolicy()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a17c9d39fc80ace9d1df3bb5606c8a48f" title="Retrieve current manager options.">getOptions()</a> </dd></dl>
+
+</div>
+</div>
+<a id="a17c9d39fc80ace9d1df3bb5606c8a48f" name="a17c9d39fc80ace9d1df3bb5606c8a48f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a17c9d39fc80ace9d1df3bb5606c8a48f">&#9670;&#160;</a></span>getOptions()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">WlanOptions qwm::Manager::getOptions </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Retrieve current manager options. </p>
+<dl class="section return"><dt>Returns</dt><dd>Returns options of manager</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a2e2d0cbfd6db2e36ce488cc37abfb798" title="Allow to set options of the manager.">setOptions()</a> </dd></dl>
+
+</div>
+</div>
+<a id="afa8bbc48f011c915ae767f801589bd1d" name="afa8bbc48f011c915ae767f801589bd1d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afa8bbc48f011c915ae767f801589bd1d">&#9670;&#160;</a></span>getInterfaces()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">ListInterfaces qwm::Manager::getInterfaces </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Allow to retrieve list of interfaces. </p>
+<dl class="section return"><dt>Returns</dt><dd>Returns list of available interfaces.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a256a823ed164020cdacc887142d47578" title="Allow to retrieve an interface via its ID.">getInterface()</a> </dd>
+<dd>
+<a class="el" href="#ad295991feddb567efdf6306043217055" title="Emitted when a new interface has been added.">sInterfaceAdded()</a>, <a class="el" href="#afb810205ce96e95de740d0bd4a3ed152" title="Emitted when an interface has been removed.">sInterfaceRemoved()</a> </dd></dl>
+
+</div>
+</div>
+<a id="a256a823ed164020cdacc887142d47578" name="a256a823ed164020cdacc887142d47578"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a256a823ed164020cdacc887142d47578">&#9670;&#160;</a></span>getInterface()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classqwm_1_1_interface.html">Interface</a> qwm::Manager::getInterface </td>
+          <td>(</td>
+          <td class="paramtype">const QUuid &amp;</td>          <td class="paramname"><span class="paramname"><em>idInterface</em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Allow to retrieve an interface via its ID. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">idInterface</td><td><a class="el" href="classqwm_1_1_interface.html" title="Class containing interface properties.">Interface</a> ID to use. <br  />
+If ID is unknown, returned interface will be invalid.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Returns interface related to the ID.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#afa8bbc48f011c915ae767f801589bd1d" title="Allow to retrieve list of interfaces.">getInterfaces()</a> </dd>
+<dd>
+<a class="el" href="classqwm_1_1_interface.html#a55d2686aea4171c767e8c89398356a63" title="Allow to know if an interface instance is valid.">Interface::isValid()</a> </dd></dl>
 
 </div>
 </div>
@@ -379,6 +413,8 @@ If the password isn't registered internally or is wrong, signal <code><a class="
   </dd>
 </dl>
 <dl class="section note"><dt>Note</dt><dd>Recommended scenario is to call this method once with empty password and ask the user for the password only if <code><a class="el" href="namespaceqwm.html#ab2ca2fb5f6924b72e9c8d2c8cae93bd8ae887a88a683ce84a7d8da5dd34f954e2">WlanError::WERR_NET_PASSKEY</a></code> error is received.</dd></dl>
+<dl class="section remark"><dt>Remarks</dt><dd>On <b>CoreWlan</b> backend, when an empty password is provided in order to use internal credentials, a temporary admin access will be asked in order to retrieve the network passkey from the keychain subsystem (and only for that). <br  />
+Otherwise, option <code><a class="el" href="namespaceqwm.html#a302b0b7d162cb73de065c166a616ae7aabb4ed0d848f3a96c7e716e3cb02f9b8d">WlanOption::WOPT_ALLOW_ADMIN_REQUESTS</a></code> can be disabled, if so, caller will always have to provide network password.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="#a29763c3b56eb763a0c36d045d1c9431d" title="Emitted when trying to connect to a network.">sConnectionStarted()</a> </dd>
 <dd>
 <a class="el" href="#ab44f806dbb42eab3c5d1dc9c58768ead" title="Emitted when network connection succeed.">sConnectionSucceed()</a>, <a class="el" href="#a1ad6a5c3302b69889b8eb6fbe1535b10" title="Emitted when network connection failed.">sConnectionFailed()</a> </dd>
@@ -451,57 +487,6 @@ Nothing is performed if already disconnected.</td></tr>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="#a36f9c7f30eebe37f2311aa1094b08627" title="Emitted when trying to forget a network.">sForgetStarted()</a> </dd>
 <dd>
 <a class="el" href="#a9f337621b2ef1820b6626190b2b8d6f7" title="Emitted when network has been forgotten.">sForgetSucceed()</a>, <a class="el" href="#a0b0a873d143313a9d8aa91feb9bc7e4e" title="Emitted when network forget request failed.">sForgetFailed()</a> </dd></dl>
-
-</div>
-</div>
-<a id="afa8bbc48f011c915ae767f801589bd1d" name="afa8bbc48f011c915ae767f801589bd1d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afa8bbc48f011c915ae767f801589bd1d">&#9670;&#160;</a></span>getInterfaces()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">ListInterfaces qwm::Manager::getInterfaces </td>
-          <td>(</td>
-          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Allow to retrieve list of interfaces. </p>
-<dl class="section return"><dt>Returns</dt><dd>Returns list of available interfaces.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a256a823ed164020cdacc887142d47578" title="Allow to retrieve an interface via its ID.">getInterface()</a> </dd></dl>
-
-</div>
-</div>
-<a id="a256a823ed164020cdacc887142d47578" name="a256a823ed164020cdacc887142d47578"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a256a823ed164020cdacc887142d47578">&#9670;&#160;</a></span>getInterface()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classqwm_1_1_interface.html">Interface</a> qwm::Manager::getInterface </td>
-          <td>(</td>
-          <td class="paramtype">const QUuid &amp;</td>          <td class="paramname"><span class="paramname"><em>idInterface</em></span></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Allow to retrieve an interface via its ID. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">idInterface</td><td><a class="el" href="classqwm_1_1_interface.html" title="Class containing interface properties.">Interface</a> ID to use. <br  />
-If ID is unknown, returned interface will be invalid.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Returns interface related to the ID.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#afa8bbc48f011c915ae767f801589bd1d" title="Allow to retrieve list of interfaces.">getInterfaces()</a> </dd>
-<dd>
-<a class="el" href="classqwm_1_1_interface.html#a55d2686aea4171c767e8c89398356a63" title="Allow to know if an interface instance is valid.">Interface::isValid()</a> </dd></dl>
 
 </div>
 </div>

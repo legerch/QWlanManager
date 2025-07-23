@@ -144,11 +144,12 @@ Enumerations</h2></td></tr>
 , <a class="el" href="#ab2ca2fb5f6924b72e9c8d2c8cae93bd8a89027cef03e3ba985bac3f8b86dbe631">WERR_OPERATION_CANCEL</a>
 , <br />
 &#160;&#160;<a class="el" href="#ab2ca2fb5f6924b72e9c8d2c8cae93bd8aaaac1aeed79bf8ec8518382e06004bed">WERR_OPERATION_TIMEOUT</a>
+, <a class="el" href="#ab2ca2fb5f6924b72e9c8d2c8cae93bd8aa0291804826569ccf940441287a1da63">WERR_OPERATION_DENIED</a>
 , <a class="el" href="#ab2ca2fb5f6924b72e9c8d2c8cae93bd8a3174e74fecf6cb905bf1cb0c33d22cb7">WERR_ITEM_INVALID</a>
 , <a class="el" href="#ab2ca2fb5f6924b72e9c8d2c8cae93bd8ad6d27a614838d851d39171479e1d0ad1">WERR_IFACE_BUSY</a>
-, <a class="el" href="#ab2ca2fb5f6924b72e9c8d2c8cae93bd8ae7ca1e313aaeea7925288460fb8f279d">WERR_NET_UNAVAILABLE</a>
 , <br />
-&#160;&#160;<a class="el" href="#ab2ca2fb5f6924b72e9c8d2c8cae93bd8ae887a88a683ce84a7d8da5dd34f954e2">WERR_NET_PASSKEY</a>
+&#160;&#160;<a class="el" href="#ab2ca2fb5f6924b72e9c8d2c8cae93bd8ae7ca1e313aaeea7925288460fb8f279d">WERR_NET_UNAVAILABLE</a>
+, <a class="el" href="#ab2ca2fb5f6924b72e9c8d2c8cae93bd8ae887a88a683ce84a7d8da5dd34f954e2">WERR_NET_PASSKEY</a>
 , <a class="el" href="#ab2ca2fb5f6924b72e9c8d2c8cae93bd8a65cc5fb27eacb8dbd8bde26b50c4419d">WERR_API_INTERNAL</a>
 <br />
  }</td></tr>
@@ -161,6 +162,12 @@ Enumerations</h2></td></tr>
  }</td></tr>
 <tr class="memdesc:abc2ba4a9d7e6f2b0b891d7326aab85fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">List of permissions status.  <a href="#abc2ba4a9d7e6f2b0b891d7326aab85fd">More...</a><br /></td></tr>
 <tr class="separator:abc2ba4a9d7e6f2b0b891d7326aab85fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a302b0b7d162cb73de065c166a616ae7a" id="r_a302b0b7d162cb73de065c166a616ae7a"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a302b0b7d162cb73de065c166a616ae7a">WlanOption</a> { <a class="el" href="#a302b0b7d162cb73de065c166a616ae7aa7f216f6d912f2218a77ea8918720abca">WOPT_NONE</a> = 0
+, <a class="el" href="#a302b0b7d162cb73de065c166a616ae7aabb4ed0d848f3a96c7e716e3cb02f9b8d">WOPT_ALLOW_ADMIN_REQUESTS</a> = 1 &lt;&lt; 0
+, <a class="el" href="#a302b0b7d162cb73de065c166a616ae7aa32a2bb8afa2f6dadaf557d500be793eb">WOPT_DEFAULT</a> = WOPT_ALLOW_ADMIN_REQUESTS
+ }</td></tr>
+<tr class="memdesc:a302b0b7d162cb73de065c166a616ae7a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wlan manager options.  <a href="#a302b0b7d162cb73de065c166a616ae7a">More...</a><br /></td></tr>
+<tr class="separator:a302b0b7d162cb73de065c166a616ae7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a23ce791ec7ca0b9b2536daa51640200b" id="r_a23ce791ec7ca0b9b2536daa51640200b"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a23ce791ec7ca0b9b2536daa51640200b">RequestType</a> { <a class="el" href="#a23ce791ec7ca0b9b2536daa51640200ba9ba961df466c98a7af91284c593c1a06">REQ_INVALID</a> = 0
 , <a class="el" href="#a23ce791ec7ca0b9b2536daa51640200bad76727ad721b115b5dd11d404f1f390d">REQ_SCAN</a>
 , <a class="el" href="#a23ce791ec7ca0b9b2536daa51640200ba2055787f9904504cc7eae1eb0ac135ef">REQ_CONNECT</a>
@@ -177,6 +184,7 @@ Enumerations</h2></td></tr>
 <tr class="separator:a152b6d2696310614e3bddc58f11b9dd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa5c5f56b670f2c9d6adeb3d070f7ad5d" id="r_aa5c5f56b670f2c9d6adeb3d070f7ad5d"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa5c5f56b670f2c9d6adeb3d070f7ad5d">IfaceOption</a> { <a class="el" href="#aa5c5f56b670f2c9d6adeb3d070f7ad5da6b9f8beff8fb97854fc4c4cc3e2b9e65">IFACE_OPT_NONE</a> = 0
 , <a class="el" href="#aa5c5f56b670f2c9d6adeb3d070f7ad5dac0237cc016d8a58d836a77e727972c87">IFACE_OPT_REQUEST</a> = 1 &lt;&lt; 0
+, <a class="el" href="#aa5c5f56b670f2c9d6adeb3d070f7ad5da5b1cd7e3831189e7ce7575dfdffcb16f">IFACE_OPT_DEFAULT</a> = IFACE_OPT_NONE
  }</td></tr>
 <tr class="memdesc:aa5c5f56b670f2c9d6adeb3d070f7ad5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Available interface options.  <a href="#aa5c5f56b670f2c9d6adeb3d070f7ad5d">More...</a><br /></td></tr>
 <tr class="separator:aa5c5f56b670f2c9d6adeb3d070f7ad5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -317,6 +325,8 @@ QWLANMAN_EXPORT QDebug&#160;</td><td class="memItemRight" valign="bottom"><b>ope
 </td></tr>
 <tr><td class="fieldname"><a id="ab2ca2fb5f6924b72e9c8d2c8cae93bd8aaaac1aeed79bf8ec8518382e06004bed" name="ab2ca2fb5f6924b72e9c8d2c8cae93bd8aaaac1aeed79bf8ec8518382e06004bed"></a>WERR_OPERATION_TIMEOUT&#160;</td><td class="fieldinit">&#160;</td><td class="fielddoc"><p>Operation failure due to timeout </p>
 </td></tr>
+<tr><td class="fieldname"><a id="ab2ca2fb5f6924b72e9c8d2c8cae93bd8aa0291804826569ccf940441287a1da63" name="ab2ca2fb5f6924b72e9c8d2c8cae93bd8aa0291804826569ccf940441287a1da63"></a>WERR_OPERATION_DENIED&#160;</td><td class="fieldinit">&#160;</td><td class="fielddoc"><p>Operation failure due to permissions missing </p>
+</td></tr>
 <tr><td class="fieldname"><a id="ab2ca2fb5f6924b72e9c8d2c8cae93bd8a3174e74fecf6cb905bf1cb0c33d22cb7" name="ab2ca2fb5f6924b72e9c8d2c8cae93bd8a3174e74fecf6cb905bf1cb0c33d22cb7"></a>WERR_ITEM_INVALID&#160;</td><td class="fieldinit">&#160;</td><td class="fielddoc"><p>Operation cannot be performed due to an invalid item </p>
 </td></tr>
 <tr><td class="fieldname"><a id="ab2ca2fb5f6924b72e9c8d2c8cae93bd8ad6d27a614838d851d39171479e1d0ad1" name="ab2ca2fb5f6924b72e9c8d2c8cae93bd8ad6d27a614838d851d39171479e1d0ad1"></a>WERR_IFACE_BUSY&#160;</td><td class="fieldinit">&#160;</td><td class="fielddoc"><p><a class="el" href="classqwm_1_1_interface.html" title="Class containing interface properties.">Interface</a> is already busy, cannot perform. Setting option <code><a class="el" href="#aa5c5f56b670f2c9d6adeb3d070f7ad5dac0237cc016d8a58d836a77e727972c87">IfaceOption::IFACE_OPT_REQUEST</a></code> will help to get ride of this error </p>
@@ -363,6 +373,34 @@ QWLANMAN_EXPORT QDebug&#160;</td><td class="memItemRight" valign="bottom"><b>ope
 <tr><td class="fieldname"><a id="abc2ba4a9d7e6f2b0b891d7326aab85fda031d6c7c09e1ad652719399267e4c87f" name="abc2ba4a9d7e6f2b0b891d7326aab85fda031d6c7c09e1ad652719399267e4c87f"></a>WPERM_GRANTED&#160;</td><td class="fieldinit">&#160;</td><td class="fielddoc"><p>Wlan permissions are granted </p>
 </td></tr>
 <tr><td class="fieldname"><a id="abc2ba4a9d7e6f2b0b891d7326aab85fda8cc05fb0ab968c1ced5f204cc63c40d8" name="abc2ba4a9d7e6f2b0b891d7326aab85fda8cc05fb0ab968c1ced5f204cc63c40d8"></a>WPERM_DENIED&#160;</td><td class="fieldinit">&#160;</td><td class="fielddoc"><p>Wlan permissions has been denied </p>
+</td></tr>
+</table>
+
+</div>
+</div>
+<a id="a302b0b7d162cb73de065c166a616ae7a" name="a302b0b7d162cb73de065c166a616ae7a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a302b0b7d162cb73de065c166a616ae7a">&#9670;&#160;</a></span>WlanOption</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="#a302b0b7d162cb73de065c166a616ae7a">qwm::WlanOption</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Wlan manager options. </p>
+<p>Those options concerns <code><a class="el" href="classqwm_1_1_manager.html" title="Use to manage all wlan related operations.">qwm::Manager</a></code> global available features. <br  />
+Options are flags, so they can be combined.</p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#aa5c5f56b670f2c9d6adeb3d070f7ad5d" title="Available interface options.">IfaceOption</a> </dd></dl>
+<table class="fieldtable">
+<tr><th colspan="3">Enumerator</th></tr><tr><td class="fieldname"><a id="a302b0b7d162cb73de065c166a616ae7aa7f216f6d912f2218a77ea8918720abca" name="a302b0b7d162cb73de065c166a616ae7aa7f216f6d912f2218a77ea8918720abca"></a>WOPT_NONE&#160;</td><td class="fieldinit">0&#160;</td><td class="fielddoc"><p>No option set </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a302b0b7d162cb73de065c166a616ae7aabb4ed0d848f3a96c7e716e3cb02f9b8d" name="a302b0b7d162cb73de065c166a616ae7aabb4ed0d848f3a96c7e716e3cb02f9b8d"></a>WOPT_ALLOW_ADMIN_REQUESTS&#160;</td><td class="fieldinit">1 &lt;&lt; 0&#160;</td><td class="fielddoc"><p>Enable this option to allow administration request (will ask user for a temporary admin access) often needed when managing wifi credentials. <br  />
+ Disable it to be sure that admin access will never be asked. </p><dl class="section note"><dt>Note</dt><dd>Currently, only <b>CoreWlan</b> backend is concerned by this feature </dd></dl>
+</td></tr>
+<tr><td class="fieldname"><a id="a302b0b7d162cb73de065c166a616ae7aa32a2bb8afa2f6dadaf557d500be793eb" name="a302b0b7d162cb73de065c166a616ae7aa32a2bb8afa2f6dadaf557d500be793eb"></a>WOPT_DEFAULT&#160;</td><td class="fieldinit">WOPT_ALLOW_ADMIN_REQUESTS&#160;</td><td class="fielddoc"><p>Default manager options </p>
 </td></tr>
 </table>
 
@@ -451,12 +489,17 @@ QWLANMAN_EXPORT QDebug&#160;</td><td class="memItemRight" valign="bottom"><b>ope
 </div><div class="memdoc">
 
 <p>Available interface options. </p>
-<p>Options are flags, so they can be combined. </p>
+<p>Options are flags, so they can be combined.</p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classqwm_1_1_interface.html" title="Class containing interface properties.">qwm::Interface</a> </dd>
+<dd>
+<a class="el" href="#a302b0b7d162cb73de065c166a616ae7a" title="Wlan manager options.">WlanOption</a> </dd></dl>
 <table class="fieldtable">
 <tr><th colspan="3">Enumerator</th></tr><tr><td class="fieldname"><a id="aa5c5f56b670f2c9d6adeb3d070f7ad5da6b9f8beff8fb97854fc4c4cc3e2b9e65" name="aa5c5f56b670f2c9d6adeb3d070f7ad5da6b9f8beff8fb97854fc4c4cc3e2b9e65"></a>IFACE_OPT_NONE&#160;</td><td class="fieldinit">0&#160;</td><td class="fielddoc"><p>No option set </p>
 </td></tr>
 <tr><td class="fieldname"><a id="aa5c5f56b670f2c9d6adeb3d070f7ad5dac0237cc016d8a58d836a77e727972c87" name="aa5c5f56b670f2c9d6adeb3d070f7ad5dac0237cc016d8a58d836a77e727972c87"></a>IFACE_OPT_REQUEST&#160;</td><td class="fieldinit">1 &lt;&lt; 0&#160;</td><td class="fielddoc"><p>Allow to queue interface operations (wait for the scan to finish before trying to connect for example), which will reduce <code><a class="el" href="#ab2ca2fb5f6924b72e9c8d2c8cae93bd8ad6d27a614838d851d39171479e1d0ad1">WlanError::WERR_IFACE_BUSY</a></code> occurrences. <br  />
  Note that enabling this will delay operations start. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aa5c5f56b670f2c9d6adeb3d070f7ad5da5b1cd7e3831189e7ce7575dfdffcb16f" name="aa5c5f56b670f2c9d6adeb3d070f7ad5da5b1cd7e3831189e7ce7575dfdffcb16f"></a>IFACE_OPT_DEFAULT&#160;</td><td class="fieldinit">IFACE_OPT_NONE&#160;</td><td class="fielddoc"><p>Default interface option, currently no option set </p>
 </td></tr>
 </table>
 

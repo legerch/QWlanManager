@@ -15,7 +15,7 @@ var searchData=
   ['getname_12',['getName',['../classqwm_1_1_interface.html#a0e580b09b55400ee63b4bb8f176e6ded',1,'qwm::Interface']]],
   ['getnetwork_13',['getNetwork',['../classqwm_1_1_interface.html#a49da9d20f83101690c538ee56230e22a',1,'qwm::Interface']]],
   ['getnetworkconnected_14',['getNetworkConnected',['../classqwm_1_1_interface.html#a217f0c2194439f95451f6c13969ac5d6',1,'qwm::Interface']]],
-  ['getoptions_15',['getOptions',['../classqwm_1_1_interface.html#a53bddef6d73f479180d3889af08e411a',1,'qwm::Interface']]],
+  ['getoptions_15',['getOptions',['../classqwm_1_1_interface.html#a53bddef6d73f479180d3889af08e411a',1,'qwm::Interface::getOptions()'],['../classqwm_1_1_manager.html#a17c9d39fc80ace9d1df3bb5606c8a48f',1,'qwm::Manager::getOptions()']]],
   ['getprofilename_16',['getProfileName',['../classqwm_1_1_network.html#a9a53a26db6f7d5055346f600fa9131ad',1,'qwm::Network']]],
   ['getsignalquality_17',['getSignalQuality',['../classqwm_1_1_network.html#a0bc800bf238dc742e1a56c32bff06a2f',1,'qwm::Network']]],
   ['getssid_18',['getSsid',['../classqwm_1_1_network.html#ae79c412a7a7dbdce4c54daa96b594720',1,'qwm::Network']]],

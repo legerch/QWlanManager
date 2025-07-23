@@ -97,6 +97,7 @@ $(function(){ initResizable(false); });
 <div id="doc-content">
 <div class="header">
   <div class="summary">
+<a href="#signals">Signals</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="classqwm_1_1_permissions-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">qwm::Permissions Class Reference</div></div>
@@ -126,17 +127,23 @@ Collaboration diagram for qwm::Permissions:</div>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="signals" name="signals"></a>
+Signals</h2></td></tr>
+<tr class="memitem:a113748372e23290e564b9ec13b56a793" id="r_a113748372e23290e564b9ec13b56a793"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a113748372e23290e564b9ec13b56a793">sPermissionsChanged</a> (<a class="el" href="namespaceqwm.html#abc2ba4a9d7e6f2b0b891d7326aab85fd">WlanPerm</a> idPerm)</td></tr>
+<tr class="memdesc:a113748372e23290e564b9ec13b56a793"><td class="mdescLeft">&#160;</td><td class="mdescRight">Emitted when permissions status changes.  <br /></td></tr>
+<tr class="separator:a113748372e23290e564b9ec13b56a793"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a11a9349a6e8dcf37d8bde4c58b71b978" id="r_a11a9349a6e8dcf37d8bde4c58b71b978"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a11a9349a6e8dcf37d8bde4c58b71b978">Permissions</a> (QObject *parent=nullptr)</td></tr>
 <tr class="memdesc:a11a9349a6e8dcf37d8bde4c58b71b978"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a wlan permission object.  <br /></td></tr>
 <tr class="separator:a11a9349a6e8dcf37d8bde4c58b71b978"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad7d07ddb3f4910c5fbda592426e6b7b7" id="r_ad7d07ddb3f4910c5fbda592426e6b7b7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceqwm.html#abc2ba4a9d7e6f2b0b891d7326aab85fd">WlanPerm</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad7d07ddb3f4910c5fbda592426e6b7b7">wlanRetrieve</a> ()</td></tr>
-<tr class="memdesc:ad7d07ddb3f4910c5fbda592426e6b7b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allow to retrieve current wlan permissions status.  <br /></td></tr>
-<tr class="separator:ad7d07ddb3f4910c5fbda592426e6b7b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2806a4996ee99ebe8ec2856eb91a3e99" id="r_a2806a4996ee99ebe8ec2856eb91a3e99"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2806a4996ee99ebe8ec2856eb91a3e99">wlanOpenParams</a> ()</td></tr>
-<tr class="memdesc:a2806a4996ee99ebe8ec2856eb91a3e99"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allow to open associated OS parameters.  <br /></td></tr>
-<tr class="separator:a2806a4996ee99ebe8ec2856eb91a3e99"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad313eb75705371273ff7cdd29bbae8be" id="r_ad313eb75705371273ff7cdd29bbae8be"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceqwm.html#abc2ba4a9d7e6f2b0b891d7326aab85fd">WlanPerm</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad313eb75705371273ff7cdd29bbae8be">retrieveWlanPermissions</a> ()</td></tr>
+<tr class="memdesc:ad313eb75705371273ff7cdd29bbae8be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allow to retrieve current wlan permissions status.  <br /></td></tr>
+<tr class="separator:ad313eb75705371273ff7cdd29bbae8be"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aebf8e161d65d823049e8e1c6e282f034" id="r_aebf8e161d65d823049e8e1c6e282f034"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceqwm.html#ab2ca2fb5f6924b72e9c8d2c8cae93bd8">WlanError</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aebf8e161d65d823049e8e1c6e282f034">askWlanPermissions</a> ()</td></tr>
+<tr class="memdesc:aebf8e161d65d823049e8e1c6e282f034"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allow to ask for needed permissions.  <br /></td></tr>
+<tr class="separator:aebf8e161d65d823049e8e1c6e282f034"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Use to manage all <b>permissions</b> related operations. </p>
@@ -177,14 +184,14 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="ad7d07ddb3f4910c5fbda592426e6b7b7" name="ad7d07ddb3f4910c5fbda592426e6b7b7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad7d07ddb3f4910c5fbda592426e6b7b7">&#9670;&#160;</a></span>wlanRetrieve()</h2>
+<a id="ad313eb75705371273ff7cdd29bbae8be" name="ad313eb75705371273ff7cdd29bbae8be"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad313eb75705371273ff7cdd29bbae8be">&#9670;&#160;</a></span>retrieveWlanPermissions()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespaceqwm.html#abc2ba4a9d7e6f2b0b891d7326aab85fd">WlanPerm</a> qwm::Permissions::wlanRetrieve </td>
+          <td class="memname"><a class="el" href="namespaceqwm.html#abc2ba4a9d7e6f2b0b891d7326aab85fd">WlanPerm</a> qwm::Permissions::retrieveWlanPermissions </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td></td>
@@ -194,18 +201,18 @@ Public Member Functions</h2></td></tr>
 
 <p>Allow to retrieve current wlan permissions status. </p>
 <dl class="section return"><dt>Returns</dt><dd>Returns permissions status.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a2806a4996ee99ebe8ec2856eb91a3e99" title="Allow to open associated OS parameters.">wlanOpenParams()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#aebf8e161d65d823049e8e1c6e282f034" title="Allow to ask for needed permissions.">askWlanPermissions()</a> </dd></dl>
 
 </div>
 </div>
-<a id="a2806a4996ee99ebe8ec2856eb91a3e99" name="a2806a4996ee99ebe8ec2856eb91a3e99"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2806a4996ee99ebe8ec2856eb91a3e99">&#9670;&#160;</a></span>wlanOpenParams()</h2>
+<a id="aebf8e161d65d823049e8e1c6e282f034" name="aebf8e161d65d823049e8e1c6e282f034"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aebf8e161d65d823049e8e1c6e282f034">&#9670;&#160;</a></span>askWlanPermissions()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool qwm::Permissions::wlanOpenParams </td>
+          <td class="memname"><a class="el" href="namespaceqwm.html#ab2ca2fb5f6924b72e9c8d2c8cae93bd8">WlanError</a> qwm::Permissions::askWlanPermissions </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td></td>
@@ -213,11 +220,47 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Allow to open associated OS parameters. </p>
+<p>Allow to ask for needed permissions. </p>
 <p><a class="el" href="classqwm_1_1_permissions.html" title="Use to manage all permissions related operations.">Permissions</a> cannot be set via native API, it's the user responsibility to give your application required permissions. <br  />
-But we can ease the process by opening the related parameter window.</p>
-<dl class="section return"><dt>Returns</dt><dd>Returns <code>true</code> if succeed to open permission parameter window.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#ad7d07ddb3f4910c5fbda592426e6b7b7" title="Allow to retrieve current wlan permissions status.">wlanRetrieve()</a> </dd></dl>
+So this method will ease the process by opening the related parameter window.</p>
+<dl class="section return"><dt>Returns</dt><dd>Returns <code><a class="el" href="namespaceqwm.html#ab2ca2fb5f6924b72e9c8d2c8cae93bd8aa3e0c65f595e64122cf05440cfa616e0">WlanError::WERR_NO_ERROR</a></code> if succeed, otherwise see <code>WlanError</code> for more details.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#ad313eb75705371273ff7cdd29bbae8be" title="Allow to retrieve current wlan permissions status.">retrieveWlanPermissions()</a> </dd>
+<dd>
+<a class="el" href="#a113748372e23290e564b9ec13b56a793" title="Emitted when permissions status changes.">sPermissionsChanged()</a> </dd></dl>
+
+</div>
+</div>
+<a id="a113748372e23290e564b9ec13b56a793" name="a113748372e23290e564b9ec13b56a793"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a113748372e23290e564b9ec13b56a793">&#9670;&#160;</a></span>sPermissionsChanged</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void qwm::Permissions::sPermissionsChanged </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespaceqwm.html#abc2ba4a9d7e6f2b0b891d7326aab85fd">WlanPerm</a></td>          <td class="paramname"><span class="paramname"><em>idPerm</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">signal</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Emitted when permissions status changes. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">idPerm</td><td>New permission status.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#ad313eb75705371273ff7cdd29bbae8be" title="Allow to retrieve current wlan permissions status.">retrieveWlanPermissions()</a>, <a class="el" href="#aebf8e161d65d823049e8e1c6e282f034" title="Allow to ask for needed permissions.">askWlanPermissions()</a> </dd></dl>
 
 </div>
 </div>

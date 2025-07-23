@@ -106,7 +106,14 @@ $(function(){ initResizable(false); });
 <p><b>Table of contents :</b></p><ul>
 <li><a class="el" href="#autotoc_md1-library-details">1. Library details</a><ul>
 <li><a class="el" href="#autotoc_md11-features">1.1. Features</a></li>
-<li><a class="el" href="#autotoc_md12-supported-platforms">1.2. Supported platforms</a></li>
+<li><a class="el" href="#autotoc_md12-supported-platforms">1.2. Supported platforms</a><ul>
+<li><a class="el" href="#autotoc_md121-status">1.2.1. Status</a></li>
+<li><a class="el" href="#autotoc_md122-specific-behaviours">1.2.2. Specific behaviours</a><ul>
+<li><a class="el" href="#autotoc_md1221-macos">1.2.2.1. MacOS</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a class="el" href="#autotoc_md2-requirements">2. Requirements</a><ul>
@@ -138,6 +145,7 @@ $(function(){ initResizable(false); });
 1.1. Features</h2>
 <p>This cross-platform library allow to control interfaces operations (<em>perform a scan, connect to a network, etc...</em>) and manage all related events through the class <code><a class="el" href="classqwm_1_1_manager.html" title="Use to manage all wlan related operations.">qwm::Manager</a></code>. Main features of the library are:</p><ul>
 <li>Asynchronous operations: no blocking operations, all event-driven</li>
+<li>Catch "external" wifi events (wifi status changed through OS UI, from other apps, etc...)</li>
 <li>Interfaces added or removed are detected</li>
 <li>UTF-8 networks are supported</li>
 <li>Datas classes are <b>QML</b> compatible</li>
@@ -154,6 +162,8 @@ $(function(){ initResizable(false); });
 </ul>
 <h2><a class="anchor" id="autotoc_md12-supported-platforms"></a>
 1.2. Supported platforms</h2>
+<h3><a class="anchor" id="autotoc_md121-status"></a>
+1.2.1. Status</h3>
 <p>One OS can have multiple backend or differ according to the OS version used, this table will reflect those differences:</p>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -171,7 +181,7 @@ $(function(){ initResizable(false); });
 (via <a href="https://learn.microsoft.com/en-us/uwp/api/windows.security.authorization.appcapabilityaccess?view=winrt-26100">WifiAdapter</a>)   </td><td class="markdownTableBodyCenter"><a href="https://learn.microsoft.com/en-us/windows/uwp/cpp-and-winrt-apis/intro-to-using-cpp-with-winrt">WinRT</a><br  />
 (via <a href="https://learn.microsoft.com/en-us/uwp/api/windows.security.authorization.appcapabilityaccess?view=winrt-26100">AppCapabilityAccess</a>)   </td><td class="markdownTableBodyCenter">🕚   </td><td class="markdownTableBodyCenter">Package <code>cppwinrt</code> required for <em>wifi and permissions backend</em>    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyCenter">MacOS   </td><td class="markdownTableBodyCenter"><a href="https://developer.apple.com/documentation/corewlan">CoreWlan</a>   </td><td class="markdownTableBodyCenter">❓   </td><td class="markdownTableBodyCenter">📝   </td><td class="markdownTableBodyCenter">/    </td></tr>
+<td class="markdownTableBodyCenter">MacOS   </td><td class="markdownTableBodyCenter"><a href="https://developer.apple.com/documentation/corewlan">CoreWlan</a>   </td><td class="markdownTableBodyCenter"><a href="https://developer.apple.com/documentation/corelocation?language=objc">CoreLocation</a>   </td><td class="markdownTableBodyCenter">✅   </td><td class="markdownTableBodyCenter">Please refer to section <a class="el" href="#autotoc_md1221-macos">specific behaviour - MacOS</a>    </td></tr>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyCenter">Linux   </td><td class="markdownTableBodyCenter">NetworkManager   </td><td class="markdownTableBodyCenter">❓   </td><td class="markdownTableBodyCenter">🕚   </td><td class="markdownTableBodyCenter">/   </td></tr>
 </table>
@@ -182,7 +192,13 @@ $(function(){ initResizable(false); });
 <li>✅: Complete support</li>
 </ul>
 </dd></dl>
-<h1><a class="anchor" id="autotoc_md2-requirements"></a>
+<h3><a class="anchor" id="autotoc_md122-specific-behaviours"></a>
+1.2.2. Specific behaviours</h3>
+<h4><a class="anchor" id="autotoc_md1221-macos"></a>
+1.2.2.1. MacOS</h4>
+<p>Under <b>MacOS</b>, location permissions key <a href="https://developer.apple.com/documentation/bundleresources/information-property-list/nslocationusagedescription?language=objc"><code>NSLocationUsageDescription</code></a> must be declared inside your <a href="https://developer.apple.com/documentation/bundleresources/information-property-list?language=objc"><code>Info.plist</code></a> application file in order to perform a network scan: </p><div class="fragment"><div class="line">&lt;<span class="keywordtype">key</span>&gt;<span class="keyword">NSLocationUsageDescription</span>&lt;/<span class="keywordtype">key</span>&gt;</div>
+<div class="line">&lt;<span class="keywordtype">string</span>&gt;<span class="keyword">Used</span> <span class="keyword">to</span> <span class="keyword">scan</span> <span class="keyword">nearby</span> <span class="keyword">Wi-Fi</span> <span class="keyword">networks</span>&lt;/<span class="keywordtype">string</span>&gt;</div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md2-requirements"></a>
 2. Requirements</h1>
 <h2><a class="anchor" id="autotoc_md21-c-standards"></a>
 2.1. C++ Standards</h2>
@@ -259,7 +275,7 @@ $(function(){ initResizable(false); });
 <p><b>Since library header used during final application build could differ from the actual library version, it is recommended to use the method: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &quot;qwlanmanager/qwlantypes.h&quot;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">const</span> QVersionNumber libSemver = <a class="code hl_function" href="namespaceqwm.html#a40a2980bcb348036ab9af6b6aa44a404">qwm::getLibraryVersion</a>();</div>
-<div class="ttc" id="anamespaceqwm_html_a40a2980bcb348036ab9af6b6aa44a404"><div class="ttname"><a href="namespaceqwm.html#a40a2980bcb348036ab9af6b6aa44a404">qwm::getLibraryVersion</a></div><div class="ttdeci">QWLANMAN_EXPORT QVersionNumber getLibraryVersion()</div><div class="ttdoc">Used to retrieve QWlanManager library version.</div><div class="ttdef"><b>Definition</b> qwlantypes.cpp:175</div></div>
+<div class="ttc" id="anamespaceqwm_html_a40a2980bcb348036ab9af6b6aa44a404"><div class="ttname"><a href="namespaceqwm.html#a40a2980bcb348036ab9af6b6aa44a404">qwm::getLibraryVersion</a></div><div class="ttdeci">QWLANMAN_EXPORT QVersionNumber getLibraryVersion()</div><div class="ttdoc">Used to retrieve QWlanManager library version.</div><div class="ttdef"><b>Definition</b> qwlantypes.cpp:180</div></div>
 </div><!-- fragment --><p></b></p>
 <p><b></b></p>
 <h1><a class="anchor" id="autotoc_md5-documentation"></a>

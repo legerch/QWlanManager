@@ -176,9 +176,10 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>NetworkMutator</b></
 <p>This class contains all related network properties (ssid, authentication algo, signal quality, etc...). <br  />
 This class use <b>implicit sharing</b> memory (via <em>shared pointer</em>), this allow to:</p><ul>
 <li>Always have a network object with "last" known properties without having to fetch them from <code><a class="el" href="classqwm_1_1_interface.html" title="Class containing interface properties.">qwm::Interface</a></code></li>
+<li>When setting properties, they are propagated to all instances</li>
 <li>Passing this class by value is cheap This class is also compatible with <b>QML</b>.</li>
 </ul>
-<dl class="section note"><dt>Note</dt><dd>From the user point of view, this object is immutable, thus all networks instances will be retrieved via <code><a class="el" href="classqwm_1_1_manager.html" title="Use to manage all wlan related operations.">qwm::Manager</a></code> or <code><a class="el" href="classqwm_1_1_interface.html" title="Class containing interface properties.">qwm::Interface</a></code> class. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classqwm_1_1_manager.html" title="Use to manage all wlan related operations.">qwm::Manager</a>, <a class="el" href="classqwm_1_1_interface.html" title="Class containing interface properties.">qwm::Interface</a> </dd></dl>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a2337e26429fc63c103fae964ce7c9598" name="a2337e26429fc63c103fae964ce7c9598"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2337e26429fc63c103fae964ce7c9598">&#9670;&#160;</a></span>isValid()</h2>

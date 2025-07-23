@@ -155,6 +155,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a217f0c2194439f95451f6c13969ac5d6" id="r_a217f0c2194439f95451f6c13969ac5d6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classqwm_1_1_network.html">Network</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a217f0c2194439f95451f6c13969ac5d6">getNetworkConnected</a> () const</td></tr>
 <tr class="memdesc:a217f0c2194439f95451f6c13969ac5d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allow to retrieve interface current network.  <br /></td></tr>
 <tr class="separator:a217f0c2194439f95451f6c13969ac5d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4752a4f3b98c47799170d65c06b54de8" id="r_a4752a4f3b98c47799170d65c06b54de8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4752a4f3b98c47799170d65c06b54de8">setCachePolicy</a> (const <a class="el" href="classqwm_1_1_cache_policy.html">CachePolicy</a> &amp;cachePolicy)</td></tr>
+<tr class="memdesc:a4752a4f3b98c47799170d65c06b54de8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allow to set the cache policy of an interface.  <br /></td></tr>
+<tr class="separator:a4752a4f3b98c47799170d65c06b54de8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acdec70d75f78dfe63e59abf551a7866f" id="r_acdec70d75f78dfe63e59abf551a7866f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acdec70d75f78dfe63e59abf551a7866f">setOptions</a> (IfaceOptions opts)</td></tr>
+<tr class="memdesc:acdec70d75f78dfe63e59abf551a7866f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allow to set options of an interface.  <br /></td></tr>
+<tr class="separator:acdec70d75f78dfe63e59abf551a7866f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aadefb1df145dab980e802b615db7c271" id="r_aadefb1df145dab980e802b615db7c271"><td class="memItemLeft" align="right" valign="top"><a id="aadefb1df145dab980e802b615db7c271" name="aadefb1df145dab980e802b615db7c271"></a>
 <a class="el" href="classqwm_1_1_interface.html">Interface</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (const <a class="el" href="classqwm_1_1_interface.html">Interface</a> &amp;other)</td></tr>
 <tr class="separator:aadefb1df145dab980e802b615db7c271"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -197,9 +203,10 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>InterfaceMutator</b>
 <p>This class contains all related interface properties (status, name, list of networks, etc...). <br  />
 This class use <b>implicit sharing</b> memory (via <em>shared pointer</em>), this allow to:</p><ul>
 <li>Always have an interface object with "last" known properties without having to fetch them from <code><a class="el" href="classqwm_1_1_manager.html" title="Use to manage all wlan related operations.">qwm::Manager</a></code></li>
+<li>When setting properties, they are propagated to all instances</li>
 <li>Passing this class by value is cheap This class is also compatible with <b>QML</b>.</li>
 </ul>
-<dl class="section note"><dt>Note</dt><dd>From the user point of view, this object is immutable, thus all interfaces instances will be retrieved via <code><a class="el" href="classqwm_1_1_manager.html" title="Use to manage all wlan related operations.">qwm::Manager</a></code> class. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classqwm_1_1_manager.html#afa8bbc48f011c915ae767f801589bd1d" title="Allow to retrieve list of interfaces.">Manager::getInterfaces()</a> </dd></dl>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a55d2686aea4171c767e8c89398356a63" name="a55d2686aea4171c767e8c89398356a63"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a55d2686aea4171c767e8c89398356a63">&#9670;&#160;</a></span>isValid()</h2>
@@ -277,7 +284,8 @@ This class use <b>implicit sharing</b> memory (via <em>shared pointer</em>), thi
 </div><div class="memdoc">
 
 <p>Retrieve current interface options. </p>
-<dl class="section return"><dt>Returns</dt><dd>Returns options of interface </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Returns options of interface</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#acdec70d75f78dfe63e59abf551a7866f" title="Allow to set options of an interface.">setOptions()</a> </dd></dl>
 
 </div>
 </div>
@@ -478,6 +486,60 @@ If SSID is unknown/unavailable, returned network will be invalid.</td></tr>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="#a49da9d20f83101690c538ee56230e22a" title="Allow to retrieve a network via SSID.">getNetwork()</a>, <a class="el" href="#a4d2ff8e8a64fbcb5366de5342e94984a" title="Retrieve all networks that interface has detected.">getMapNetworks()</a>, <a class="el" href="#ac67dad7ecc5ba5a092f8e7f49ce01e29" title="Retrieve all networks that interface has detected.">getListNetworks()</a> </dd>
 <dd>
 <a class="el" href="classqwm_1_1_network.html#a2337e26429fc63c103fae964ce7c9598" title="Allow to know if a network instance is valid.">Network::isValid()</a> </dd></dl>
+
+</div>
+</div>
+<a id="a4752a4f3b98c47799170d65c06b54de8" name="a4752a4f3b98c47799170d65c06b54de8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4752a4f3b98c47799170d65c06b54de8">&#9670;&#160;</a></span>setCachePolicy()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void qwm::Interface::setCachePolicy </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classqwm_1_1_cache_policy.html">CachePolicy</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>cachePolicy</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Allow to set the cache policy of an interface. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">cachePolicy</td><td>Cache policy to use.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#acdec70d75f78dfe63e59abf551a7866f" title="Allow to set options of an interface.">setOptions()</a> </dd></dl>
+
+</div>
+</div>
+<a id="acdec70d75f78dfe63e59abf551a7866f" name="acdec70d75f78dfe63e59abf551a7866f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acdec70d75f78dfe63e59abf551a7866f">&#9670;&#160;</a></span>setOptions()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void qwm::Interface::setOptions </td>
+          <td>(</td>
+          <td class="paramtype">IfaceOptions</td>          <td class="paramname"><span class="paramname"><em>opts</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Allow to set options of an interface. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">opts</td><td>Options to use.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a53bddef6d73f479180d3889af08e411a" title="Retrieve current interface options.">getOptions()</a> </dd>
+<dd>
+<a class="el" href="#a4752a4f3b98c47799170d65c06b54de8" title="Allow to set the cache policy of an interface.">setCachePolicy()</a> </dd></dl>
 
 </div>
 </div>

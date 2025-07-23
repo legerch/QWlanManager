@@ -7,5 +7,6 @@ var searchData=
   ['requesttype_4',['RequestType',['../namespaceqwm.html#a23ce791ec7ca0b9b2536daa51640200b',1,'qwm']]],
   ['requesttypetostring_5',['requestTypeToString',['../namespaceqwm.html#a660d506c3bc824a408dae97af68b5490',1,'qwm']]],
   ['requirements_6',['2. Requirements',['../index.html#autotoc_md2-requirements',1,'']]],
-  ['runtime_7',['4.2.3. Runtime',['../index.html#autotoc_md423-runtime',1,'']]]
+  ['retrievewlanpermissions_7',['retrieveWlanPermissions',['../classqwm_1_1_permissions.html#ad313eb75705371273ff7cdd29bbae8be',1,'qwm::Permissions']]],
+  ['runtime_8',['4.2.3. Runtime',['../index.html#autotoc_md423-runtime',1,'']]]
 ];
