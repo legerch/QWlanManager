@@ -9,13 +9,16 @@
 #endif
 
 #include "backend/mock/enginemock.h"        // IWYU pragma: keep
-#include "backend/mock/permissionsmock.h"
+#include "backend/mock/permissionsmock.h"   // IWYU pragma: keep
 
 #if defined(Q_OS_WINDOWS)
 #   include "backend/winnative/enginewinnative.h"
 #   if defined(QWLANMAN_HAVE_WINRT)
 #       include "backend/winrt/permissionwinrt.h"
 #   endif
+#elif defined(Q_OS_MACOS)
+#   include "backend/corewlan/enginecorewlan.h"
+#   include "backend/corewlan/permissioncorewlan.h"
 #endif
 
 
@@ -48,6 +51,10 @@ std::unique_ptr<ManagerPrivate> FactoryBackend::createEngine(Manager *parent)
     qDebug("Use engine \"Windows Native\"");
     return std::make_unique<EngineWinNative>(parent);
 
+#elif defined(Q_OS_MACOS)
+    qDebug("Use engine \"CoreWlan\"");
+    return std::make_unique<EngineCoreWlan>(parent);
+
 #else
     qDebug("Use engine \"Mock\"");
     return std::make_unique<EngineMock>(parent);
@@ -74,6 +81,10 @@ std::unique_ptr<PermissionsPrivate> FactoryBackend::createPermissions(Permission
     qDebug("Use permissions \"Mock\"");
     return std::make_unique<PermissionsMock>(parent);
 
+#elif defined(Q_OS_MACOS)
+    qDebug("Use permissions \"CoreWlan\"");
+    return std::make_unique<PermissionCoreWlan>(parent);
+
 #else
     qDebug("Use permissions \"Mock\"");
     return std::make_unique<PermissionsMock>(parent);
@@ -87,11 +98,20 @@ void FactoryBackend::registerTypesQt()
     if(!isInit){
         isInit = true;
 
-        qRegisterMetaType<qwm::ListInterfaces>("ListInterfaces");
-        qRegisterMetaType<qwm::MapInterfaces>("MapInterfaces");
+        qRegisterMetaType<qwm::WlanError>("qwm::WlanError");
+        qRegisterMetaType<qwm::WlanError>("qwm::WlanPerm");
+        qRegisterMetaType<qwm::WlanOptions>("qwm::WlanOptions");
+        qRegisterMetaType<qwm::RequestType>("qwm::RequestType");
+        qRegisterMetaType<qwm::IfaceState>("qwm::IfaceState");
+        qRegisterMetaType<qwm::IfaceOptions>("qwm::IfaceOptions");
+        qRegisterMetaType<qwm::AuthAlgo>("qwm::AuthAlgo");
+        qRegisterMetaType<qwm::CipherAlgo>("qwm::CipherAlgo");
 
-        qRegisterMetaType<qwm::ListNetworks>("ListNetworks");
-        qRegisterMetaType<qwm::MapNetworks>("MapNetworks");
+        qRegisterMetaType<qwm::ListInterfaces>("qwm::ListInterfaces");
+        qRegisterMetaType<qwm::MapInterfaces>("qwm::MapInterfaces");
+
+        qRegisterMetaType<qwm::ListNetworks>("qwm::ListNetworks");
+        qRegisterMetaType<qwm::MapNetworks>("qwm::MapNetworks");
     }
 #endif
 }

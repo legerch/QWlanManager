@@ -27,8 +27,11 @@ public:
     ~Permissions();
 
 public:
-    WlanPerm wlanRetrieve();
-    bool wlanOpenParams();
+    WlanPerm retrieveWlanPermissions();
+    WlanError askWlanPermissions();
+
+signals:
+    void sPermissionsChanged(WlanPerm idPerm);
 
 private:
     std::unique_ptr<PermissionsPrivate> d_ptr;

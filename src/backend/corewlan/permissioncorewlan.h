@@ -1,8 +1,9 @@
-#ifndef QWLANMAN_BACKEND_WINRT_PERMISSIONWINRT_H
-#define QWLANMAN_BACKEND_WINRT_PERMISSIONWINRT_H
+#ifndef QWLANMAN_BACKEND_COREWLAN_PERMISSIONCOREWLAN_H
+#define QWLANMAN_BACKEND_COREWLAN_PERMISSIONCOREWLAN_H
 
 #include "permissions_priv.h"
-#include "typeswinrt.h"
+
+#include <any>
 
 /*****************************/
 /* Namespace instructions    */
@@ -14,12 +15,12 @@ namespace qwm
 /* Class definitions         */
 /*****************************/
 
-class PermissionWinRt final : public PermissionsPrivate
+class PermissionCoreWlan final : public PermissionsPrivate
 {
 
 public:
-    explicit PermissionWinRt(Permissions *parent);
-    ~PermissionWinRt();
+    explicit PermissionCoreWlan(Permissions *parent);
+    ~PermissionCoreWlan();
 
 public:
     void initialize() override;
@@ -31,7 +32,9 @@ public:
     WlanError openParams() override;
 
 private:
-    WinRt::PermissionApp m_permsWlan{nullptr};
+    // Use "std::any" since needed types are objective-c++ types
+    std::any m_manager{nullptr};
+    std::any m_delegate{nullptr};
 };
 
 /*****************************/
@@ -40,4 +43,4 @@ private:
 
 } // namespace qwm
 
-#endif // QWLANMAN_BACKEND_WINRT_PERMISSIONWINRT_H
+#endif // QWLANMAN_BACKEND_COREWLAN_PERMISSIONCOREWLAN_H

@@ -106,6 +106,7 @@ set(PROJECT_HEADERS_PRIVATE
     factorybackend.h
     manager_priv.h
     permissions_priv.h
+    qwlanhelper.h
 
     backend/mock/enginemock.h
     backend/mock/permissionsmock.h
@@ -128,6 +129,7 @@ set(PROJECT_SOURCES
     manager_priv.cpp
     permissions.cpp
     permissions_priv.cpp
+    qwlanhelper.cpp
     qwlantypes.cpp
 
     backend/mock/enginemock.cpp
@@ -204,6 +206,24 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     else()
         message(STATUS "Project \"${PROJECT_NAME}\" have enabled pre-windows10 compatibility")
     endif()
+
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    set(PROJECT_HEADERS_PRIVATE ${PROJECT_HEADERS_PRIVATE}
+        backend/corewlan/enginecorewlan.h
+        backend/corewlan/permissioncorewlan.h
+    )
+
+    set(PROJECT_SOURCES ${PROJECT_SOURCES}
+        backend/corewlan/enginecorewlan.mm
+        backend/corewlan/permissioncorewlan.mm
+    )
+
+    set(PROJECT_LINKING_LIB ${PROJECT_LINKING_LIB}
+        "-framework CoreFoundation"
+        "-framework Foundation"
+        "-framework CoreWLAN"
+        "-framework CoreLocation"
+    )
 endif()
 
 # Manage options

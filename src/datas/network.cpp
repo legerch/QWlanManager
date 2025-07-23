@@ -15,17 +15,17 @@
  * signal quality, etc...). \n
  * This class use <b>implicit sharing</b> memory (via <em>shared pointer</em>), this allow to:
  * - Always have a network object with "last" known properties without having to fetch them from `qwm::Interface`
+ * - When setting properties, they are propagated to all instances
  * - Passing this class by value is cheap
  * This class is also compatible with \b QML.
  *
- * \note
- * From the user point of view, this object is immutable, thus all networks
- * instances will be retrieved via \c qwm::Manager or \c qwm::Interface class.
+ * \sa qwm::Manager, qwm::Interface
  *
  * \cond INTERNAL
  *
  * \note
- * To modify this object, use the class qwm::NetworkMutator
+ *To modify internal properties of this object,
+ * use the class \c qwm::NetworkMutator
  *
  * \endcond
  */

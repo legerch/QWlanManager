@@ -60,6 +60,10 @@ public:
     Network getNetworkConnected() const;
 
 public:
+    void setCachePolicy(const CachePolicy &cachePolicy);
+    void setOptions(IfaceOptions opts);
+
+public:
     Interface& operator=(const Interface &other);
     Interface& operator=(Interface &&other) noexcept;
 

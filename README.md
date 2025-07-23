@@ -11,6 +11,9 @@
 - [1. Library details](#1-library-details)
   - [1.1. Features](#11-features)
   - [1.2. Supported platforms](#12-supported-platforms)
+    - [1.2.1. Status](#121-status)
+    - [1.2.2. Specific behaviours](#122-specific-behaviours)
+      - [1.2.2.1. MacOS](#1221-macos)
 - [2. Requirements](#2-requirements)
   - [2.1. C++ Standards](#21-c-standards)
   - [2.2. Dependencies](#22-dependencies)
@@ -31,6 +34,7 @@
 
 This cross-platform library allow to control interfaces operations (_perform a scan, connect to a network, etc..._) and manage all related events through the class `qwm::Manager`. Main features of the library are:
 - Asynchronous operations: no blocking operations, all event-driven
+- Catch "external" wifi events (wifi status changed through OS UI, from other apps, etc...)
 - Interfaces added or removed are detected
 - UTF-8 networks are supported
 - Datas classes are **QML** compatible
@@ -46,7 +50,7 @@ What the library **doesn't** support (yet!):
 - _Peer-to-peer/ad-hoc networks_ are ignored
 
 ## 1.2. Supported platforms
-
+### 1.2.1. Status
 One OS can have multiple backend or differ according to the OS version used, this table will reflect those differences:
 
 | OS | Backend engine | Permissions backend | Status | Comments |
@@ -54,7 +58,7 @@ One OS can have multiple backend or differ according to the OS version used, thi
 | Windows 7/8 | [WlanAPI][windows-wlanapi]<br>[IpHlpAPI][windows-iphlpapi] | 🚫 | ✅ | Custom _CMake options_ [`QWLANMANAGER_WINDOWS_COMPAT_PREWIN10`][anchor-cmake-opts] required<br>**Qt5.15** will be needed for those platforms (Qt6 isn't compatible with those) |
 | Windows 10/11 | [WlanAPI][windows-wlanapi]<br>[IpHlpAPI][windows-iphlpapi] | [WinRT][windows-runtime]<br>(via [AppCapabilityAccess][windows-runtime-perms]) | ✅ | Package `cppwinrt` required for _permissions backend_ |
 | Windows 11 | [WinRT][windows-runtime]<br>(via [WifiAdapter][windows-runtime-perms]) | [WinRT][windows-runtime]<br>(via [AppCapabilityAccess][windows-runtime-perms]) | 🕚 | Package `cppwinrt` required for _wifi and permissions backend_ |
-| MacOS | [CoreWlan][mac-corewlan] | ❓ | 📝 | / |
+| MacOS | [CoreWlan][mac-corewlan] | [CoreLocation][mac-corelocation] | ✅ | Please refer to section [specific behaviour - MacOS][anchor-spec-macos] |
 | Linux | NetworkManager | ❓ | 🕚 | / |
 
 > [!NOTE]
@@ -63,6 +67,15 @@ One OS can have multiple backend or differ according to the OS version used, thi
 > - 🕚: Planned
 > - 📝: In progress
 > - ✅: Complete support
+
+### 1.2.2. Specific behaviours
+#### 1.2.2.1. MacOS
+
+Under **MacOS**, location permissions key [`NSLocationUsageDescription`][mac-perm-location] must be declared inside your [`Info.plist`][mac-plist] application file in order to perform a network scan:
+```xml
+<key>NSLocationUsageDescription</key>
+<string>Used to scan nearby Wi-Fi networks</string>
+```
 
 # 2. Requirements
 ## 2.1. C++ Standards
@@ -156,6 +169,7 @@ This library is licensed under [MIT license][repo-license].
 <!-- Anchor of this page -->
 [anchor-platforms]: #12-supported-platforms
 [anchor-cmake-opts]: #32-cmake-options
+[anchor-spec-macos]: #1221-macos
 
 <!-- Links of this repository -->
 [repo-home]: https://github.com/legerch/QWlanManager
@@ -174,7 +188,10 @@ This library is licensed under [MIT license][repo-license].
 [pimpl-doc-cpp]: https://en.cppreference.com/w/cpp/language/pimpl
 [pimpl-doc-qt]: https://wiki.qt.io/D-Pointer
 
+[mac-corelocation]: https://developer.apple.com/documentation/corelocation?language=objc
 [mac-corewlan]: https://developer.apple.com/documentation/corewlan
+[mac-plist]: https://developer.apple.com/documentation/bundleresources/information-property-list?language=objc
+[mac-perm-location]: https://developer.apple.com/documentation/bundleresources/information-property-list/nslocationusagedescription?language=objc
 
 [windows-wlanapi]: https://docs.microsoft.com/en-us/windows/win32/api/wlanapi/
 [windows-iphlpapi]: https://learn.microsoft.com/en-us/windows/win32/api/iphlpapi/

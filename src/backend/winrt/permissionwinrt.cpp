@@ -26,6 +26,7 @@ namespace qwm
 /* Functions implementation  */
 /*****************************/
 
+//TODO: add support for permissions signal changed
 PermissionWinRt::PermissionWinRt(Permissions *parent)
     : PermissionsPrivate(parent)
 {
@@ -47,15 +48,29 @@ void PermissionWinRt::terminate()
     /* Nothing to do */
 }
 
-WlanPerm PermissionWinRt::wlanRetrieve()
+WlanPerm PermissionWinRt::updateStatus()
 {
     const WinRt::PermissionId apiPerm = m_permsWlan.CheckAccess();
-    return WinRt::convertPermFromApi(apiPerm);
+    setStatus(WinRt::convertPermFromApi(apiPerm));
+
+    return m_currentPerm;
 }
 
-bool PermissionWinRt::wlanOpenParams()
+WlanError PermissionWinRt::prompt()
 {
-    return QDesktopServices::openUrl(QUrl("ms-settings:privacy-location"));
+    qWarning("Permissions authorization prompt not available on WinRT platforms");
+    return WlanError::WERR_OPERATION_UNSUPPORTED;
+}
+
+WlanError PermissionWinRt::openParams()
+{
+    const bool succeed = QDesktopServices::openUrl(QUrl("ms-settings:privacy-location"));
+    if(!succeed){
+        qWarning("Unable to open location privacy parameters");
+        return WlanError::WERR_API_INTERNAL;
+    }
+
+    return WlanError::WERR_NO_ERROR;
 }
 
 /*****************************/

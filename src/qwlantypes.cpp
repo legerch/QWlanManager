@@ -3,7 +3,7 @@
 #include <QHash>
 
 /*****************************/
-/* Class documentations      */
+/* Namespace documentations  */
 /*****************************/
 
 /*!
@@ -24,6 +24,10 @@
 namespace qwm
 {
 
+/*****************************/
+/* Functions implementation  */
+/*****************************/
+
 /*!
  * \brief Use to convert wlan errors to string.
  *
@@ -42,6 +46,7 @@ QString wlanErrorToString(WlanError idErr)
         {WlanError::WERR_OPERATION_UNSUPPORTED, "operation unsupported"},
         {WlanError::WERR_OPERATION_CANCEL, "operation cancelled"},
         {WlanError::WERR_OPERATION_TIMEOUT, "operation reached timeout"},
+        {WlanError::WERR_OPERATION_DENIED, "operation denied"},
         {WlanError::WERR_ITEM_INVALID, "invalid item"},
         {WlanError::WERR_IFACE_BUSY, "interface busy"},
         {WlanError::WERR_NET_UNAVAILABLE, "network unavailable"},
@@ -176,10 +181,6 @@ QVersionNumber getLibraryVersion()
 {
     return QVersionNumber(QWLANMAN_VERSION_MAJOR, QWLANMAN_VERSION_MINOR, QWLANMAN_VERSION_PATCH);
 }
-
-/*****************************/
-/* Functions implementation  */
-/*****************************/
 
 /*****************************/
 /* End namespace             */

@@ -45,7 +45,6 @@ private:
 
     bool interfaceIsVirtual(const QString &description);
 
-    void interfaceListHandleEvents(const MapInterfaces &oldMap, const MapInterfaces &newMap);
     WlanError interfaceNetworksUpdate(Interface interface);
     WlanError interfaceNetworkProfileCreate(Interface interface, Network network, const QString &password);
     WlanError interfaceNetworkProfileDelete(Interface interface, Network network);

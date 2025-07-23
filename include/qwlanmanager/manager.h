@@ -29,18 +29,19 @@ public:
     ~Manager();
 
 public:
-    WlanError setCachePolicy(const QUuid &idInterface, const CachePolicy &cachePolicy);
-    WlanError setOptions(const QUuid &idInterface, IfaceOptions opts);
+    void setOptions(WlanOptions opts);
+
+public:
+    WlanOptions getOptions() const;
+
+    ListInterfaces getInterfaces() const;
+    Interface getInterface(const QUuid &idInterface) const;
 
 public:
     void doScan(const QUuid &idInterface);
     void doConnect(const QUuid &idInterface, const QString &ssid, const QString &password = "");
     void doDisconnect(const QUuid &idInterface);
     void doForget(const QUuid &idInterface, const QString &ssid);
-
-public:
-    ListInterfaces getInterfaces() const;
-    Interface getInterface(const QUuid &idInterface) const;
 
 signals:
     void sInterfaceAdded(qwm::Interface interface);

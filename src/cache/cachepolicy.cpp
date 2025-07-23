@@ -19,7 +19,7 @@
  * only if cache has expired. \n
  * This class is also compatible with \b QML.
  *
- * \sa Manager::setCachePolicy()
+ * \sa Interface::setCachePolicy()
  */
 
 /*****************************/

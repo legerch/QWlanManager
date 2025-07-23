@@ -250,7 +250,7 @@ Manager::Manager(QObject *parent) :
     d_ptr(FactoryBackend::createEngine(this))
 {
     d_ptr->initialize();
-    d_ptr->interfaceListRefresh();
+    d_ptr->interfaceListUpdate();
 }
 
 Manager::~Manager()
@@ -259,65 +259,60 @@ Manager::~Manager()
 }
 
 /*!
- * \brief Allow to set the cache policy of an interface.
+ * \brief Allow to set options of the manager.
  *
- * \param[in] idInterface
- * Interface ID to use. \n
- * If invalid, error \c WlanError::WERR_ITEM_INVALID will be returned.
- * \param[in] cachePolicy
- * Cache policy to use.
- *
- * \return
- * Returns \c WlanError::WERR_NO_ERROR if succeed, otherwise see
- * \c qwm::WlanError for more details
- *
- * \sa setOptions()
- */
-WlanError Manager::setCachePolicy(const QUuid &idInterface, const CachePolicy &cachePolicy)
-{
-    /* Retrieve associated interface */
-    Interface iface = getInterface(idInterface);
-    if(!iface.isValid()){
-        qWarning("Unable to set cache policy, unknown interface ID [uuid: %s]", qUtf8Printable(idInterface.toString()));
-        return WlanError::WERR_ITEM_INVALID;
-    }
-
-    /* Set cache policy */
-    InterfaceMutator miface(iface);
-    miface.setCachePolicy(cachePolicy);
-
-    return WlanError::WERR_NO_ERROR;
-}
-
-/*!
- * \brief Allow to set options of an interface.
- *
- * \param[in] idInterface
- * Interface ID to use. \n
- * If invalid, error \c WlanError::WERR_ITEM_INVALID will be returned.
  * \param[in] opts
  * Options to use.
  *
- * \return
- * Returns \c WlanError::WERR_NO_ERROR if succeed, otherwise see
- * \c qwm::WlanError for more details
- *
- * \sa setCachePolicy()
+ * \sa getOptions()
  */
-WlanError Manager::setOptions(const QUuid &idInterface, IfaceOptions opts)
+void Manager::setOptions(WlanOptions opts)
 {
-    /* Retrieve associated interface */
-    Interface iface = getInterface(idInterface);
-    if(!iface.isValid()){
-        qWarning("Unable to set options, unknown interface ID [uuid: %s]", qUtf8Printable(idInterface.toString()));
-        return WlanError::WERR_ITEM_INVALID;
-    }
+    d_ptr->m_opts = opts;
+}
 
-    /* Set options */
-    InterfaceMutator miface(iface);
-    miface.setOptions(opts);
+/*!
+ * \brief Retrieve current manager options
+ *
+ * \return
+ * Returns options of manager
+ *
+ * \sa setOptions()
+ */
+WlanOptions Manager::getOptions() const
+{
+    return d_ptr->m_opts;
+}
 
-    return WlanError::WERR_NO_ERROR;
+/*!
+ * \brief Allow to retrieve list of interfaces
+ * \return
+ * Returns list of available interfaces.
+ *
+ * \sa getInterface()
+ * \sa sInterfaceAdded(), sInterfaceRemoved()
+ */
+ListInterfaces Manager::getInterfaces() const
+{
+    return d_ptr->m_currentIfaces.values();
+}
+
+/*!
+ * \brief Allow to retrieve an interface via its ID
+ *
+ * \param[in] idInterface
+ * Interface ID to use. \n
+ * If ID is unknown, returned interface will be invalid.
+ *
+ * \return
+ * Returns interface related to the ID.
+ *
+ * \sa getInterfaces()
+ * \sa Interface::isValid()
+ */
+Interface Manager::getInterface(const QUuid &idInterface) const
+{
+    return d_ptr->m_currentIfaces.value(idInterface);
 }
 
 /*!
@@ -373,6 +368,14 @@ void Manager::doScan(const QUuid &idInterface)
  * Recommended scenario is to call this method once with empty password
  * and ask the user for the password only if \c WlanError::WERR_NET_PASSKEY
  * error is received.
+ *
+ * \remark
+ * On \b CoreWlan backend, when an empty password is provided in
+ * order to use internal credentials, a temporary admin access will be
+ * asked in order to retrieve the network passkey from the keychain
+ * subsystem (and only for that). \n
+ * Otherwise, option \c WlanOption::WOPT_ALLOW_ADMIN_REQUESTS can be disabled, if so,
+ * caller will always have to provide network password.
  *
  * \sa sConnectionStarted()
  * \sa sConnectionSucceed(), sConnectionFailed()
@@ -474,36 +477,6 @@ void Manager::doForget(const QUuid &idInterface, const QString &ssid)
 
     /* Start connection request */
     d_ptr->interfaceForget(iface, net);
-}
-
-/*!
- * \brief Allow to retrieve list of interfaces
- * \return
- * Returns list of available interfaces.
- *
- * \sa getInterface()
- */
-ListInterfaces Manager::getInterfaces() const
-{
-    return d_ptr->m_interfaces.values();
-}
-
-/*!
- * \brief Allow to retrieve an interface via its ID
- *
- * \param[in] idInterface
- * Interface ID to use. \n
- * If ID is unknown, returned interface will be invalid.
- *
- * \return
- * Returns interface related to the ID.
- *
- * \sa getInterfaces()
- * \sa Interface::isValid()
- */
-Interface Manager::getInterface(const QUuid &idInterface) const
-{
-    return d_ptr->m_interfaces.value(idInterface);
 }
 
 /*****************************/

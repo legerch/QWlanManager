@@ -41,16 +41,22 @@ void PermissionsMock::terminate()
     qDebug("Permissions mock termination called");
 }
 
-WlanPerm PermissionsMock::wlanRetrieve()
+WlanPerm PermissionsMock::updateStatus()
 {
     qCritical("Unable to retrieve wlan permissions, not implemented for mock permissions");
     return WlanPerm::WPERM_UNKNOWN;
 }
 
-bool PermissionsMock::wlanOpenParams()
+WlanError PermissionsMock::prompt()
 {
-    qCritical("Unable to open wlan parameters, not implemented for mock permissions");
-    return false;
+    qWarning("Permissions authorization prompt not available for mock permissions");
+    return WlanError::WERR_OPERATION_UNSUPPORTED;
+}
+
+WlanError PermissionsMock::openParams()
+{
+    qWarning("Unable to open wlan parameters, not implemented for mock permissions");
+    return WlanError::WERR_OPERATION_UNSUPPORTED;
 }
 
 /*****************************/

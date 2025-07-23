@@ -24,7 +24,6 @@ public:
 
 public:
     void setState(IfaceState idState);
-    void setOptions(IfaceOptions opts);
     void setUid(const QUuid &uid);
     void setHwAddress(const QString &hwAddr);
     void setHwAddress(const uchar *buffer, int lenBuffer);
@@ -32,11 +31,9 @@ public:
     void setDescription(const QString &desc);
 
     void setConnectedSsid(const QString &ssid = QString());
+
     MapNetworks& getMapNetworksRef();
-
-    void setCachePolicy(const CachePolicy &cachePolicy);
     CachePolicy& getCachePolicyRef();
-
     RequestsQueue& getRequestsQueueRef();
 
     void setDataEngine(const std::any &data);
