@@ -58,7 +58,7 @@ One OS can have multiple backend or differ according to the OS version used, thi
 | Windows 7/8 | [WlanAPI][windows-wlanapi]<br>[IpHlpAPI][windows-iphlpapi] | 🚫 | ✅ | Custom _CMake options_ [`QWLANMANAGER_WINDOWS_COMPAT_PREWIN10`][anchor-cmake-opts] required<br>**Qt5.15** will be needed for those platforms (Qt6 isn't compatible with those) |
 | Windows 10/11 | [WlanAPI][windows-wlanapi]<br>[IpHlpAPI][windows-iphlpapi] | [WinRT][windows-runtime]<br>(via [AppCapabilityAccess][windows-runtime-perms]) | ✅ | Package `cppwinrt` required for _permissions backend_ |
 | Windows 11 | [WinRT][windows-runtime]<br>(via [WifiAdapter][windows-runtime-perms]) | [WinRT][windows-runtime]<br>(via [AppCapabilityAccess][windows-runtime-perms]) | 🕚 | Package `cppwinrt` required for _wifi and permissions backend_ |
-| MacOS | [CoreWlan][mac-corewlan] | [CoreLocation][mac-corelocation] | 📝 | Please refer to section [specific behaviour - MacOS][anchor-spec-macos] |
+| MacOS | [CoreWlan][mac-corewlan] | [CoreLocation][mac-corelocation] | ✅ | Please refer to section [specific behaviour - MacOS][anchor-spec-macos] |
 | Linux | NetworkManager | ❓ | 🕚 | / |
 
 > [!NOTE]
