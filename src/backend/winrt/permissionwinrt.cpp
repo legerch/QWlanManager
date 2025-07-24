@@ -26,7 +26,6 @@ namespace qwm
 /* Functions implementation  */
 /*****************************/
 
-//TODO: add support for permissions signal changed
 PermissionWinRt::PermissionWinRt(Permissions *parent)
     : PermissionsPrivate(parent)
 {
@@ -40,12 +39,16 @@ PermissionWinRt::~PermissionWinRt()
 
 void PermissionWinRt::initialize()
 {
+    /* Create app permission controller */
     m_permsWlan = WinRt::PermissionApp::Create(L"wiFiControl");
+
+    /* Register events */
+    eventsRegister();
 }
 
 void PermissionWinRt::terminate()
 {
-    /* Nothing to do */
+    eventsUnregister();
 }
 
 WlanPerm PermissionWinRt::updateStatus()
@@ -71,6 +74,20 @@ WlanError PermissionWinRt::openParams()
     }
 
     return WlanError::WERR_NO_ERROR;
+}
+
+void PermissionWinRt::eventsRegister()
+{
+    m_tokenAccessChanged = m_permsWlan.AccessChanged([this](QWLANMAN_VAR_UNUSED WinRt::PermissionApp const& sender, QWLANMAN_VAR_UNUSED WinRt::EventArgsAccessChanged const& args){
+        updateStatus();
+    });
+}
+
+void PermissionWinRt::eventsUnregister()
+{
+    if(m_tokenAccessChanged){
+        m_permsWlan.AccessChanged(m_tokenAccessChanged);
+    }
 }
 
 /*****************************/

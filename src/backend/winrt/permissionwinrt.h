@@ -31,7 +31,12 @@ public:
     WlanError openParams() override;
 
 private:
+    void eventsRegister();
+    void eventsUnregister();
+
+private:
     WinRt::PermissionApp m_permsWlan{nullptr};
+    WinRt::EventToken m_tokenAccessChanged;
 };
 
 /*****************************/

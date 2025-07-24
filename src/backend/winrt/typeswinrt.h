@@ -19,13 +19,16 @@ namespace qwm::WinRt
 /*****************************/
 /* Namespace aliases         */
 /*****************************/
-    namespace NsCapability  = winrt::Windows::Security::Authorization::AppCapabilityAccess;
+    namespace NsCapability          = winrt::Windows::Security::Authorization::AppCapabilityAccess;
 
 /*****************************/
 /* Types aliases             */
 /*****************************/
-    using PermissionId      = NsCapability::AppCapabilityAccessStatus;
-    using PermissionApp     = NsCapability::AppCapability;
+    using PermissionId              = NsCapability::AppCapabilityAccessStatus;
+    using PermissionApp             = NsCapability::AppCapability;
+
+    using EventToken                = winrt::event_token;
+    using EventArgsAccessChanged    = NsCapability::AppCapabilityAccessChangedEventArgs;
 
 /*****************************/
 /* Functions definitions     */
