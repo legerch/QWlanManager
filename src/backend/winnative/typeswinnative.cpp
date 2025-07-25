@@ -7,6 +7,19 @@
 #define BUFFER_SIZE_MAX 512
 
 /*****************************/
+/* Namespace documentations  */
+/*****************************/
+
+/*!
+ * \namespace qwm::WinNative
+ * \brief Namespace used to manage types
+ * from <b>Windows Wlan Native</b> API.
+ * \details
+ * For more details, see:
+ * - https://learn.microsoft.com/en-us/windows/win32/nativewifi/
+ */
+
+/*****************************/
 /* Class documentations      */
 /*****************************/
 

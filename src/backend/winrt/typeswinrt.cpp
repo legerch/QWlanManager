@@ -1,6 +1,20 @@
 #include "typeswinrt.h"
 
 /*****************************/
+/* Namespace documentations  */
+/*****************************/
+
+/*!
+ * \namespace qwm::WinRt
+ * \brief Namespace used to manage types
+ * from <b>Windows WinRT</b> API.
+ * \details
+ * For more details, see:
+ * - https://learn.microsoft.com/fr-fr/uwp/api/windows.devices.wifi?view=winrt-26100
+ * - https://learn.microsoft.com/fr-fr/uwp/api/windows.security.authorization.appcapabilityaccess?view=winrt-26100
+ */
+
+/*****************************/
 /* Start namespace           */
 /*****************************/
 

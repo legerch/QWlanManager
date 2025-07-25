@@ -7,6 +7,20 @@ extern "C" {  // Otherwise it won't find CWKeychain* symbols at link time
 #include "qwlanhelper.h"
 
 /*****************************/
+/* Namespace documentations  */
+/*****************************/
+
+/*!
+ * \namespace qwm::CoreWlan
+ * \brief Namespace used to manage types
+ * from <b>MacOS CoreWLan</b> API.
+ * \details
+ * For more details, see:
+ * - https://developer.apple.com/documentation/corewlan
+ * - https://developer.apple.com/documentation/corelocation
+ */
+
+/*****************************/
 /* Class documentations      */
 /*****************************/
 

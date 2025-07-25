@@ -1,8 +1,12 @@
 # Doxyfile 1.12.0
 
-# This file is used to generate public API documentation for "TransferEase"
+# This file is used to generate public API documentation for "QWlanManager"
 # project.
 # Please refer to "Doxyfile-common.in" file for more syntax details
+#
+# Based on project template repository: https://github.com/legerch/projects-template
+# Template file version: 2025-07-24
+#
 
 #---------------------------------------------------------------------------
 # Doxyfile fragments to include
