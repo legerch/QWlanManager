@@ -33,7 +33,7 @@ public:
     WlanError askWlanPermissions();
 
 signals:
-    void sPermissionsChanged(WlanPerm idPerm);
+    void sPermissionsChanged(qwm::WlanPerm idPerm);
 
 private:
     std::unique_ptr<PermissionsPrivate> d_ptr;

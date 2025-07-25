@@ -22,7 +22,7 @@ class QWLANMAN_EXPORT CachePolicy
     Q_GADGET
 
     Q_PROPERTY(int maxScans READ getMaxScans WRITE setMaxScans)
-    Q_PROPERTY(int maxDelay READ getMaxDelay WRITE setMaxDelay)
+    Q_PROPERTY(qint64 maxDelay READ getMaxDelay WRITE setMaxDelay)
 
 public:
     CachePolicy();
