@@ -15,7 +15,7 @@ var searchData=
   ['sforgetsucceed_12',['sForgetSucceed',['../classqwm_1_1_manager.html#a9f337621b2ef1820b6626190b2b8d6f7',1,'qwm::Manager']]],
   ['sinterfaceadded_13',['sInterfaceAdded',['../classqwm_1_1_manager.html#ad295991feddb567efdf6306043217055',1,'qwm::Manager']]],
   ['sinterfaceremoved_14',['sInterfaceRemoved',['../classqwm_1_1_manager.html#afb810205ce96e95de740d0bd4a3ed152',1,'qwm::Manager']]],
-  ['spermissionschanged_15',['sPermissionsChanged',['../classqwm_1_1_permissions.html#a113748372e23290e564b9ec13b56a793',1,'qwm::Permissions']]],
+  ['spermissionschanged_15',['sPermissionsChanged',['../classqwm_1_1_permissions.html#ad26164b1bee328bdcd9d454c67210483',1,'qwm::Permissions']]],
   ['sscanfailed_16',['sScanFailed',['../classqwm_1_1_manager.html#a10f60a3977921e98a9ebbac929449556',1,'qwm::Manager']]],
   ['sscanstarted_17',['sScanStarted',['../classqwm_1_1_manager.html#a03ee396c2e1fed1d15de800e252bb11f',1,'qwm::Manager']]],
   ['sscansucceed_18',['sScanSucceed',['../classqwm_1_1_manager.html#af7e09ae2ea53a2115cd26887befdfef3',1,'qwm::Manager']]],

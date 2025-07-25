@@ -16,7 +16,7 @@ var searchData=
   ['sinterfaceadded_13',['sInterfaceAdded',['../classqwm_1_1_manager.html#ad295991feddb567efdf6306043217055',1,'qwm::Manager']]],
   ['sinterfaceremoved_14',['sInterfaceRemoved',['../classqwm_1_1_manager.html#afb810205ce96e95de740d0bd4a3ed152',1,'qwm::Manager']]],
   ['specific_20behaviours_15',['1.2.2. Specific behaviours',['../index.html#autotoc_md122-specific-behaviours',1,'']]],
-  ['spermissionschanged_16',['sPermissionsChanged',['../classqwm_1_1_permissions.html#a113748372e23290e564b9ec13b56a793',1,'qwm::Permissions']]],
+  ['spermissionschanged_16',['sPermissionsChanged',['../classqwm_1_1_permissions.html#ad26164b1bee328bdcd9d454c67210483',1,'qwm::Permissions']]],
   ['sscanfailed_17',['sScanFailed',['../classqwm_1_1_manager.html#a10f60a3977921e98a9ebbac929449556',1,'qwm::Manager']]],
   ['sscanstarted_18',['sScanStarted',['../classqwm_1_1_manager.html#a03ee396c2e1fed1d15de800e252bb11f',1,'qwm::Manager']]],
   ['sscansucceed_19',['sScanSucceed',['../classqwm_1_1_manager.html#af7e09ae2ea53a2115cd26887befdfef3',1,'qwm::Manager']]],
