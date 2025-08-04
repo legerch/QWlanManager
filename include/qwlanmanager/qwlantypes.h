@@ -67,6 +67,8 @@ namespace qwm
      * available features. \n
      * Options are flags, so they can be combined.
      *
+     * \qtFlagsNote{qwm::WlanOptions,qwm::WlanOption}
+     *
      * \sa IfaceOption
      */
     enum WlanOption
@@ -82,6 +84,10 @@ namespace qwm
 
         WOPT_DEFAULT                = WOPT_ALLOW_ADMIN_REQUESTS     /**< Default manager options */
     };
+
+    /*!
+     * \qtFlagsDef{qwm::WlanOption}
+     */
     Q_DECLARE_FLAGS(WlanOptions, WlanOption)
     Q_FLAG_NS(WlanOptions)
 
@@ -123,6 +129,8 @@ namespace qwm
      * \details
      * Options are flags, so they can be combined.
      *
+     * \qtFlagsNote{qwm::IfaceOptions,qwm::IfaceOption}
+     *
      * \sa qwm::Interface
      * \sa WlanOption
      */
@@ -137,6 +145,10 @@ namespace qwm
 
         IFACE_OPT_DEFAULT   = IFACE_OPT_NONE    /**< Default interface option, currently no option set */
     };
+
+    /*!
+     * \qtFlagsDef{qwm::IfaceOption}
+     */
     Q_DECLARE_FLAGS(IfaceOptions, IfaceOption)
     Q_FLAG_NS(IfaceOptions)
 
