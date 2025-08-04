@@ -17,5 +17,6 @@ var searchData=
   ['wperm_5fdenied_14',['WPERM_DENIED',['../namespaceqwm.html#abc2ba4a9d7e6f2b0b891d7326aab85fda8cc05fb0ab968c1ced5f204cc63c40d8',1,'qwm']]],
   ['wperm_5fgranted_15',['WPERM_GRANTED',['../namespaceqwm.html#abc2ba4a9d7e6f2b0b891d7326aab85fda031d6c7c09e1ad652719399267e4c87f',1,'qwm']]],
   ['wperm_5fprompt_5frequired_16',['WPERM_PROMPT_REQUIRED',['../namespaceqwm.html#abc2ba4a9d7e6f2b0b891d7326aab85fdaddf9dbf3c3b8399f643be4dabd69e3bc',1,'qwm']]],
-  ['wperm_5funknown_17',['WPERM_UNKNOWN',['../namespaceqwm.html#abc2ba4a9d7e6f2b0b891d7326aab85fdaa0ec7b8956e3086df291b9102376ef61',1,'qwm']]]
+  ['wperm_5funknown_17',['WPERM_UNKNOWN',['../namespaceqwm.html#abc2ba4a9d7e6f2b0b891d7326aab85fdaa0ec7b8956e3086df291b9102376ef61',1,'qwm']]],
+  ['wperm_5funsupported_18',['WPERM_UNSUPPORTED',['../namespaceqwm.html#abc2ba4a9d7e6f2b0b891d7326aab85fdaa10083c8855a2255023de7c269c4b756',1,'qwm']]]
 ];
