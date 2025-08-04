@@ -50,8 +50,9 @@ namespace qwm
      */
     enum class WlanPerm
     {
-        WPERM_UNKNOWN = 0,      /**< Permission unknown, either because not fetched yet or platform doesn't support the operation */
+        WPERM_UNKNOWN = 0,      /**< Permission unknown, generally because not fetched yet */
 
+        WPERM_UNSUPPORTED,      /**< Platform doesn't support the operation, consider it as unknown */
         WPERM_PROMPT_REQUIRED,  /**< User didn't deny or grant permission yet */
         WPERM_GRANTED,          /**< Wlan permissions are granted */
         WPERM_DENIED            /**< Wlan permissions has been denied */
