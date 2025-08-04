@@ -88,7 +88,7 @@ Below, list of required dependencies:
 
 | Dependencies | VCPKG package | Comments |
 |:-:|:-:|:-:|
-| [Qt][qt-official] | / | Compatible with **Qt6.x**<b>Compatible with **Qt5.15.x** |
+| [Qt][qt-official] | / | Compatible with **Qt6.x**<br>Compatible with **Qt5.15.x** |
 | Native APIs | / | Please refer to section [supported platform][anchor-platforms] for more details |
 
 > [!NOTE]
@@ -164,7 +164,7 @@ doxygen ./docs/fragments/Doxyfile-name
 
 # 6. License
 
-This library is licensed under [MIT license][repo-license].
+This library is licensed under [MIT license][repo-license-url].
 
 <!-- Anchor of this page -->
 [anchor-platforms]: #12-supported-platforms
@@ -175,6 +175,7 @@ This library is licensed under [MIT license][repo-license].
 [repo-home]: https://github.com/legerch/QWlanManager
 [repo-doc-web]: https://legerch.github.io/QWlanManager/
 [repo-license]: LICENSE
+[repo-license-url]: https://github.com/legerch/QWlanManager/LICENSE
 
 <!-- External links -->
 [doxygen-official]: https://www.doxygen.nl/index.html
