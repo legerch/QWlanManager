@@ -68,26 +68,22 @@ void EngineMock::interfaceListRefresh()
 
 void EngineMock::interfaceScanNetworksAsync(Interface interface)
 {
-    qCritical("Unable to perform scan, not implemented for mock engine");
-    emit q_ptr->sScanFailed(interface.getUid(), WlanError::WERR_OPERATION_UNSUPPORTED);
+    handleScanDone(interface, WlanError::WERR_OPERATION_UNSUPPORTED);
 }
 
 void EngineMock::interfaceConnectAsync(Interface interface, Network network, QWLANMAN_VAR_UNUSED const QString &password)
 {
-    qCritical("Unable to perform connection, not implemented for mock engine");
-    emit q_ptr->sConnectionFailed(interface.getUid(), network.getSsid(), WlanError::WERR_OPERATION_UNSUPPORTED);
+    handleConnectDone(interface, network.getSsid(), WlanError::WERR_OPERATION_UNSUPPORTED);
 }
 
 void EngineMock::interfaceDisconnectAsync(Interface interface)
 {
-    qCritical("Unable to perform disconnection, not implemented for mock engine");
-    emit q_ptr->sDisconnectionFailed(interface.getUid(), WlanError::WERR_OPERATION_UNSUPPORTED);
+    handleDisconnectDone(interface, WlanError::WERR_OPERATION_UNSUPPORTED);
 }
 
 void EngineMock::interfaceForgetAsync(Interface interface, Network network)
 {
-    qCritical("Unable to perform forget, not implemented for mock engine");
-    emit q_ptr->sForgetFailed(interface.getUid(), network.getSsid(), WlanError::WERR_OPERATION_UNSUPPORTED);
+    handleForgetDone(interface, network, WlanError::WERR_OPERATION_UNSUPPORTED);
 }
 
 /*****************************/
