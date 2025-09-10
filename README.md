@@ -49,6 +49,9 @@ What the library **doesn't** support (yet!):
 - _Hidden networks_ are ignored
 - _Peer-to-peer/ad-hoc networks_ are ignored
 
+>[!NOTE]
+> Custom application [QWlanManagerApp][qwlanmanagerapp-repo] is available and used as a _demo application_ to discover how this library can be used. 
+
 ## 1.2. Supported platforms
 ### 1.2.1. Status
 One OS can have multiple backend or differ according to the OS version used, this table will reflect those differences:
@@ -182,6 +185,7 @@ This library is licensed under [MIT license][repo-license-url].
 [example-doc-web]: https://www.google.com/
 
 [qt-official]: https://www.qt.io/
+[qwlanmanagerapp-repo]: https://github.com/legerch/QWlanManagerApp
 
 [vcpkg-tutorial]: https://github.com/legerch/develop-memo/tree/master/Toolchains/Build%20systems/VCPKG
 
