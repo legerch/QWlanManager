@@ -53,7 +53,7 @@ void ManagerPrivate::interfaceScanNetworks(Interface interface)
             qWarning("Unable to perform scan, interface is busy [uuid: %s, state: %s (%d)]",
                      qUtf8Printable(interface.getUid().toString()),
                      qUtf8Printable(ifaceStateToString(interface.getState())),
-                     interface.getState()
+                     QWLANMAN_E2I(interface.getState())
             );
 
             emit q_ptr->sScanFailed(interface.getUid(), WlanError::WERR_IFACE_BUSY);
@@ -88,7 +88,7 @@ void ManagerPrivate::interfaceConnect(Interface interface, Network network, cons
             qWarning("Unable to perform connection, interface is busy [uuid: %s, state: %s (%d)]",
                      qUtf8Printable(interface.getUid().toString()),
                      qUtf8Printable(ifaceStateToString(interface.getState())),
-                     interface.getState()
+                     QWLANMAN_E2I(interface.getState())
             );
 
             emit q_ptr->sConnectionFailed(interface.getUid(), network.getSsid(), WlanError::WERR_IFACE_BUSY);
@@ -123,7 +123,7 @@ void ManagerPrivate::interfaceDisconnect(Interface interface)
             qWarning("Unable to perform disconnection, interface is busy [uuid: %s, state: %s (%d)]",
                      qUtf8Printable(interface.getUid().toString()),
                      qUtf8Printable(ifaceStateToString(interface.getState())),
-                     interface.getState()
+                     QWLANMAN_E2I(interface.getState())
             );
 
             emit q_ptr->sDisconnectionFailed(interface.getUid(), WlanError::WERR_IFACE_BUSY);
@@ -193,7 +193,7 @@ void ManagerPrivate::handleScanDone(const Interface &interface, WlanError idErr)
             qCritical("Scan request has failed [uuid: %s, err: %s (%d)]",
                       qUtf8Printable(idInterface.toString()),
                       qUtf8Printable(wlanErrorToString(idErr)),
-                      idErr
+                      QWLANMAN_E2I(idErr)
             );
 
             emit q_ptr->sScanFailed(idInterface, idErr);
@@ -218,7 +218,7 @@ void ManagerPrivate::handleConnectDone(const Interface &interface, const QString
                       qUtf8Printable(idInterface.toString()),
                       qUtf8Printable(ssid),
                       qUtf8Printable(wlanErrorToString(idErr)),
-                      idErr
+                      QWLANMAN_E2I(idErr)
             );
 
             emit q_ptr->sConnectionFailed(idInterface, ssid, idErr);
@@ -242,7 +242,7 @@ void ManagerPrivate::handleDisconnectDone(const Interface &interface, WlanError 
             qCritical("Disconnection request has failed [uuid: %s, err: %s (%d)]",
                       qUtf8Printable(idInterface.toString()),
                       qUtf8Printable(wlanErrorToString(idErr)),
-                      idErr
+                      QWLANMAN_E2I(idErr)
             );
 
             emit q_ptr->sDisconnectionFailed(idInterface, idErr);

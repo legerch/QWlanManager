@@ -124,6 +124,12 @@
 #   define QWLANMAN_QTCOMPAT_STR_VIEW QAnyStringView
 #endif
 
+/**********************************
+ * Helpers
+ *********************************/
+
+#define QWLANMAN_E2I(enumValue)     (static_cast<int>(enumValue))
+
 /*!
  * \endcond
  */
