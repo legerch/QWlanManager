@@ -19,6 +19,8 @@
 #elif defined(Q_OS_MACOS)
 #   include "backend/corewlan/enginecorewlan.h"
 #   include "backend/corewlan/permissioncorewlan.h"
+#elif defined(Q_OS_LINUX)
+#   include "backend/networkmanager/enginenetworkmanager.h"
 #endif
 
 
@@ -54,6 +56,10 @@ std::unique_ptr<ManagerPrivate> FactoryBackend::createEngine(Manager *parent)
 #elif defined(Q_OS_MACOS)
     qDebug("Use engine \"CoreWlan\"");
     return std::make_unique<EngineCoreWlan>(parent);
+
+#elif defined(Q_OS_LINUX)
+    qDebug("Use engine \"Network Manager\"");
+    return std::make_unique<EngineNetworkManager>(parent);
 
 #else
     qDebug("Use engine \"Mock\"");
