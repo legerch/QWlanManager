@@ -5,8 +5,8 @@
  * \file qwlanman_global.h
  *
  * \note
- * Based on <a href="https://github.com/legerch/library-template">Library template repository</a>. \n
- * Template file version: 2025-03-11
+ * Based on <a href="https://github.com/legerch/projects-template">Projects template repository</a>.
+ * Template file version: 2025-07-24
  */
 
 #include <QtGlobal>
