@@ -1,15 +1,18 @@
+# CMakeLists file based on project template repository: https://github.com/legerch/projects-template
+## Template file version: 2025-09-18
+
 cmake_minimum_required(VERSION 3.20)
 
 # Set project properties
-set(PRJ_COMPANY_ID legerch)
-set(PRJ_COMPANY_NAME "Leger Charlie")
-set(PRJ_ID qwlanmanager)
-set(PRJ_READABLE_NAME "QWlanManager")
-set(PRJ_VERSION_SEMANTIC 0.0.1)
-set(PRJ_DESCRIPTION "Allow to manage WLAN interfaces and network easily without worrying about OS dependencies.")
-set(PRJ_LICENSE "MIT")
-set(PRJ_COPYRIGHT "Copyright (c) 2025 ${PRJ_COMPANY_NAME} (${PRJ_LICENSE} License)")
-set(PRJ_HOMEPAGE_URL "https://github.com/legerch/QWlanManager")
+set(PRJ_COMPANY_ID          legerch)
+set(PRJ_COMPANY_NAME        "Leger Charlie")
+set(PRJ_ID                  qwlanmanager)
+set(PRJ_READABLE_NAME       "QWlanManager")
+set(PRJ_VERSION_SEMANTIC    0.0.1)
+set(PRJ_DESCRIPTION         "Allow to manage WLAN interfaces and network easily without worrying about OS dependencies.")
+set(PRJ_LICENSE             "MIT")
+set(PRJ_COPYRIGHT           "Copyright (c) 2025 ${PRJ_COMPANY_NAME} (${PRJ_LICENSE} License)")
+set(PRJ_HOMEPAGE_URL        "https://github.com/legerch/QWlanManager")
 
 set(PROJECT_NAME ${PRJ_ID})
 set(PROJECT_VERSION_CPP_MIN 17)
@@ -47,8 +50,9 @@ message(STATUS "Project \"${PROJECT_NAME}\" compiled with C++ standard ${CMAKE_C
 
 # Set needed packages
 ## Qt packages
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Gui REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Gui REQUIRED)
+set(PROJECT_QT_PACKAGES
+    Core Gui
+)
 
 ## Other library packages
 ### Example: find_package(nlohmann_json 3.11.3 REQUIRED)
@@ -84,8 +88,7 @@ set(PROJECT_LINKING_DIR
 
 ### Linking libs
 set(PROJECT_LINKING_LIB
-    Qt${QT_VERSION_MAJOR}::Core
-    Qt${QT_VERSION_MAJOR}::Gui
+    # Example: nlohmann_json::nlohmann_json
 )
 
 ## Set library files
@@ -236,7 +239,18 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
         backend/networkmanager/typesnm.cpp
     )
 
+    set(PROJECT_QT_PACKAGES ${PROJECT_QT_PACKAGES}
+        DBus
+    )
+
 endif()
+
+# Finalize Qt packages managements
+find_package(QT NAMES Qt6 Qt5 COMPONENTS ${PROJECT_QT_PACKAGES} REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS ${PROJECT_QT_PACKAGES} REQUIRED)
+
+list(TRANSFORM PROJECT_QT_PACKAGES PREPEND "Qt${QT_VERSION_MAJOR}::")
+set(PROJECT_LINKING_LIB ${PROJECT_LINKING_LIB} ${PROJECT_QT_PACKAGES})
 
 # Manage options
 ## Example: if(QWLANMANAGER_USE_CUSTOM_BEHAVIOUR)

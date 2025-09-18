@@ -2,6 +2,9 @@
  * Documentations:
  * - https://learn.microsoft.com/en-us/windows/win32/menurc/resources
  * - https://learn.microsoft.com/en-us/windows/win32/menurc/versioninfo-resource
+ *
+ * Based on project template repository: https://github.com/legerch/projects-template
+ * Template file version: 2025-08-04 
  */
 
 #include <windows.h>
@@ -29,6 +32,10 @@
 /*****************************/
 /* Create metadatas          */
 /*****************************/
+
+#if !IS_LIBRARY
+    IDI_ICON1 ICON "@PRJ_ICON@.ico"
+#endif
 
 VS_VERSION_INFO VERSIONINFO
     FILEVERSION     @PROJECT_VERSION_MAJOR@,@PROJECT_VERSION_MINOR@,@PROJECT_VERSION_PATCH@,0
