@@ -62,7 +62,7 @@ One OS can have multiple backend or differ according to the OS version used, thi
 | Windows 10/11 | [WlanAPI][windows-wlanapi]<br>[IpHlpAPI][windows-iphlpapi] | [WinRT][windows-runtime]<br>(via [AppCapabilityAccess][windows-runtime-perms]) | ✅ | Package `cppwinrt` required for _permissions backend_ |
 | Windows 11 | [WinRT][windows-runtime]<br>(via [WifiAdapter][windows-runtime-perms]) | [WinRT][windows-runtime]<br>(via [AppCapabilityAccess][windows-runtime-perms]) | 🕚 | Package `cppwinrt` required for _wifi and permissions backend_ |
 | MacOS | [CoreWlan][mac-corewlan] | [CoreLocation][mac-corelocation] | ✅ | Please refer to section [specific behaviour - MacOS][anchor-spec-macos] |
-| Linux | NetworkManager | ❓ | 🕚 | / |
+| Linux | [NetworkManager][linux-nm] | ❓ | 📝 | / |
 
 > [!NOTE]
 > Legends:
@@ -192,6 +192,8 @@ This library is licensed under [MIT license][repo-license-url].
 [semver-home]: https://semver.org
 [pimpl-doc-cpp]: https://en.cppreference.com/w/cpp/language/pimpl
 [pimpl-doc-qt]: https://wiki.qt.io/D-Pointer
+
+[linux-nm]: https://networkmanager.dev/docs/api/latest/index.html
 
 [mac-corelocation]: https://developer.apple.com/documentation/corelocation?language=objc
 [mac-corewlan]: https://developer.apple.com/documentation/corewlan

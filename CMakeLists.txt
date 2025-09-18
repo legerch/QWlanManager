@@ -224,6 +224,18 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
         "-framework CoreWLAN"
         "-framework CoreLocation"
     )
+
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    set(PROJECT_HEADERS_PRIVATE ${PROJECT_HEADERS_PRIVATE}
+        backend/networkmanager/enginenetworkmanager.h
+        backend/networkmanager/typesnm.h
+    )
+
+    set(PROJECT_SOURCES ${PROJECT_SOURCES}
+        backend/networkmanager/enginenetworkmanager.cpp
+        backend/networkmanager/typesnm.cpp
+    )
+
 endif()
 
 # Manage options
