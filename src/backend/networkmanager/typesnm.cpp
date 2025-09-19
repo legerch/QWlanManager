@@ -32,6 +32,26 @@
 namespace qwm::NmBus
 {
 
+/*!
+ * \brief Use to determine if the device is
+ * a wireless IEEE 802.11 interface or not.
+ * \details
+ * Refer to the official doumentation for more details:
+ * - https://networkmanager.dev/docs/api/latest/nm-dbus-types.html#NMDeviceType
+ *
+ * \param[in] idType
+ * Type ID to verify.
+ *
+ * \return
+ * Returns \c true if interface is a 802.11
+ * wifi device.
+ */
+bool isWifiDevice(int idType)
+{
+    constexpr int NM_DEVICE_TYPE_WIFI = 2;
+    return idType == NM_DEVICE_TYPE_WIFI;
+}
+
 /*****************************/
 /* End namespace             */
 /*****************************/
