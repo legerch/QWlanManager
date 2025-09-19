@@ -9,7 +9,7 @@
 /*****************************/
 
 #define DBUS_SERVICE            "org.freedesktop.NetworkManager"
-#define DBUS_OBJECT             "/org/freedesktop/NetworkManager"
+#define DBUS_PATH_MANAGER       "/org/freedesktop/NetworkManager"
 
 #define DBUS_INTERFACE_MANAGER  DBUS_SERVICE
 #define DBUS_INTERFACE_DEVICE   DBUS_INTERFACE_MANAGER ".Device"
@@ -65,7 +65,7 @@ void EngineNetworkManager::terminate()
 void EngineNetworkManager::interfaceListRefresh()
 {
     /* Create DBus interface for network manager */
-    QDBusInterface busNm(DBUS_SERVICE, DBUS_OBJECT, DBUS_INTERFACE_MANAGER, QDBusConnection::systemBus());
+    QDBusInterface busNm(DBUS_SERVICE, DBUS_PATH_MANAGER, DBUS_INTERFACE_MANAGER, QDBusConnection::systemBus());
     if(!busNm.isValid()){
         qCritical("Network manager not available");
         return;
@@ -142,6 +142,16 @@ void EngineNetworkManager::interfaceDisconnectAsync(Interface interface)
 void EngineNetworkManager::interfaceForgetAsync(Interface interface, Network network)
 {
     //TODO: add implementation
+}
+
+void EngineNetworkManager::eventRegister()
+{
+
+}
+
+void EngineNetworkManager::eventUnregister()
+{
+
 }
 
 /*****************************/

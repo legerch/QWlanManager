@@ -34,6 +34,10 @@ protected:
     void interfaceForgetAsync(Interface interface, Network network) override;
 
 private:
+    void eventRegister();
+    void eventUnregister();
+
+private:
     DeviceInfosProvider m_devProvider;
 
 private:
