@@ -515,7 +515,7 @@ void EngineCoreWlan::interfaceListRefresh()
         const QString name = QString::fromNSString([apiIface interfaceName]);
         const QString hwAddr = QString::fromNSString([apiIface hardwareAddress]);
 
-        const QUuid uid = QUuid::createUuidV5(NS_UID, name);
+        const QUuid uid = QUuid::createUuidV5(NS_UID, name); // Use the "name" instead of "hwAddr" because CoreWlan event delegate only give the interface name
 
         // Manage known interfaces
         Interface iface;
