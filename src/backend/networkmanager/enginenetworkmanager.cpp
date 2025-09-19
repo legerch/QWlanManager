@@ -117,7 +117,7 @@ void EngineNetworkManager::interfaceListRefresh()
             miface.setUid(uid);
             miface.setHwAddress(hwAddr);
             miface.setName(name);
-            miface.setDescription("");
+            miface.setDescription(m_devProvider.retrieveAdapterDesc(name));
         }
 
         m_currentIfaces.insert(iface.getUid(), iface);
