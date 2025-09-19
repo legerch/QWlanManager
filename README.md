@@ -14,6 +14,7 @@
     - [1.2.1. Status](#121-status)
     - [1.2.2. Specific behaviours](#122-specific-behaviours)
       - [1.2.2.1. MacOS](#1221-macos)
+      - [1.2.2.2. Linux](#1222-linux)
 - [2. Requirements](#2-requirements)
   - [2.1. C++ Standards](#21-c-standards)
   - [2.2. Dependencies](#22-dependencies)
@@ -62,7 +63,7 @@ One OS can have multiple backend or differ according to the OS version used, thi
 | Windows 10/11 | [WlanAPI][windows-wlanapi]<br>[IpHlpAPI][windows-iphlpapi] | [WinRT][windows-runtime]<br>(via [AppCapabilityAccess][windows-runtime-perms]) | ✅ | Package `cppwinrt` required for _permissions backend_ |
 | Windows 11 | [WinRT][windows-runtime]<br>(via [WifiAdapter][windows-runtime-perms]) | [WinRT][windows-runtime]<br>(via [AppCapabilityAccess][windows-runtime-perms]) | 🕚 | Package `cppwinrt` required for _wifi and permissions backend_ |
 | MacOS | [CoreWlan][mac-corewlan] | [CoreLocation][mac-corelocation] | ✅ | Please refer to section [specific behaviour - MacOS][anchor-spec-macos] |
-| Linux | [NetworkManager][linux-nm] | ❓ | 📝 | See branch [add-platform-netmanager][repo-branch-support-nm] to track development status |
+| Linux | [NetworkManager][linux-nm] | ❓ | 📝 | Please refer to section [specific behaviour - Linux][anchor-spec-linux]  |
 
 > [!NOTE]
 > Legends:
@@ -79,6 +80,14 @@ Under **MacOS**, location permissions key [`NSLocationUsageDescription`][mac-per
 <key>NSLocationUsageDescription</key>
 <string>Used to scan nearby Wi-Fi networks</string>
 ```
+
+#### 1.2.2.2. Linux
+
+To build the library, some `apt` packages are required:
+| Package name | Reasons |
+|:-:|:-|
+| pkg-config | Used to verify packages that are not available through _VCPKG_
+| libpci-dev | Used to resolve adapters informations IDs (like _Product ID_ and _Vendor ID_) to human string
 
 # 2. Requirements
 ## 2.1. C++ Standards
@@ -173,6 +182,7 @@ This library is licensed under [MIT license][repo-license-url].
 [anchor-platforms]: #12-supported-platforms
 [anchor-cmake-opts]: #32-cmake-options
 [anchor-spec-macos]: #1221-macos
+[anchor-spec-linux]: #1222-linux
 
 <!-- Links of this repository -->
 [repo-home]: https://github.com/legerch/QWlanManager

@@ -3,6 +3,8 @@
 
 #include "manager_priv.h"
 
+#include "deviceinfoprovider.h"
+
 /*****************************/
 /* Namespace instructions    */
 /*****************************/
@@ -30,6 +32,9 @@ protected:
     void interfaceConnectAsync(Interface interface, Network network, const QString &password) override;
     void interfaceDisconnectAsync(Interface interface) override;
     void interfaceForgetAsync(Interface interface, Network network) override;
+
+private:
+    DeviceInfosProvider m_devProvider;
 
 private:
     static const QUuid NM_UID;

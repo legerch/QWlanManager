@@ -230,17 +230,28 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
 
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     set(PROJECT_HEADERS_PRIVATE ${PROJECT_HEADERS_PRIVATE}
+        backend/networkmanager/deviceinfoprovider.h
         backend/networkmanager/enginenetworkmanager.h
         backend/networkmanager/typesnm.h
     )
 
     set(PROJECT_SOURCES ${PROJECT_SOURCES}
+        backend/networkmanager/deviceinfoprovider.cpp
         backend/networkmanager/enginenetworkmanager.cpp
         backend/networkmanager/typesnm.cpp
     )
 
     set(PROJECT_QT_PACKAGES ${PROJECT_QT_PACKAGES}
         DBus
+    )
+
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(PCI REQUIRED libpci)
+    set(PROJECT_LINKING_DIR ${PROJECT_LINKING_DIR}
+        ${PCI_LIBRARY_DIRS}
+    )
+    set(PROJECT_LINKING_LIB ${PROJECT_LINKING_LIB}
+        ${PCI_LIBRARIES}
     )
 
 endif()
