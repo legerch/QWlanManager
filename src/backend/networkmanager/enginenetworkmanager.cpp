@@ -9,7 +9,7 @@
 /*****************************/
 
 #define DBUS_SERVICE            "org.freedesktop.NetworkManager"
-#define DBUS_OBJECT             "/org/freedesktop/NetworkManager"
+#define DBUS_PATH_MANAGER       "/org/freedesktop/NetworkManager"
 
 #define DBUS_INTERFACE_MANAGER  DBUS_SERVICE
 #define DBUS_INTERFACE_DEVICE   DBUS_INTERFACE_MANAGER ".Device"
@@ -30,6 +30,7 @@ namespace qwm
 {
 
 //TODO: check NMClientPermission : https://networkmanager.dev/docs/api/latest/nm-dbus-types.html
+//TODO: to add in doc: qdbus --system org.freedesktop.NetworkManager /org/freedesktop/NetworkManager org.freedesktop.DBus.Introspectable.Introspect
 
 /*****************************/
 /* Constants definitions     */
@@ -39,10 +40,55 @@ const QUuid EngineNetworkManager::NM_UID = QUuid("{0e6a5c93-c7df-4973-ae6b-81ed3
 
 /*****************************/
 /* Functions implementation  */
+/*  DelegateNetworkManager   */
+/*****************************/
+
+DelegateNetworkManager::DelegateNetworkManager(EngineNetworkManager *engine)
+    : QObject(), m_engine(engine)
+{
+    /* Nothing to do */
+}
+
+DelegateNetworkManager::~DelegateNetworkManager()
+{
+    /* Nothing to do */
+}
+
+void DelegateNetworkManager::handleDeviceAdded(QWLANMAN_VAR_UNUSED const QDBusMessage &msg)
+{
+    m_engine->interfaceListUpdate();
+}
+
+void DelegateNetworkManager::handleDeviceRemoved(QWLANMAN_VAR_UNUSED const QDBusMessage &msg)
+{
+    m_engine->interfaceListUpdate();
+}
+
+void DelegateNetworkManager::eventRegister()
+{
+    QDBusConnection apiBus = QDBusConnection::systemBus();
+
+    /* Register interface added/remove events */
+    apiBus.connect(DBUS_SERVICE, DBUS_PATH_MANAGER, DBUS_INTERFACE_MANAGER, "DeviceAdded", this, SLOT(handleDeviceAdded(QDBusMessage)));
+    apiBus.connect(DBUS_SERVICE, DBUS_PATH_MANAGER, DBUS_INTERFACE_MANAGER, "DeviceRemoved", this, SLOT(handleDeviceRemoved(QDBusMessage)));
+}
+
+void DelegateNetworkManager::eventUnregister()
+{
+    QDBusConnection apiBus = QDBusConnection::systemBus();
+
+    /* Unregister interface added/remove events */
+    apiBus.disconnect(DBUS_SERVICE, DBUS_PATH_MANAGER, DBUS_INTERFACE_MANAGER, "DeviceAdded", this, SLOT(handleDeviceAdded(QDBusMessage)));
+    apiBus.disconnect(DBUS_SERVICE, DBUS_PATH_MANAGER, DBUS_INTERFACE_MANAGER, "DeviceRemoved", this, SLOT(handleDeviceRemoved(QDBusMessage)));
+}
+
+/*****************************/
+/* Functions implementation  */
+/*   EngineNetworkManager    */
 /*****************************/
 
 EngineNetworkManager::EngineNetworkManager(Manager *parent)
-    : ManagerPrivate(parent)
+    : ManagerPrivate(parent), m_delegate(this)
 {
     /* Nothing to do */
 }
@@ -54,18 +100,19 @@ EngineNetworkManager::~EngineNetworkManager()
 
 void EngineNetworkManager::initialize()
 {
-    //TODO: add implementation
+    /* Register notifications events */
+    m_delegate.eventRegister();
 }
 
 void EngineNetworkManager::terminate()
 {
-    //TODO: add implementation
+    m_delegate.eventUnregister();
 }
 
 void EngineNetworkManager::interfaceListRefresh()
 {
     /* Create DBus interface for network manager */
-    QDBusInterface busNm(DBUS_SERVICE, DBUS_OBJECT, DBUS_INTERFACE_MANAGER, QDBusConnection::systemBus());
+    QDBusInterface busNm(DBUS_SERVICE, DBUS_PATH_MANAGER, DBUS_INTERFACE_MANAGER, QDBusConnection::systemBus());
     if(!busNm.isValid()){
         qCritical("Network manager not available");
         return;

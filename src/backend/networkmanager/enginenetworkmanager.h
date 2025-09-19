@@ -5,6 +5,8 @@
 
 #include "deviceinfoprovider.h"
 
+#include <QDBusMessage>
+
 /*****************************/
 /* Namespace instructions    */
 /*****************************/
@@ -14,6 +16,33 @@ namespace qwm
 
 /*****************************/
 /* Class definitions         */
+/* EngineNetworkManager      */
+/*****************************/
+
+class EngineNetworkManager;
+class DelegateNetworkManager : public QObject
+{
+    Q_OBJECT
+
+public:
+    explicit DelegateNetworkManager(EngineNetworkManager *engine);
+    ~DelegateNetworkManager();
+
+public:
+    void eventRegister();
+    void eventUnregister();
+
+private slots:
+    void handleDeviceAdded(const QDBusMessage &msg);
+    void handleDeviceRemoved(const QDBusMessage &msg);
+
+private:
+    EngineNetworkManager *m_engine = nullptr;
+};
+
+/*****************************/
+/* Class definitions         */
+/* EngineNetworkManager      */
 /*****************************/
 
 class EngineNetworkManager final : public ManagerPrivate
@@ -35,6 +64,7 @@ protected:
 
 private:
     DeviceInfosProvider m_devProvider;
+    DelegateNetworkManager m_delegate;
 
 private:
     static const QUuid NM_UID;
