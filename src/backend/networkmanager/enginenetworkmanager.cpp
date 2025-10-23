@@ -5,6 +5,7 @@
 
 #include <QDBusInterface>
 #include <QDBusReply>
+#include <QTimer>
 
 /*****************************/
 /* Macro definitions         */
@@ -15,6 +16,8 @@
 
 #define DBUS_INTERFACE_MANAGER  DBUS_SERVICE
 #define DBUS_INTERFACE_DEVICE   DBUS_INTERFACE_MANAGER ".Device"
+
+#define NM_DELAY_MS_DEV_ADDED   300
 
 /*****************************/
 /* Class documentations      */
@@ -56,9 +59,16 @@ DelegateNetworkManager::~DelegateNetworkManager()
     /* Nothing to do */
 }
 
+//TODO: maybe delay can be replaced later by "PropertiesChanged" signal (on interface dev path)
 void DelegateNetworkManager::handleDeviceAdded(QWLANMAN_VAR_UNUSED const QDBusMessage &msg)
 {
-    m_engine->interfaceListUpdate();
+    /*
+     * Use a timer since NM DBus signal for added device is triggered BEFORE
+     * that udev filled properties of the device
+     */
+    QTimer::singleShot(NM_DELAY_MS_DEV_ADDED, this, [this]{
+        m_engine->interfaceListUpdate();
+    });
 }
 
 void DelegateNetworkManager::handleDeviceRemoved(QWLANMAN_VAR_UNUSED const QDBusMessage &msg)
