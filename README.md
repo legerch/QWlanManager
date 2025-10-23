@@ -87,7 +87,7 @@ To build the library, some `apt` packages are required:
 | Package name | Reasons |
 |:-:|:-|
 | pkg-config | Used to verify packages that are not available through _VCPKG_
-| libpci-dev | Used to resolve adapters informations IDs (like _Product ID_ and _Vendor ID_) to human string
+| libudev-dev | Used to resolve adapters informations IDs (like _Product ID_ and _Vendor ID_) to human string
 
 # 2. Requirements
 ## 2.1. C++ Standards

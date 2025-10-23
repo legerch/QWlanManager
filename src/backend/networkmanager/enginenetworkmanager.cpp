@@ -1,4 +1,6 @@
 #include "enginenetworkmanager.h"
+
+#include "deviceinfoprovider.h"
 #include "typesnm.h"
 
 #include <QDBusInterface>
@@ -164,7 +166,7 @@ void EngineNetworkManager::interfaceListRefresh()
             miface.setUid(uid);
             miface.setHwAddress(hwAddr);
             miface.setName(name);
-            miface.setDescription(m_devProvider.retrieveAdapterDesc(name));
+            miface.setDescription(DeviceInfosProvider::retrieveAdapterDesc(name));
         }
 
         m_currentIfaces.insert(iface.getUid(), iface);

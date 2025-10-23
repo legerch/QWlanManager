@@ -1,19 +1,12 @@
 #include "deviceinfoprovider.h"
 
-#include <QFile>
-
 /*****************************/
 /* Macro definitions         */
 /*****************************/
 
-#define BUFFER_SIZE 512
-
 /*****************************/
 /* Class documentations      */
 /*****************************/
-
-//TODO: doc
-// https://man7.org/linux/man-pages/man7/pcilib.7.html
 
 /*****************************/
 /* Signals documentations    */
@@ -31,106 +24,137 @@ namespace qwm
 
 /*****************************/
 /* Functions implementation  */
-/* DevicePci                 */
+/* DeviceInfos               */
 /*****************************/
 
-DevicePci::DevicePci()
+DeviceInfos::DeviceInfos()
 {
-    /* Initialize PCI structure */
-    m_pcia = pci_alloc();
-    pci_init(m_pcia);
-
-    /* Load ressources */
-    pci_load_name_list(m_pcia);
+    /* Nothing to do */
 }
 
-DevicePci::~DevicePci()
+DeviceInfos::~DeviceInfos()
 {
-    pci_cleanup(m_pcia);
-    m_pcia = nullptr;
+    /* Nothing to do */
 }
 
-QString DevicePci::getVendorName(uint vendorId) const
+uint DeviceInfos::getIdVendor() const
 {
-    char name[BUFFER_SIZE];
-
-    /* Retrieve vendor name */
-    const char *vname = pci_lookup_name(m_pcia, name, BUFFER_SIZE, PCI_LOOKUP_VENDOR, vendorId);
-    if(!vname){
-        return QString("Unknown vendor (0x%1)").arg(vendorId, 4, 16, QChar('0'));
-    }
-
-    /* Convert buffer */
-    return QString::fromLocal8Bit(name);
+    return m_idVendor;
 }
 
-QString DevicePci::getDeviceName(uint vendorId, uint deviceId) const
+uint DeviceInfos::getIdProduct() const
 {
-    char name[BUFFER_SIZE];
+    return m_idProduct;
+}
 
-    /* Retrieve vendor name */
-    const char *vname = pci_lookup_name(m_pcia, name, BUFFER_SIZE, PCI_LOOKUP_DEVICE, vendorId, deviceId);
-    if(!vname){
-        return QString("Unknown device (0x%1)").arg(deviceId, 4, 16, QChar('0'));
-    }
+QString DeviceInfos::getNameVendor() const
+{
+    return m_nameVendor;
+}
 
-    /* Convert buffer */
-    return QString::fromLocal8Bit(name);
+QString DeviceInfos::getNameProduct() const
+{
+    return m_nameProduct;
+}
+
+void DeviceInfos::setIdVendor(uint newIdVendor)
+{
+    m_idVendor = newIdVendor;
+}
+
+void DeviceInfos::setIdProduct(uint newIdProduct)
+{
+    m_idProduct = newIdProduct;
+}
+
+void DeviceInfos::setNameVendor(const QString &newNameVendor)
+{
+    m_nameVendor = newNameVendor;
+}
+
+void DeviceInfos::setNameProduct(const QString &newNameProduct)
+{
+    m_nameProduct = newNameProduct;
+}
+
+QDebug operator<<(QDebug debug, const DeviceInfos &devInfos)
+{
+    QDebugStateSaver saver(debug);
+
+    const QString vendor = QString("vendor: '%1' (0x%2)").arg(devInfos.getNameVendor()).arg(devInfos.getIdVendor(), 4, 16, QChar('0'));
+    const QString product = QString("product: '%1' (0x%2)").arg(devInfos.getNameProduct()).arg(devInfos.getIdProduct(), 4, 16, QChar('0'));
+
+    debug.nospace() << "DeviceInfos("
+                    << vendor << ", "
+                    << product << ")";
+    return debug;
 }
 
 /*****************************/
 /* Functions implementation  */
-/* DeviceInfosProvider       */
+/* HandleUdev                */
 /*****************************/
 
-DeviceInfosProvider::DeviceInfosProvider()
+HandleUdev& HandleUdev::instance()
 {
-    /* Nothing to do */
+    static HandleUdev instance;
+    return instance;
 }
 
-DeviceInfosProvider::~DeviceInfosProvider()
+HandleUdev::HandleUdev()
 {
-    /* Nothing to do */
+    m_handle = udev_new();
 }
 
-QString DeviceInfosProvider::retrieveAdapterDesc(const QString &sysfIface)
+HandleUdev::~HandleUdev()
 {
-    /* Retrieve device IDs */
-    const uint vendorId = retrieveSysfPropertyUint(sysfIface, "vendor");
-    const uint deviceId = retrieveSysfPropertyUint(sysfIface, "device");
+    udev_unref(m_handle);
+    m_handle = nullptr;
+}
 
-    if(vendorId == 0 || deviceId == 0){
-        return QString();
+/*!
+ * \brief HandleUdev::retrieveDeviceInfos
+ * \details
+ * We can see all availables device informations by using command:
+ * \code{.sh}
+ * udevadm info /sys/class/net/<iface_name>
+ * \endcode
+ *
+ * \param ifaceName
+ * \param devInfos
+ * \return
+ */
+bool HandleUdev::retrieveDeviceInfos(const QString &ifaceName, DeviceInfos &devInfos)
+{
+    /* Retrieve device */
+    struct udev_device *dev = udev_device_new_from_subsystem_sysname(m_handle, "net", ifaceName.toStdString().c_str());
+    if(!dev){
+        qCritical("Unable to retrieve device informations [iface: '%s']", qUtf8Printable(ifaceName));
+        return false;
     }
 
-    /* Convert to human readable string */
-    const QString vendor = m_pci.getVendorName(vendorId);
-    const QString device = m_pci.getDeviceName(vendorId, deviceId);
+    /* Retrieve properties */
+    devInfos.setIdVendor(retrieveDevicePropertyUint(dev, "ID_VENDOR_ID"));
+    devInfos.setIdProduct(retrieveDevicePropertyUint(dev, "ID_MODEL_ID"));
 
-    /* Create description */
-    return QString("%1 - %2").arg(vendor, device);
+    devInfos.setNameVendor(retrieveDevicePropertyStr(dev, "ID_VENDOR_FROM_DATABASE"));
+    devInfos.setNameProduct(retrieveDevicePropertyStr(dev, "ID_MODEL_FROM_DATABASE"));
+
+    /* Clean ressources */
+    udev_device_unref(dev);
+
+    return true;
 }
 
-QString DeviceInfosProvider::retrieveSysfPropertyStr(const QString &sysfIface, const QString &property) const
+QString HandleUdev::retrieveDevicePropertyStr(udev_device *dev, const char *idName) const
 {
-    const QString path = QString("/sys/class/net/%1/device/%2").arg(sysfIface, property);
-
-    /* Open property file */
-    QFile file(path);
-    bool succeed = file.open(QIODevice::ReadOnly | QIODeviceBase::Text);
-    if(!succeed){
-        qCritical("Unable to open sysf property at '%s'", qUtf8Printable(path));
-        return QString();
-    }
-
-    /* Read property */
-    const QByteArray data = file.readLine().trimmed();
-    return data;
+    const char *value = udev_device_get_property_value(dev, idName);
+    return (value ? QString::fromLocal8Bit(value) : QString());
 }
 
-uint DeviceInfosProvider::retrieveSysfPropertyUint(const QString &sysfIface, const QString &property) const
+uint HandleUdev::retrieveDevicePropertyUint(udev_device *dev, const char *idName) const
 {
-    QString data = retrieveSysfPropertyStr(sysfIface, property);
+    QString data = retrieveDevicePropertyStr(dev, idName);
 
     /* Strip potential "0x" prefix */
     if(data.startsWith("0x", Qt::CaseInsensitive)){
@@ -141,11 +165,34 @@ uint DeviceInfosProvider::retrieveSysfPropertyUint(const QString &sysfIface, con
     bool succeed = false;
     const uint value = data.toUInt(&succeed, 16);
     if(!succeed){
-        qCritical("Unable to convert sysf data to uint [data: '%s']", qUtf8Printable(data));
         return 0;
     }
 
     return value;
+}
+
+/*****************************/
+/* Functions implementation  */
+/* DeviceInfosProvider       */
+/*****************************/
+
+QString DeviceInfosProvider::retrieveAdapterDesc(const QString &ifaceName)
+{
+    DeviceInfos devInfos;
+    bool succeed = HandleUdev::instance().retrieveDeviceInfos(ifaceName, devInfos);
+    if(!succeed){
+        return QString();
+    }
+
+    /* Create description */
+    QString desc = devInfos.getNameVendor();
+
+    QString productName = devInfos.getNameProduct();
+    if(!productName.isEmpty()){
+        desc.append(QStringLiteral(" - %1").arg(productName));
+    }
+
+    return desc;
 }
 
 /*****************************/

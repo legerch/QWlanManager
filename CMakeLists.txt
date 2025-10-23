@@ -246,12 +246,12 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     )
 
     find_package(PkgConfig REQUIRED)
-    pkg_check_modules(PCI REQUIRED libpci)
+    pkg_check_modules(LIBUDEV REQUIRED libudev)
     set(PROJECT_LINKING_DIR ${PROJECT_LINKING_DIR}
-        ${PCI_LIBRARY_DIRS}
+        ${LIBUDEV_INCLUDE_DIRS}
     )
     set(PROJECT_LINKING_LIB ${PROJECT_LINKING_LIB}
-        ${PCI_LIBRARIES}
+        ${LIBUDEV_LIBRARIES}
     )
 
 endif()

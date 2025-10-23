@@ -3,8 +3,6 @@
 
 #include "manager_priv.h"
 
-#include "deviceinfoprovider.h"
-
 #include <QDBusMessage>
 
 /*****************************/
@@ -63,7 +61,6 @@ protected:
     void interfaceForgetAsync(Interface interface, Network network) override;
 
 private:
-    DeviceInfosProvider m_devProvider;
     DelegateNetworkManager m_delegate;
 
 private:
