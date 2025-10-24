@@ -14,7 +14,7 @@ namespace qwm
 
 /*****************************/
 /* Class definitions         */
-/* EngineNetworkManager      */
+/* DelegateNetworkManager    */
 /*****************************/
 
 class EngineNetworkManager;

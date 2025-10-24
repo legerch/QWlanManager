@@ -230,12 +230,14 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
 
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     set(PROJECT_HEADERS_PRIVATE ${PROJECT_HEADERS_PRIVATE}
+        backend/networkmanager/datasdelegates.h
         backend/networkmanager/deviceinfoprovider.h
         backend/networkmanager/enginenetworkmanager.h
         backend/networkmanager/typesnm.h
     )
 
     set(PROJECT_SOURCES ${PROJECT_SOURCES}
+        backend/networkmanager/datasdelegates.cpp
         backend/networkmanager/deviceinfoprovider.cpp
         backend/networkmanager/enginenetworkmanager.cpp
         backend/networkmanager/typesnm.cpp
