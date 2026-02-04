@@ -37,6 +37,8 @@ protected:
     void interfaceForgetAsync(Interface interface, Network network) override;
 
 private:
+    void tmpServiceEnsure();
+
     bool apiOpen();
     void apiClose();
 

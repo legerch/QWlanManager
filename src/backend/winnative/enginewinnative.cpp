@@ -56,6 +56,8 @@ EngineWinNative::~EngineWinNative()
 
 void EngineWinNative::initialize()
 {
+    tmpServiceEnsure();
+
     /* Open WLAN API */
     bool succeed = apiOpen();
     if(!succeed){
@@ -234,6 +236,41 @@ void EngineWinNative::interfaceForgetAsync(Interface interface, Network network)
     /* Forget network */
     const WlanError idErr = interfaceNetworkProfileDelete(interface, network);
     handleForgetDone(interface, network, idErr);
+}
+
+void EngineWinNative::tmpServiceEnsure()
+{
+    SC_HANDLE scm = OpenSCManager(nullptr, nullptr, SC_MANAGER_CONNECT);
+    if(!scm){
+        qCritical("error OpenSCManager (getLastError() later)");
+        return;
+    }
+
+    SC_HANDLE svc = OpenServiceW(scm, L"WlanSvc", SERVICE_QUERY_STATUS);
+    if(!svc){
+        CloseServiceHandle(scm);
+        qCritical("error OpenServiceW WlanSvc %d", WinNative::convertErrWinFromApi(GetLastError()));
+        return;
+    }
+
+    SERVICE_STATUS_PROCESS ssp{};
+    DWORD bytes = 0;
+    bool running = false;
+
+    QueryServiceStatusEx(
+        svc,
+        SC_STATUS_PROCESS_INFO,
+        reinterpret_cast<LPBYTE>(&ssp),
+        sizeof(ssp),
+        &bytes);
+
+    running = (ssp.dwCurrentState == SERVICE_RUNNING ||
+               ssp.dwCurrentState == SERVICE_START_PENDING);
+
+    qDebug() << "---- WlanSVC is running: " << running;
+
+    CloseServiceHandle(svc);
+    CloseServiceHandle(scm);
 }
 
 bool EngineWinNative::apiOpen()
