@@ -155,11 +155,6 @@ void ManagerPrivate::interfaceForget(Interface interface, Network network)
 
 void ManagerPrivate::handleInterfacesListUpdateDone()
 {
-    /* Do we need to manage events */
-    if(m_prevIfaces.isEmpty()){
-        return;
-    }
-
     /* Retrieve keys allowing to perform comparaisons */
     const auto newIds = QSet<QUuid>(m_currentIfaces.keyBegin(), m_currentIfaces.keyEnd());
     const auto oldIds = QSet<QUuid>(m_prevIfaces.keyBegin(), m_prevIfaces.keyEnd());
