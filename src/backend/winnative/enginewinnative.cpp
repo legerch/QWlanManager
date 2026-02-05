@@ -255,7 +255,6 @@ void EngineWinNative::tmpServiceEnsure()
 
     SERVICE_STATUS_PROCESS ssp{};
     DWORD bytes = 0;
-    bool running = false;
 
     QueryServiceStatusEx(
         svc,
@@ -264,10 +263,10 @@ void EngineWinNative::tmpServiceEnsure()
         sizeof(ssp),
         &bytes);
 
-    running = (ssp.dwCurrentState == SERVICE_RUNNING ||
-               ssp.dwCurrentState == SERVICE_START_PENDING);
+    const bool isRunning = ssp.dwCurrentState == SERVICE_RUNNING;
+    const bool isStarted = ssp.dwCurrentState == SERVICE_START_PENDING;
 
-    qDebug() << "---- WlanSVC is running: " << running;
+    qDebug("---- WlanSVC is running: %d | is started: %d (current: %d)", isRunning, isStarted, ssp.dwCurrentState);
 
     CloseServiceHandle(svc);
     CloseServiceHandle(scm);
@@ -605,6 +604,7 @@ void EngineWinNative::cbNotifAcm(PWLAN_NOTIFICATION_DATA ptrDataNotif, PVOID ptr
     switch(ptrDataNotif->NotificationCode)
     {
         case wlan_notification_acm_interface_arrival:
+            qDebug() << "ACM interface arrival notification";
         case wlan_notification_acm_interface_removal:{
             engine->interfaceListUpdate();
         }break;
