@@ -223,6 +223,12 @@ void ManagerPrivate::handleConnectDone(const Interface &interface, const QString
 
 void ManagerPrivate::handleDisconnectDone(const Interface &interface, WlanError idErr)
 {
+    /* Do disconnection is due to a connection attempt ? */
+    if(interface.getState() == IfaceState::IFACE_STS_CONNECTING){
+        return;
+    }
+
+    /* Handle disconnection */
     requestHandleDone(interface, [this, &interface, idErr]
     {
         const QUuid idInterface = interface.getUid();
