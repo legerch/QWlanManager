@@ -1,5 +1,6 @@
 var searchData=
 [
   ['wlanerrortostring_0',['wlanErrorToString',['../namespaceqwm.html#ae0c862fb0cbb968774cb406b79c83f12',1,'qwm']]],
-  ['wlanpermtostring_1',['wlanPermToString',['../namespaceqwm.html#ab0bb7ba70a99ac1e16134895839728e6',1,'qwm']]]
+  ['wlanoptionstostring_1',['wlanOptionsToString',['../namespaceqwm.html#a282180c0e9dbbfbd52962c3241abb5be',1,'qwm']]],
+  ['wlanpermtostring_2',['wlanPermToString',['../namespaceqwm.html#ab0bb7ba70a99ac1e16134895839728e6',1,'qwm']]]
 ];
