@@ -92,6 +92,8 @@ namespace qwm
     Q_DECLARE_FLAGS(WlanOptions, WlanOption)
     Q_FLAG_NS(WlanOptions)
 
+    QWLANMAN_EXPORT QString wlanOptionsToString(WlanOptions opts);
+
     /*!
      * \brief Type of interface asynchrone request
      *
@@ -152,6 +154,8 @@ namespace qwm
      */
     Q_DECLARE_FLAGS(IfaceOptions, IfaceOption)
     Q_FLAG_NS(IfaceOptions)
+
+    QWLANMAN_EXPORT QString ifaceOptionsToString(IfaceOptions opts);
 
     /*!
      * \brief Enumeration of supported wireless authentication algorithms.

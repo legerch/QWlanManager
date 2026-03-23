@@ -1,5 +1,7 @@
 #include "qwlanmanager/qwlantypes.h"
 
+#include "qwlanhelper.h"
+
 #include <QHash>
 
 /*****************************/
@@ -80,6 +82,20 @@ QString wlanPermToString(WlanPerm idPerm)
 }
 
 /*!
+ * \brief Use to convert wlan options to string.
+ *
+ * \param[in] opts
+ * Options to convert.
+ *
+ * \return
+ * Returns all set options in string.
+ */
+QString wlanOptionsToString(WlanOptions opts)
+{
+    return Helper::flagsToString(opts);
+}
+
+/*!
  * \brief Use to convert request type to string.
  *
  * \param[in] idReq
@@ -121,6 +137,20 @@ QString ifaceStateToString(IfaceState idState)
     };
 
     return MAP_STR_IFACE_STS.value(idState, "unknown state");
+}
+
+/*!
+ * \brief Use to convert interface options to string.
+ *
+ * \param[in] opts
+ * Options to convert.
+ *
+ * \return
+ * Returns all set options in string.
+ */
+QString ifaceOptionsToString(IfaceOptions opts)
+{
+    return Helper::flagsToString(opts);
 }
 
 /*!
