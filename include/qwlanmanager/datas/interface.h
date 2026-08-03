@@ -29,8 +29,8 @@ class QWLANMAN_EXPORT Interface
     Q_PROPERTY(QString name READ getName)
     Q_PROPERTY(QString description READ getDescription)
 
-    Q_PROPERTY(CachePolicy cachePolicy READ getCachePolicy WRITE setCachePolicy)
-    Q_PROPERTY(IfaceOptions options READ getOptions WRITE setOptions)
+    Q_PROPERTY(qwm::CachePolicy cachePolicy READ getCachePolicy WRITE setCachePolicy)
+    Q_PROPERTY(qwm::IfaceOptions options READ getOptions WRITE setOptions)
 
     friend class InterfaceMutator;
 
