@@ -145,7 +145,14 @@ CoreWlan::WlanDelegatePtr CoreWlan::createApiPtrWlanDelegate(EngineCoreWlan *eng
     client.delegate = apiDelegate;
 
     /* Create shared pointer */
-    return std::shared_ptr<WlanDelegate>(apiDelegate, [](WlanDelegate *ptr){
+    return std::shared_ptr<WlanDelegate>(apiDelegate, [client](WlanDelegate *ptr){
+        // Stop receiving events before releasing delegate (only if client still uses this delegate)
+        if(client.delegate == ptr){
+            [client stopMonitoringAllEventsAndReturnError:nil];
+            client.delegate = nil;
+        }
+
+        // Release the delegate
         [ptr release];
     });
 }
@@ -496,6 +503,10 @@ void EngineCoreWlan::initialize()
 
 void EngineCoreWlan::terminate()
 {
+    /* Stop receiving CoreWlan events (see delegate deleter) */
+    m_delegate.reset();
+
+    /* Stop worker thread */
     m_thread.quit();
     m_thread.wait();
 }
