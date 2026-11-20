@@ -5,6 +5,8 @@
 
 #include <QThread>
 
+#include <functional>
+
 /*****************************/
 /* Namespace instructions    */
 /*****************************/
@@ -26,7 +28,7 @@ public:
     ~WorkerCoreWlan();
 
 signals:
-    void sScanDone(const qwm::Interface &interface, qwm::WlanError result);
+    void sScanDone(const qwm::Interface &interface, qwm::WlanError result, const QString &connectedSsid, const qwm::ListNetworks &listScans);
     void sConnectDone(const qwm::Interface &interface, const qwm::Network &network, qwm::WlanError result);
     void sDisconnectDone(const qwm::Interface &interface, qwm::WlanError result);
     void sForgetDone(const qwm::Interface &interface, const qwm::Network &network, qwm::WlanError result);
@@ -66,9 +68,11 @@ private:
     void registerWorkerEvents();
 
 public: // Declared as public to be able to access it from delegate type
-    void handleEventSsidChanged(const QString &ifaceName);
+    void eventPost(std::function<void()> fct);
+    void handleEventSsidChanged(const QString &ifaceName, const QString &newSsid);
 
 private:
+    void interfaceNetworksUpdate(Interface interface, const QString &connectedSsid, const ListNetworks &listScans);
     QUuid createUidInterface(const QString &ifaceName);
 
 private:

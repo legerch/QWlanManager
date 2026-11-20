@@ -89,7 +89,19 @@ namespace qwm::CoreWlan
 
 - (void)ssidDidChangeForWiFiInterfaceWithName:(NSString *)interfaceName
 {
-    m_engine->handleEventSsidChanged(QString::fromNSString(interfaceName));
+    /*
+     * Called from a CoreWlan queue: perform CoreWlan calls here (they
+     * can be blocking), then post the event to the manager thread
+     */
+    qwm::EngineCoreWlan *engine = m_engine;
+
+    CWInterface *apiIface = [[CWWiFiClient sharedWiFiClient] interfaceWithName:interfaceName];
+    const QString ifaceName = QString::fromNSString(interfaceName);
+    const QString newSsid = QString::fromNSString([apiIface ssid]);
+
+    engine->eventPost([engine, ifaceName, newSsid]{
+        engine->handleEventSsidChanged(ifaceName, newSsid);
+    });
 }
 
 @end
@@ -299,18 +311,17 @@ void WorkerCoreWlan::performScan(const qwm::Interface &interface)
 
     const WlanError scanResult = CoreWlan::convertErrFromApi(apiErr);
     if(scanResult != WlanError::WERR_NO_ERROR){
-        emit sScanDone(interface, scanResult);
+        emit sScanDone(interface, scanResult, QString(), ListNetworks());
         return;
     }
 
-    /* Prepare list of networks */
-    InterfaceMutator miface(interface);
-    MapNetworks &mapNets = miface.getMapNetworksRef();
-
-    MapNetworks prevNets = mapNets;
-
-    miface.setConnectedSsid();
-    mapNets.clear();
+    /*
+     * Networks are built as new objects (not shared yet with anyone), so
+     * worker can fill them safely. Interface datas are only updated from
+     * the manager thread, see EngineCoreWlan::interfaceNetworksUpdate()
+     */
+    ListNetworks listScans;
+    QSet<QString> ssidsFound;
 
     /* Retrieve list of known profiles (and put in cache) */
     const NSOrderedSet<CWNetworkProfile *> *apiListProfiles = [[apiIface configuration] networkProfiles];
@@ -322,7 +333,6 @@ void WorkerCoreWlan::performScan(const qwm::Interface &interface)
     }
 
     /* Register networks */
-    const QDateTime now = QDateTime::currentDateTimeUtc();
     for(CWNetwork *apiNet : apiListNets){
         // Verify that network is infrastructure-based (is an access-point)
         if([apiNet ibss]){
@@ -336,9 +346,10 @@ void WorkerCoreWlan::performScan(const qwm::Interface &interface)
          * Also filter hidden networks
          */
         const QString ssid = QString::fromNSString(apiNet.ssid);
-        if(ssid.isEmpty() || mapNets.contains(ssid)){
+        if(ssid.isEmpty() || ssidsFound.contains(ssid)){
             continue;
         }
+        ssidsFound.insert(ssid);
 
         // Set profile infos
         QString profile;
@@ -346,13 +357,8 @@ void WorkerCoreWlan::performScan(const qwm::Interface &interface)
             profile = ssid;
         }
 
-        // Manage known networks
+        // Set network properties
         Network net;
-        if(prevNets.contains(ssid)){
-            net = prevNets.take(ssid);
-        }
-
-        // Update network properties
         NetworkMutator munet(net);
 
         munet.setSsid(ssid);
@@ -360,21 +366,16 @@ void WorkerCoreWlan::performScan(const qwm::Interface &interface)
         munet.setAuthAlgo(CoreWlan::searchAuthFromNet(apiNet));
         munet.setCipherAlgo(CipherAlgo::CIPHER_ALGO_UNKNOWN);
         munet.setSignalQuality(Helper::calcSignalPercent(apiNet.rssiValue, apiNet.noiseMeasurement));
-
-        munet.getCacheRef().markSeen(now);
         munet.setDataEngine(CoreWlan::makeApiPtrNetwork(apiNet));
 
-        mapNets.insert(ssid, net);
+        listScans.append(net);
     }
 
-    /* Update interface properties */
-    const QString currentSsid = QString::fromNSString(apiIface.ssid);
-
-    miface.setConnectedSsid(currentSsid);
-    miface.updateNetworksCached(prevNets, now);
+    /* Retrieve current connected network */
+    const QString connectedSsid = QString::fromNSString(apiIface.ssid);
 
     /* Worker has finished the scan request */
-    emit sScanDone(interface, scanResult);
+    emit sScanDone(interface, scanResult, connectedSsid, listScans);
 }
 
 void WorkerCoreWlan::performConnect(const Interface &interface, const Network &network, const QString &passwd, qwm::WlanOptions opts)
@@ -585,7 +586,11 @@ void EngineCoreWlan::interfaceForgetAsync(Interface interface, Network network)
 
 void EngineCoreWlan::registerWorkerEvents()
 {
-    QObject::connect(m_worker, &WorkerCoreWlan::sScanDone, q_ptr, [this](const Interface &interface, WlanError result){
+    QObject::connect(m_worker, &WorkerCoreWlan::sScanDone, q_ptr, [this](const Interface &interface, WlanError result, const QString &connectedSsid, const ListNetworks &listScans){
+        if(result == WlanError::WERR_NO_ERROR){
+            interfaceNetworksUpdate(interface, connectedSsid, listScans);
+        }
+
         handleScanDone(interface, result);
     });
 
@@ -598,7 +603,76 @@ void EngineCoreWlan::registerWorkerEvents()
     });
 }
 
-void EngineCoreWlan::handleEventSsidChanged(const QString &ifaceName)
+/*!
+ * \brief Post a function to be executed on the manager thread
+ * \details
+ * CoreWlan events are received from a CoreWlan queue, not from the
+ * thread owning the manager. To avoid any data race, events callbacks
+ * must not touch engine state directly: they copy needed datas and
+ * post the work with this method.
+ *
+ * \param[in] fct
+ * Function to execute on the manager thread. \n
+ * If the manager is destroyed before the event is processed,
+ * the function is discarded.
+ */
+void EngineCoreWlan::eventPost(std::function<void()> fct)
+{
+    QMetaObject::invokeMethod(q_ptr, std::move(fct), Qt::QueuedConnection);
+}
+
+/*!
+ * \brief Update interface networks with scan results
+ * \details
+ * This method must be called from the manager thread. \n
+ * Already known networks objects are reused (so shared datas already
+ * referenced by the application stay the same and see updated values),
+ * and their properties are updated from the scanned ones.
+ *
+ * \param[in] interface
+ * Interface to update.
+ * \param[in] connectedSsid
+ * SSID of the network currently connected, empty if none.
+ * \param[in] listScans
+ * List of networks found by the worker scan (new objects, not shared).
+ */
+void EngineCoreWlan::interfaceNetworksUpdate(Interface interface, const QString &connectedSsid, const ListNetworks &listScans)
+{
+    InterfaceMutator miface(interface);
+    MapNetworks &mapNets = miface.getMapNetworksRef();
+
+    /* Prepare list of networks */
+    MapNetworks prevNets = mapNets;
+    mapNets.clear();
+
+    /* Register networks */
+    const QDateTime now = QDateTime::currentDateTimeUtc();
+    for(const Network &scanned : listScans){
+        const QString ssid = scanned.getSsid();
+
+        // Manage known networks
+        Network net = scanned;
+        if(prevNets.contains(ssid)){
+            net = prevNets.take(ssid);
+
+            NetworkMutator munet(net);
+            munet.setProfileName(scanned.getProfileName());
+            munet.setAuthAlgo(scanned.getAuthAlgo());
+            munet.setCipherAlgo(scanned.getCipherAlgo());
+            munet.setSignalQuality(scanned.getSignalQuality());
+            munet.setDataEngine(NetworkMutator(scanned).getDataEngine());
+        }
+
+        NetworkMutator(net).getCacheRef().markSeen(now);
+        mapNets.insert(ssid, net);
+    }
+
+    /* Update interface properties */
+    miface.setConnectedSsid(connectedSsid);
+    miface.updateNetworksCached(prevNets, now);
+}
+
+void EngineCoreWlan::handleEventSsidChanged(const QString &ifaceName, const QString &newSsid)
 {
     /* Retrieve associated interface */
     Interface iface = m_currentIfaces.value(createUidInterface(ifaceName));
@@ -618,10 +692,6 @@ void EngineCoreWlan::handleEventSsidChanged(const QString &ifaceName)
     }
 
     /* Manage event */
-    // Convert connection infos
-    CWInterface *apiIface = CoreWlan::getApiInterface(iface);
-    const QString newSsid = QString::fromNSString([apiIface ssid]);
-
     Network prevNet = iface.getNetworkConnected();
     const QString prevSsid = (prevNet.isValid() ? prevNet.getSsid() : "");
 
