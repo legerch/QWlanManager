@@ -297,19 +297,6 @@ void EngineWinNative::eventUnregister()
 }
 
 /*!
- * \brief Use to known if device adapter is virtual or not
- * \details
- * Use interface description to get this information
- * since native APIs doesn't provide those informations
- * without reading registry directly.
- *
- * \param[in] description
- * Interface description to verify.
- *
- * \return
- * Return \c true is adapter is a virtual adapter
- */
-/*!
  * \brief Post a function to be executed on the manager thread
  * \details
  * WlanAPI notification callbacks are called from a system thread pool,
@@ -327,28 +314,49 @@ void EngineWinNative::eventPost(std::function<void()> fct)
     QMetaObject::invokeMethod(q_ptr, std::move(fct), Qt::QueuedConnection);
 }
 
+/*!
+ * \brief Use to known if device adapter is virtual or not
+ * \details
+ * Use interface description to get this information
+ * since native APIs doesn't provide those informations
+ * without reading registry directly.
+ *
+ * \param[in] description
+ * Interface description to verify.
+ *
+ * \return
+ * Return \c true is adapter is a virtual adapter
+ */
 bool EngineWinNative::interfaceIsVirtual(const QString &description)
 {
     return description.contains("virtual", Qt::CaseInsensitive)
         || description.contains("vmware", Qt::CaseInsensitive);
 }
 
-WlanError EngineWinNative::interfaceNetworksUpdate(Interface interface)
+/*!
+ * \brief Retrieve networks found by the last scan
+ *
+ * \param[in] interface
+ * Interface to use.
+ * \param[out] connectedSsid
+ * SSID of the network currently connected, empty if none.
+ * \param[out] listScans
+ * Networks found by the scan (new objects, not shared).
+ *
+ * \return
+ * Returns \c WlanError::WERR_NO_ERROR if succeed.
+ */
+WlanError EngineWinNative::interfaceNetworksRetrieve(const Interface &interface, QString &connectedSsid, ListNetworks &listScans)
 {
-    InterfaceMutator miface(interface);
-    MapNetworks &mapNets = miface.getMapNetworksRef();
-
-    /* Prepare list of networks */
-    MapNetworks prevNets = mapNets;
-
-    miface.setConnectedSsid();
-    mapNets.clear();
-
     /* Prepare arguments needed to perform request */
     constexpr DWORD flags = 0;
     const GUID ifaceUuid = interface.getUid();
     PWLAN_AVAILABLE_NETWORK_LIST apiNetList = nullptr;
-    QString connectedSsid = ""; // Empty means "no network connected"
+
+    connectedSsid.clear(); // Empty means "no network connected"
+    listScans.clear();
+
+    QSet<QString> ssidsFound;
 
     /* Perform request */
     DWORD res = WlanGetAvailableNetworkList(m_handle, &ifaceUuid, flags, nullptr, &apiNetList);
@@ -359,7 +367,6 @@ WlanError EngineWinNative::interfaceNetworksUpdate(Interface interface)
     }
 
     /* Register networks */
-    const QDateTime now = QDateTime::currentDateTimeUtc();
     for(apiNetList->dwIndex = 0; apiNetList->dwIndex < apiNetList->dwNumberOfItems; ++apiNetList->dwIndex){
         PWLAN_AVAILABLE_NETWORK apiNet = &apiNetList->Network[apiNetList->dwIndex];
 
@@ -375,9 +382,10 @@ WlanError EngineWinNative::interfaceNetworksUpdate(Interface interface)
          * Also filter hidden networks
          */
         const QString ssid = QString::fromUtf8(reinterpret_cast<char *>(apiNet->dot11Ssid.ucSSID), apiNet->dot11Ssid.uSSIDLength);
-        if(ssid.isEmpty() || mapNets.contains(ssid)){
+        if(ssid.isEmpty() || ssidsFound.contains(ssid)){
             continue;
         }
+        ssidsFound.insert(ssid);
 
         // Parse profile infos
         QString profile;
@@ -390,13 +398,8 @@ WlanError EngineWinNative::interfaceNetworksUpdate(Interface interface)
             connectedSsid = ssid;
         }
 
-        // Manage known network
+        // Set network properties
         Network net;
-        if(prevNets.contains(ssid)){
-            net = prevNets.take(ssid);
-        }
-
-        // Update network properties
         NetworkMutator munet(net);
 
         munet.setSsid(ssid);
@@ -405,14 +408,8 @@ WlanError EngineWinNative::interfaceNetworksUpdate(Interface interface)
         munet.setCipherAlgo(WinNative::convertCipherFromApi(apiNet->dot11DefaultCipherAlgorithm));
         munet.setSignalQuality(apiNet->wlanSignalQuality);
 
-        munet.getCacheRef().markSeen(now);
-
-        mapNets.insert(ssid, net);
+        listScans.append(net);
     }
-
-    /* Update interface properties */
-    miface.setConnectedSsid(connectedSsid);
-    miface.updateNetworksCached(prevNets, now);
 
     /* Clean used ressources */
     WlanFreeMemory(apiNetList);
@@ -497,12 +494,14 @@ void EngineWinNative::interfaceScanFinished(const QUuid &idInterface, WlanError 
     Interface iface = m_currentIfaces.value(idInterface);
 
     /* Retrieve list of scanned networks */
+    QString connectedSsid;
+    ListNetworks listScans;
     if(result == WlanError::WERR_NO_ERROR){
-        result = interfaceNetworksUpdate(iface);
+        result = interfaceNetworksRetrieve(iface, connectedSsid, listScans);
     }
 
     /* Manage end of request */
-    handleScanDone(iface, result);
+    handleScanDone(iface, result, connectedSsid, listScans);
 }
 
 void EngineWinNative::interfaceConnectionFinished(const QUuid &idInterface, const QString &ssid, WlanError result)

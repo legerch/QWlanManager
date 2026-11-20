@@ -39,9 +39,6 @@ public:
     void setDataEngine(const std::any &data);
     const std::any& getDataEngine() const;
 
-public:
-    void updateNetworksCached(const MapNetworks &oldNets, const QDateTime &now);
-
 private:
     QSharedPointer<InterfaceData> d_ptr;
 };

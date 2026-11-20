@@ -49,12 +49,14 @@ protected:
 protected:
     void handleInterfacesListUpdateDone();
 
-    void handleScanDone(const Interface &interface, WlanError idErr);
+    void handleScanDone(const Interface &interface, WlanError idErr, const QString &connectedSsid = QString(), const ListNetworks &listScans = ListNetworks());
     void handleConnectDone(const Interface &interface, const QString &ssid, WlanError idErr);
     void handleDisconnectDone(const Interface &interface, WlanError idErr);
     void handleForgetDone(const Interface &interface, const Network &network, WlanError idErr);
 
 private:
+    void interfaceNetworksMerge(const Interface &interface, const QString &connectedSsid, const ListNetworks &listScans);
+
     void requestAdd(const Interface &interface, const Request &req);
     void requestPerform(const Interface &interface, const Request &req);
     void requestHandleDone(const Interface &interface, std::function<void()> cbSignals);

@@ -72,7 +72,6 @@ public: // Declared as public to be able to access it from delegate type
     void handleEventSsidChanged(const QString &ifaceName, const QString &newSsid);
 
 private:
-    void interfaceNetworksUpdate(Interface interface, const QString &connectedSsid, const ListNetworks &listScans);
     QUuid createUidInterface(const QString &ifaceName);
 
 private:
