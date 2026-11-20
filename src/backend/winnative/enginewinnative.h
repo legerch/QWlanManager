@@ -6,6 +6,8 @@
 
 #include <QSet>
 
+#include <functional>
+
 /*****************************/
 /* Namespace instructions    */
 /*****************************/
@@ -42,6 +44,7 @@ private:
 
     bool eventRegister();
     void eventUnregister();
+    void eventPost(std::function<void()> fct);
 
     bool interfaceIsVirtual(const QString &description);
 

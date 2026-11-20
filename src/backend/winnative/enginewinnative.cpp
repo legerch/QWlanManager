@@ -309,6 +309,24 @@ void EngineWinNative::eventUnregister()
  * \return
  * Return \c true is adapter is a virtual adapter
  */
+/*!
+ * \brief Post a function to be executed on the manager thread
+ * \details
+ * WlanAPI notification callbacks are called from a system thread pool,
+ * not from the thread owning the manager. To avoid any data race, callbacks
+ * must not touch engine state directly: they copy needed notification datas
+ * (which are only valid during the callback) and post the work with this method.
+ *
+ * \param[in] fct
+ * Function to execute on the manager thread. \n
+ * If the manager is destroyed before the event is processed,
+ * the function is discarded.
+ */
+void EngineWinNative::eventPost(std::function<void()> fct)
+{
+    QMetaObject::invokeMethod(q_ptr, std::move(fct), Qt::QueuedConnection);
+}
+
 bool EngineWinNative::interfaceIsVirtual(const QString &description)
 {
     return description.contains("virtual", Qt::CaseInsensitive)
@@ -564,62 +582,69 @@ void EngineWinNative::cbNotif(PWLAN_NOTIFICATION_DATA ptrDataNotif, PVOID ptrDat
 void EngineWinNative::cbNotifAcm(PWLAN_NOTIFICATION_DATA ptrDataNotif, PVOID ptrDataCtx)
 {
     EngineWinNative *engine = static_cast<EngineWinNative*>(ptrDataCtx);
+    const QUuid idInterface = QUuid(ptrDataNotif->InterfaceGuid);
 
     switch(ptrDataNotif->NotificationCode)
     {
         case wlan_notification_acm_interface_arrival:
         case wlan_notification_acm_interface_removal:{
-            engine->interfaceListUpdate();
+            engine->eventPost([engine]{
+                engine->interfaceListUpdate();
+            });
         }break;
 
         case wlan_notification_acm_scan_complete:{
-            const QUuid idInterface = QUuid(ptrDataNotif->InterfaceGuid);
-            engine->interfaceScanFinished(idInterface, WlanError::WERR_NO_ERROR);
+            engine->eventPost([engine, idInterface]{
+                engine->interfaceScanFinished(idInterface, WlanError::WERR_NO_ERROR);
+            });
         }break;
 
         case wlan_notification_acm_scan_fail:{
-            WLAN_REASON_CODE *apiErr = static_cast<WLAN_REASON_CODE*>(ptrDataNotif->pData);
+            const WLAN_REASON_CODE apiErr = *static_cast<WLAN_REASON_CODE*>(ptrDataNotif->pData);
 
             /* Do we have a scan failure due to passkey exchanged */
-            if(*apiErr == API_ERR_CODE_SCAN_FAIL_PASSKEY){
+            if(apiErr == API_ERR_CODE_SCAN_FAIL_PASSKEY){
                 qDebug("Scan failure has been ignored, triggered by a passkey exchange during connection");
                 goto stat_return;
             }
 
             /* Manage scan failure */
-            const QUuid idInterface = QUuid(ptrDataNotif->InterfaceGuid);
-            const WlanError idErr = WinNative::convertErrWlanFromApi(*apiErr);
-
-            engine->interfaceScanFinished(idInterface, idErr);
+            engine->eventPost([engine, idInterface, apiErr]{
+                const WlanError idErr = WinNative::convertErrWlanFromApi(apiErr);
+                engine->interfaceScanFinished(idInterface, idErr);
+            });
         }break;
 
-        case  wlan_notification_acm_connection_attempt_fail:{
-            const QUuid idInterface = QUuid(ptrDataNotif->InterfaceGuid);
+        case wlan_notification_acm_connection_attempt_fail:{
             const PWLAN_CONNECTION_NOTIFICATION_DATA connectData = static_cast<PWLAN_CONNECTION_NOTIFICATION_DATA>(ptrDataNotif->pData);
+            const WLAN_REASON_CODE apiErr = connectData->wlanReasonCode;
 
-            engine->m_errConnect.insert(idInterface, connectData->wlanReasonCode);
+            engine->eventPost([engine, idInterface, apiErr]{
+                engine->m_errConnect.insert(idInterface, apiErr);
+            });
         }break;
 
         case wlan_notification_acm_connection_complete:{
             const PWLAN_CONNECTION_NOTIFICATION_DATA connectData = static_cast<PWLAN_CONNECTION_NOTIFICATION_DATA>(ptrDataNotif->pData);
-
-            const QUuid idInterface = QUuid(ptrDataNotif->InterfaceGuid);
             const QString ssid = QString::fromUtf8(reinterpret_cast<char *>(connectData->dot11Ssid.ucSSID), connectData->dot11Ssid.uSSIDLength);
+            const WLAN_REASON_CODE apiReason = connectData->wlanReasonCode;
 
-            const WLAN_REASON_CODE apiErr = engine->m_errConnect.value(idInterface, connectData->wlanReasonCode);
-            const WlanError idErr = WinNative::convertErrWlanFromApi(apiErr);
-            engine->m_errConnect.remove(idInterface);
+            engine->eventPost([engine, idInterface, ssid, apiReason]{
+                const WLAN_REASON_CODE apiErr = engine->m_errConnect.value(idInterface, apiReason);
+                const WlanError idErr = WinNative::convertErrWlanFromApi(apiErr);
+                engine->m_errConnect.remove(idInterface);
 
-            engine->interfaceConnectionFinished(idInterface, ssid, idErr);
+                engine->interfaceConnectionFinished(idInterface, ssid, idErr);
+            });
         }break;
 
         case wlan_notification_acm_disconnected:{
             const PWLAN_CONNECTION_NOTIFICATION_DATA connectData = static_cast<PWLAN_CONNECTION_NOTIFICATION_DATA>(ptrDataNotif->pData);
-
-            const QUuid idInterface = QUuid(ptrDataNotif->InterfaceGuid);
             const WlanError idErr = WinNative::convertErrWlanFromApi(connectData->wlanReasonCode);
 
-            engine->interfaceDisconnectionFinished(idInterface, idErr);
+            engine->eventPost([engine, idInterface, idErr]{
+                engine->interfaceDisconnectionFinished(idInterface, idErr);
+            });
         }break;
 
         default: break;
@@ -628,7 +653,7 @@ void EngineWinNative::cbNotifAcm(PWLAN_NOTIFICATION_DATA ptrDataNotif, PVOID ptr
 stat_return:;
 }
 
-void EngineWinNative::cbNotifMsm(QWLANMAN_VAR_UNUSED PWLAN_NOTIFICATION_DATA ptrDataNotif, PVOID ptrDataCtx)
+void EngineWinNative::cbNotifMsm(PWLAN_NOTIFICATION_DATA ptrDataNotif, PVOID ptrDataCtx)
 {
     EngineWinNative *engine = static_cast<EngineWinNative*>(ptrDataCtx);
 
@@ -636,9 +661,11 @@ void EngineWinNative::cbNotifMsm(QWLANMAN_VAR_UNUSED PWLAN_NOTIFICATION_DATA ptr
     {
         case wlan_notification_msm_signal_quality_change:{
             const QUuid idInterface = QUuid(ptrDataNotif->InterfaceGuid);
-            const ULONG *apiQuality = static_cast<ULONG *>(ptrDataNotif->pData);
+            const ULONG apiQuality = *static_cast<ULONG *>(ptrDataNotif->pData);
 
-            engine->interfaceSignalQualityReceived(idInterface, *apiQuality);
+            engine->eventPost([engine, idInterface, apiQuality]{
+                engine->interfaceSignalQualityReceived(idInterface, apiQuality);
+            });
         }break;
 
         default: break;
