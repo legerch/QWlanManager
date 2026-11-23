@@ -1,5 +1,7 @@
 #include "networkdata.h"
 
+#include <mutex>
+
 /*****************************/
 /* Class documentations      */
 /*****************************/
@@ -27,6 +29,13 @@ NetworkData::NetworkData()
 
 bool NetworkData::operator==(const NetworkData &other) const
 {
+    /*
+     * Lock both datas at once: std::scoped_lock avoids deadlock
+     * whatever the order used by concurrent comparisons
+     */
+    std::scoped_lock locker(m_mutex, other.m_mutex);
+
+    /* Verify comparaison */
     return m_ssid == other.m_ssid
         && m_profileName == other.m_profileName
         && m_idAuth == other.m_idAuth

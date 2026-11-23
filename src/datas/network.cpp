@@ -19,12 +19,17 @@
  * - Passing this class by value is cheap
  * This class is also compatible with \b QML.
  *
+ * \note
+ * This class is thread-safe. \n
+ * An interface object is "alive": all its copies share the same datas and
+ * always reflect last known properties.
+ *
  * \sa qwm::Manager, qwm::Interface
  *
  * \cond INTERNAL
  *
  * \note
- *To modify internal properties of this object,
+ * To modify internal properties of this object,
  * use the class \c qwm::NetworkMutator
  *
  * \endcond
@@ -78,7 +83,7 @@ bool Network::isValid() const
  * \return
  * Returns SSID of network
  */
-const QString& Network::getSsid() const
+QString Network::getSsid() const
 {
     QMutexLocker locker(&d_ptr->m_mutex);
     return d_ptr->m_ssid;
@@ -90,7 +95,7 @@ const QString& Network::getSsid() const
  * \return
  * Returns profile name of network
  */
-const QString& Network::getProfileName() const
+QString Network::getProfileName() const
 {
     QMutexLocker locker(&d_ptr->m_mutex);
     return d_ptr->m_profileName;
@@ -160,7 +165,7 @@ bool Network::operator==(const Network &other) const
         return false;
     }
 
-    /* Compare content */
+    /* Compare content (datas manage their own lock) */
     return *d_ptr == *other.d_ptr;
 }
 

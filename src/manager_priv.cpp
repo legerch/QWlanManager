@@ -309,11 +309,10 @@ void ManagerPrivate::handleForgetDone(const Interface &interface, const Network 
 void ManagerPrivate::interfaceNetworksMerge(const Interface &interface, const QString &connectedSsid, const ListNetworks &listScans)
 {
     InterfaceMutator miface(interface);
-    MapNetworks &mapNets = miface.getMapNetworksRef();
 
     /* Prepare list of networks */
-    MapNetworks prevNets = mapNets;
-    mapNets.clear();
+    MapNetworks prevNets = interface.getMapNetworks();
+    MapNetworks mapNets;
 
     /* Register scanned networks */
     const QDateTime now = QDateTime::currentDateTimeUtc();
@@ -326,11 +325,7 @@ void ManagerPrivate::interfaceNetworksMerge(const Interface &interface, const QS
             net = prevNets.take(ssid);
 
             NetworkMutator munet(net);
-            munet.setProfileName(scanned.getProfileName());
-            munet.setAuthAlgo(scanned.getAuthAlgo());
-            munet.setCipherAlgo(scanned.getCipherAlgo());
-            munet.setSignalQuality(scanned.getSignalQuality());
-            munet.setDataEngine(NetworkMutator(scanned).getDataEngine());
+            munet.updateFrom(scanned);
         }
 
         NetworkMutator munet(net);
@@ -355,8 +350,8 @@ void ManagerPrivate::interfaceNetworksMerge(const Interface &interface, const QS
         mapNets.insert(it.key(), net);
     }
 
-    /* Update interface properties */
-    miface.setConnectedSsid(connectedSsid);
+    /* Update interface networks */
+    miface.setNetworks(mapNets, connectedSsid);
 }
 
 void ManagerPrivate::requestAdd(const Interface &interface, const Request &req)

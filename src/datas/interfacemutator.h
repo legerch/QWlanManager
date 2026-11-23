@@ -31,13 +31,12 @@ public:
     void setDescription(const QString &desc);
 
     void setConnectedSsid(const QString &ssid = QString());
+    void setNetworks(const MapNetworks &mapNets, const QString &connectedSsid);
 
-    MapNetworks& getMapNetworksRef();
-    CachePolicy& getCachePolicyRef();
     RequestsQueue& getRequestsQueueRef();
 
     void setDataEngine(const std::any &data);
-    const std::any& getDataEngine() const;
+    std::any getDataEngine() const;
 
 private:
     QSharedPointer<InterfaceData> d_ptr;

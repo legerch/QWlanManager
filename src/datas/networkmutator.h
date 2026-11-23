@@ -28,10 +28,12 @@ public:
     void setCipherAlgo(CipherAlgo idCipher);
     void setSignalQuality(uint quality);
 
+    void updateFrom(const Network &network);
+
     CacheInfo& getCacheRef();
 
     void setDataEngine(const std::any &data);
-    const std::any& getDataEngine() const;
+    std::any getDataEngine() const;
 
 private:
     QSharedPointer<NetworkData> d_ptr;

@@ -49,13 +49,13 @@ public:
     IfaceState getState() const;
     IfaceOptions getOptions() const;
 
-    const QUuid& getUid() const;
-    const QString& getHwAddress() const;
-    const QString& getName() const;
-    const QString& getDescription() const;
-    const CachePolicy& getCachePolicy() const;
+    QUuid getUid() const;
+    QString getHwAddress() const;
+    QString getName() const;
+    QString getDescription() const;
+    CachePolicy getCachePolicy() const;
 
-    const MapNetworks& getMapNetworks() const;
+    MapNetworks getMapNetworks() const;
 
     ListNetworks getListNetworks() const;
     Network getNetwork(const QString &ssid) const;
