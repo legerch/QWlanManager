@@ -22,7 +22,7 @@ namespace qwm
 PermissionsPrivate::PermissionsPrivate(Permissions *parent)
     : q_ptr(parent)
 {
-    /* Nothing to do */
+    m_currentPerm = WlanPerm::WPERM_UNKNOWN;
 }
 
 PermissionsPrivate::~PermissionsPrivate()

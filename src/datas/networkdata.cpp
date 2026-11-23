@@ -25,6 +25,8 @@ namespace qwm
 NetworkData::NetworkData()
 {
     m_idAuth = AuthAlgo::AUTH_ALGO_UNKNOWN;
+    m_idCipher = CipherAlgo::CIPHER_ALGO_UNKNOWN;
+    m_signalQuality = 0;
 }
 
 bool NetworkData::operator==(const NetworkData &other) const
