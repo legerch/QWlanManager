@@ -30,17 +30,41 @@ ManagerPrivate::~ManagerPrivate()
     /* Nothing to do */
 }
 
+/*!
+ * \brief Update list of available interfaces
+ * \details
+ * Backends only report available interfaces (as new objects): already
+ * known interfaces objects are reused here, so shared datas already
+ * referenced by the application stay the same.
+ */
 void ManagerPrivate::interfaceListUpdate()
 {
-    /* Prepare list of interfaces */
-    m_prevIfaces = m_currentIfaces;
-    m_currentIfaces.clear();
+    /* Retrieve available interfaces */
+    const ListInterfaces ifacesFound = interfaceListRetrieve();
 
-    /* Fill list of interfaces */
-    interfaceListRefresh();
+    /* Register interfaces */
+    MapInterfaces ifacesKnown = m_currentIfaces;
 
-    /* Manage interfaces events */
-    handleInterfacesListUpdateDone();
+    MapInterfaces ifacesMap;
+    ListInterfaces ifacesAdded;
+
+    for(const Interface &found : ifacesFound){
+        const QUuid uid = found.getUid();
+
+        // Reuse known interface object (shared datas must stay the same)
+        if(ifacesKnown.contains(uid)){
+            ifacesMap.insert(uid, ifacesKnown.take(uid));
+        }else{
+            ifacesMap.insert(uid, found);
+            ifacesAdded.append(found);
+        }
+    }
+
+    /* Update list of interfaces */
+    m_currentIfaces = ifacesMap;
+
+    /* Manage interfaces events (remaining known interfaces have been removed) */
+    handleInterfacesListUpdateDone(ifacesAdded, ifacesKnown.values());
 }
 
 void ManagerPrivate::interfaceScanNetworks(Interface interface)
@@ -153,26 +177,23 @@ void ManagerPrivate::interfaceForget(Interface interface, Network network)
     interfaceForgetAsync(interface, network);
 }
 
-void ManagerPrivate::handleInterfacesListUpdateDone()
+/*!
+ * \brief Emit signals related to interfaces list update
+ *
+ * \param[in] ifacesAdded
+ * Interfaces added since previous update.
+ * \param[in] ifacesRemoved
+ * Interfaces removed since previous update.
+ */
+void ManagerPrivate::handleInterfacesListUpdateDone(const ListInterfaces &ifacesAdded, const ListInterfaces &ifacesRemoved)
 {
-    /* Retrieve keys allowing to perform comparaisons */
-    const auto newIds = QSet<QUuid>(m_currentIfaces.keyBegin(), m_currentIfaces.keyEnd());
-    const auto oldIds = QSet<QUuid>(m_prevIfaces.keyBegin(), m_prevIfaces.keyEnd());
-
-    /* Do interfaces has been added ? */
-    const QSet<QUuid> setAdded = newIds - oldIds;
-    for(auto it = setAdded.cbegin(); it != setAdded.cend(); ++it){
-        emit q_ptr->sInterfaceAdded(m_currentIfaces.value(*it));
+    for(const Interface &iface : ifacesAdded){
+        emit q_ptr->sInterfaceAdded(iface);
     }
 
-    /* Do interfaces has been removed ? */
-    const QSet<QUuid> setRemoved = oldIds - newIds;
-    for(auto it = setRemoved.cbegin(); it != setRemoved.cend(); ++it){
-        emit q_ptr->sInterfaceRemoved(m_prevIfaces.value(*it));
+    for(const Interface &iface : ifacesRemoved){
+        emit q_ptr->sInterfaceRemoved(iface);
     }
-
-    /* Clear previous interfaces references */
-    m_prevIfaces.clear();
 }
 
 /*!

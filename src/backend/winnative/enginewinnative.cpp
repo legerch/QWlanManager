@@ -73,12 +73,14 @@ void EngineWinNative::terminate()
 }
 
 /*!
- * \brief EngineWinNative::interfaceListRefresh
+ * \brief EngineWinNative::interfaceListRetrieve
  * \note
  * https://learn.microsoft.com/fr-fr/windows/win32/api/iphlpapi/nf-iphlpapi-getadaptersaddresses
  */
-void EngineWinNative::interfaceListRefresh()
+ListInterfaces EngineWinNative::interfaceListRetrieve()
 {
+    ListInterfaces listIfaces;
+
     /* Prepare arguments used to retrieve interfaces */
     constexpr int MAX_TRIALS = 3;
     ULONG bufSize = 15000;
@@ -128,24 +130,16 @@ void EngineWinNative::interfaceListRefresh()
             continue;
         }
 
-        // Manage known interface
-        const QUuid uid = QUuid(pAdapter->AdapterName);
-
+        // Register interface
         Interface iface;
-        if(m_prevIfaces.contains(uid)){
-            iface = m_prevIfaces.value(uid);
+        InterfaceMutator miface(iface);
 
-        // Register an interface
-        }else{
-            InterfaceMutator miface(iface);
+        miface.setUid(QUuid(pAdapter->AdapterName));
+        miface.setHwAddress(pAdapter->PhysicalAddress, pAdapter->PhysicalAddressLength);
+        miface.setName(QString::fromWCharArray(pAdapter->FriendlyName));
+        miface.setDescription(desc);
 
-            miface.setUid(uid);
-            miface.setHwAddress(pAdapter->PhysicalAddress, pAdapter->PhysicalAddressLength);
-            miface.setName(QString::fromWCharArray(pAdapter->FriendlyName));
-            miface.setDescription(desc);
-        }
-
-        m_currentIfaces.insert(iface.getUid(), iface);
+        listIfaces.append(iface);
     }
 
 stat_free:
@@ -153,7 +147,7 @@ stat_free:
     listAdapters = nullptr;
 
 stat_return:
-    return;
+    return listIfaces;
 }
 
 /*!

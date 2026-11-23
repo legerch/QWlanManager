@@ -39,7 +39,7 @@ public:
     virtual void terminate() = 0;
 
 protected:
-    virtual void interfaceListRefresh() = 0;
+    virtual ListInterfaces interfaceListRetrieve() = 0;
 
     virtual void interfaceScanNetworksAsync(Interface interface) = 0;
     virtual void interfaceConnectAsync(Interface interface, Network network, const QString &password) = 0;
@@ -47,7 +47,7 @@ protected:
     virtual void interfaceForgetAsync(Interface interface, Network network) = 0;
 
 protected:
-    void handleInterfacesListUpdateDone();
+    void handleInterfacesListUpdateDone(const ListInterfaces &ifacesAdded, const ListInterfaces &ifacesRemoved);
 
     void handleScanDone(const Interface &interface, WlanError idErr, const QString &connectedSsid = QString(), const ListNetworks &listScans = ListNetworks());
     void handleConnectDone(const Interface &interface, const QString &ssid, WlanError idErr);
@@ -63,7 +63,6 @@ private:
 
 protected:
     MapInterfaces m_currentIfaces;
-    MapInterfaces m_prevIfaces;
     WlanOptions m_opts;
 
     Manager *q_ptr;

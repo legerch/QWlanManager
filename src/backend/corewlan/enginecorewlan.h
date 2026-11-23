@@ -56,7 +56,7 @@ public:
     void terminate() override;
 
 public:
-    void interfaceListRefresh() override;
+    ListInterfaces interfaceListRetrieve() override;
 
 protected:
     void interfaceScanNetworksAsync(Interface interface) override;

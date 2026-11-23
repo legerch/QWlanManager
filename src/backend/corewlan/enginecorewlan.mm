@@ -511,8 +511,10 @@ void EngineCoreWlan::terminate()
     m_thread.wait();
 }
 
-void EngineCoreWlan::interfaceListRefresh()
+ListInterfaces EngineCoreWlan::interfaceListRetrieve()
 {
+    ListInterfaces listIfaces;
+
     /* Retrieve available interfaces */
     CWWiFiClient *client = HandleCoreWlan::instance();
     NSArray<CWInterface *> *listInterfaces = [client interfaces];
@@ -525,25 +527,21 @@ void EngineCoreWlan::interfaceListRefresh()
 
         const QUuid uid = QUuid::createUuidV5(NS_UID, name);
 
-        // Manage known interfaces
+        // Register interface
         Interface iface;
-        if(m_prevIfaces.contains(uid)){
-            iface = m_prevIfaces.value(uid);
+        InterfaceMutator miface(iface);
 
-        // Register an interface
-        }else{
-            InterfaceMutator miface(iface);
+        miface.setUid(uid);
+        miface.setHwAddress(hwAddr);
+        miface.setName(name);
+        miface.setDescription("");
 
-            miface.setUid(uid);
-            miface.setHwAddress(hwAddr);
-            miface.setName(name);
-            miface.setDescription("");
+        miface.setDataEngine(CoreWlan::makeApiPtrInterface(apiIface));
 
-            miface.setDataEngine(CoreWlan::makeApiPtrInterface(apiIface));
-        }
-
-        m_currentIfaces.insert(iface.getUid(), iface);
+        listIfaces.append(iface);
     }
+
+    return listIfaces;
 }
 
 void EngineCoreWlan::interfaceScanNetworksAsync(Interface interface)
