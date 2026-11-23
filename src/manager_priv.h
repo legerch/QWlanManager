@@ -29,6 +29,9 @@ public:
     virtual ~ManagerPrivate();
 
 public:
+    void callOnManagerThread(std::function<void()> fct);
+
+public:
     void interfaceListUpdate();
 
     void interfaceScanNetworks(Interface interface);

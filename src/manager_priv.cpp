@@ -31,6 +31,21 @@ ManagerPrivate::~ManagerPrivate()
 }
 
 /*!
+ * \brief Execute a function on the manager thread
+ * \details
+ * If called from the manager thread, function is executed immediately. \n
+ * Otherwise, it is queued and executed later by the manager thread
+ * (discarded if manager is destroyed before).
+ *
+ * \param[in] fct
+ * Function to execute.
+ */
+void ManagerPrivate::callOnManagerThread(std::function<void()> fct)
+{
+    QMetaObject::invokeMethod(q_ptr, std::move(fct), Qt::AutoConnection);
+}
+
+/*!
  * \brief Update list of available interfaces
  * \details
  * Backends only report available interfaces (as new objects): already
