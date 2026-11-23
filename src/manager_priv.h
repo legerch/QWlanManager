@@ -6,6 +6,8 @@
 
 #include "qwlanmanager/manager.h"
 
+#include <QMutex>
+
 /*****************************/
 /* Namespace instructions    */
 /*****************************/
@@ -62,10 +64,13 @@ private:
     void requestHandleDone(const Interface &interface, std::function<void()> cbSignals);
 
 protected:
-    MapInterfaces m_currentIfaces;
-    WlanOptions m_opts;
+    mutable QMutex m_mutex;
 
+    MapInterfaces m_currentIfaces;
     Manager *q_ptr;
+
+private:
+    WlanOptions m_opts;             /*!< Manager options, can be accessed from multiple threads, so allow access only via getter/setter */
 };
 
 /*****************************/

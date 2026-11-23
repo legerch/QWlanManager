@@ -61,7 +61,10 @@ void ManagerPrivate::interfaceListUpdate()
     }
 
     /* Update list of interfaces */
-    m_currentIfaces = ifacesMap;
+    {
+        QMutexLocker locker(&m_mutex);
+        m_currentIfaces = ifacesMap;
+    }
 
     /* Manage interfaces events (remaining known interfaces have been removed) */
     handleInterfacesListUpdateDone(ifacesAdded, ifacesKnown.values());

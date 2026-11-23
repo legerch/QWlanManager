@@ -268,6 +268,7 @@ Manager::~Manager()
  */
 void Manager::setOptions(WlanOptions opts)
 {
+    QMutexLocker locker(&d_ptr->m_mutex);
     d_ptr->m_opts = opts;
 }
 
@@ -281,6 +282,7 @@ void Manager::setOptions(WlanOptions opts)
  */
 WlanOptions Manager::getOptions() const
 {
+    QMutexLocker locker(&d_ptr->m_mutex);
     return d_ptr->m_opts;
 }
 
@@ -294,6 +296,7 @@ WlanOptions Manager::getOptions() const
  */
 ListInterfaces Manager::getInterfaces() const
 {
+    QMutexLocker locker(&d_ptr->m_mutex);
     return d_ptr->m_currentIfaces.values();
 }
 
@@ -312,6 +315,7 @@ ListInterfaces Manager::getInterfaces() const
  */
 Interface Manager::getInterface(const QUuid &idInterface) const
 {
+    QMutexLocker locker(&d_ptr->m_mutex);
     return d_ptr->m_currentIfaces.value(idInterface);
 }
 

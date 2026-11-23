@@ -558,13 +558,13 @@ void EngineCoreWlan::interfaceScanNetworksAsync(Interface interface)
 void EngineCoreWlan::interfaceConnectAsync(Interface interface, Network network, const QString &password)
 {
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-    QMetaObject::invokeMethod(m_worker, &WorkerCoreWlan::performConnect, Qt::QueuedConnection, interface, network, password, m_opts);
+    QMetaObject::invokeMethod(m_worker, &WorkerCoreWlan::performConnect, Qt::QueuedConnection, interface, network, password, q_ptr->getOptions());
 #else
     QMetaObject::invokeMethod(m_worker, "performConnect", Qt::QueuedConnection,
         Q_ARG(qwm::Interface, interface),
         Q_ARG(qwm::Network, network),
         Q_ARG(QString, password),
-        Q_ARG(qwm::WlanOptions, m_opts)
+        Q_ARG(qwm::WlanOptions, q_ptr->getOptions())
     );
 #endif
 }
