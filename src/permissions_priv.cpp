@@ -38,16 +38,20 @@ WlanPerm PermissionsPrivate::getStatus() const
 
 void PermissionsPrivate::setStatus(WlanPerm idPerm)
 {
-    QMutexLocker locker(&m_mutex);
+    /* Update permission status */
+    {
+        QMutexLocker locker(&m_mutex);
 
-    /* Do status has changed ? */
-    if(idPerm == m_currentPerm){
-        return;
+        // Do status has changed ?
+        if(idPerm == m_currentPerm){
+            return;
+        }
+
+        m_currentPerm = idPerm;
     }
 
-    /* Update permission status */
-    m_currentPerm = idPerm;
-    emit q_ptr->sPermissionsChanged(m_currentPerm);
+    /* Notify change (outside lock, a slot may call us back) */
+    emit q_ptr->sPermissionsChanged(idPerm);
 }
 
 /*****************************/
