@@ -12,6 +12,10 @@
  *
  * \brief Use to manage all \b permissions related operations
  *
+ * \note
+ * This class is thread-safe: its methods can be called from any thread. \n
+ * All signals are emitted from the thread owning this object.
+ *
  * \sa qwm::Manager
  */
 

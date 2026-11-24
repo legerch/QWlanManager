@@ -67,8 +67,10 @@ void PermissionsPrivate::setStatus(WlanPerm idPerm)
         m_currentPerm = idPerm;
     }
 
-    /* Notify change (outside lock, a slot may call us back) */
-    emit q_ptr->sPermissionsChanged(idPerm);
+    /* Notify change (outside lock, from thread owning permissions object) */
+    QMetaObject::invokeMethod(q_ptr, [this, idPerm]{
+        emit q_ptr->sPermissionsChanged(idPerm);
+    }, Qt::AutoConnection);
 }
 
 /*****************************/
