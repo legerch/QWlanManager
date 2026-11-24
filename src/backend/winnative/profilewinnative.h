@@ -27,6 +27,8 @@ public:
     QString toXmlFormat() const;
 
 private:
+    QString getPasskeyFmt() const;
+
     QString blockSecurityToXml() const;
 
     QString fieldSecurityAuthToXml() const;

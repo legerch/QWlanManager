@@ -44,6 +44,11 @@ QString ProfileWinNative::getNameHex() const
     return QString::fromLatin1(m_name.toUtf8().toHex());
 }
 
+QString ProfileWinNative::getPasskeyFmt() const
+{
+    return m_passkey.toHtmlEscaped();
+}
+
 /*!
  * \brief ProfileWinNative::toXmlFormat
  *
@@ -128,7 +133,7 @@ QString ProfileWinNative::blockSecurityToXml() const
             ).arg(
                 fieldSecurityAuthToXml(),
                 fieldSecurityEncryptionToXml(),
-                m_passkey
+                getPasskeyFmt()
             );
         }break;
 
