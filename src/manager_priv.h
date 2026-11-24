@@ -6,6 +6,8 @@
 
 #include "qwlanmanager/manager.h"
 
+#include <QMutex>
+
 /*****************************/
 /* Namespace instructions    */
 /*****************************/
@@ -27,6 +29,9 @@ public:
     virtual ~ManagerPrivate();
 
 public:
+    void callOnManagerThread(std::function<void()> fct);
+
+public:
     void interfaceListUpdate();
 
     void interfaceScanNetworks(Interface interface);
@@ -39,7 +44,7 @@ public:
     virtual void terminate() = 0;
 
 protected:
-    virtual void interfaceListRefresh() = 0;
+    virtual ListInterfaces interfaceListRetrieve() = 0;
 
     virtual void interfaceScanNetworksAsync(Interface interface) = 0;
     virtual void interfaceConnectAsync(Interface interface, Network network, const QString &password) = 0;
@@ -47,24 +52,28 @@ protected:
     virtual void interfaceForgetAsync(Interface interface, Network network) = 0;
 
 protected:
-    void handleInterfacesListUpdateDone();
+    void handleInterfacesListUpdateDone(const ListInterfaces &ifacesAdded, const ListInterfaces &ifacesRemoved);
 
-    void handleScanDone(const Interface &interface, WlanError idErr);
+    void handleScanDone(const Interface &interface, WlanError idErr, const QString &connectedSsid = QString(), const ListNetworks &listScans = ListNetworks());
     void handleConnectDone(const Interface &interface, const QString &ssid, WlanError idErr);
     void handleDisconnectDone(const Interface &interface, WlanError idErr);
     void handleForgetDone(const Interface &interface, const Network &network, WlanError idErr);
 
 private:
+    void interfaceNetworksMerge(const Interface &interface, const QString &connectedSsid, const ListNetworks &listScans);
+
     void requestAdd(const Interface &interface, const Request &req);
     void requestPerform(const Interface &interface, const Request &req);
     void requestHandleDone(const Interface &interface, std::function<void()> cbSignals);
 
 protected:
-    MapInterfaces m_currentIfaces;
-    MapInterfaces m_prevIfaces;
-    WlanOptions m_opts;
+    mutable QMutex m_mutex;
 
+    MapInterfaces m_currentIfaces;
     Manager *q_ptr;
+
+private:
+    WlanOptions m_opts;             /*!< Manager options, can be accessed from multiple threads, so allow access only via getter/setter */
 };
 
 /*****************************/

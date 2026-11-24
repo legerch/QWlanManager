@@ -51,12 +51,10 @@ void PermissionWinRt::terminate()
     eventsUnregister();
 }
 
-WlanPerm PermissionWinRt::updateStatus()
+WlanPerm PermissionWinRt::statusRetrieve()
 {
     const WinRt::PermissionId apiPerm = m_permsWlan.CheckAccess();
-    setStatus(WinRt::convertPermFromApi(apiPerm));
-
-    return m_currentPerm;
+    return WinRt::convertPermFromApi(apiPerm);
 }
 
 WlanError PermissionWinRt::prompt()
@@ -78,8 +76,14 @@ WlanError PermissionWinRt::openParams()
 
 void PermissionWinRt::eventsRegister()
 {
+    /*
+     * AccessChanged is raised from a WinRT thread pool thread:
+     * status update is posted to the permissions object thread to avoid data races
+     */
     m_tokenAccessChanged = m_permsWlan.AccessChanged([this](QWLANMAN_VAR_UNUSED WinRt::PermissionApp const& sender, QWLANMAN_VAR_UNUSED WinRt::EventArgsAccessChanged const& args){
-        updateStatus();
+        QMetaObject::invokeMethod(q_ptr, [this]{
+            updateStatus();
+        }, Qt::QueuedConnection);
     });
 }
 

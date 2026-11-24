@@ -82,55 +82,66 @@ void InterfaceMutator::setConnectedSsid(const QString &ssid)
     d_ptr->m_connectedSsid = ssid;
 }
 
-MapNetworks& InterfaceMutator::getMapNetworksRef()
+/*!
+ * \brief Set interface networks and connected network
+ *
+ * \param[in] mapNets
+ * Networks of the interface.
+ * \param[in] connectedSsid
+ * SSID of the network currently connected, empty if none.
+ */
+void InterfaceMutator::setNetworks(const MapNetworks &mapNets, const QString &connectedSsid)
 {
     QMutexLocker locker(&d_ptr->m_mutex);
-    return d_ptr->m_mapNets;
+    d_ptr->m_mapNets = mapNets;
+    d_ptr->m_connectedSsid = connectedSsid;
 }
 
-CachePolicy& InterfaceMutator::getCachePolicyRef()
-{
-    QMutexLocker locker(&d_ptr->m_mutex);
-    return d_ptr->m_cachePolicy;
-}
-
+/*!
+ * \brief Retrieve requests queue of the interface
+ *
+ * \warning
+ * Returned reference is not protected by the interface lock: requests queue
+ * is an internal data, it must only be used from the manager thread.
+ *
+ * \return
+ * Returns reference to the interface requests queue.
+ */
 RequestsQueue& InterfaceMutator::getRequestsQueueRef()
 {
     QMutexLocker locker(&d_ptr->m_mutex);
     return d_ptr->m_reqsQueue;
 }
 
+/*!
+ * \brief Set engine data related to the interface
+ *
+ * \param[in] data
+ * Engine data to store. \n
+ * Only store handles (shared pointers, pointers, etc...) since this data
+ * is copied each time it is retrieved.
+ *
+ * \sa getDataEngine()
+ */
 void InterfaceMutator::setDataEngine(const std::any &data)
 {
     QMutexLocker locker(&d_ptr->m_mutex);
     d_ptr->m_dataEngine = data;
 }
 
-const std::any& InterfaceMutator::getDataEngine() const
+/*!
+ * \brief Retrieve engine data related to the interface
+ *
+ * \return
+ * Returns a copy of the stored engine data (handles are copied,
+ * not the objects they refer to).
+ *
+ * \sa setDataEngine()
+ */
+std::any InterfaceMutator::getDataEngine() const
 {
     QMutexLocker locker(&d_ptr->m_mutex);
     return d_ptr->m_dataEngine;
-}
-
-void InterfaceMutator::updateNetworksCached(const MapNetworks &oldNets, const QDateTime &now)
-{
-    for(auto it = oldNets.cbegin(); it != oldNets.cend(); ++it){
-        Network net = it.value();
-        NetworkMutator munet(net);
-
-        CacheInfo &cache = munet.getCacheRef();
-
-        // Update cache
-        cache.markUnseen();
-
-        // Do cache is expired ?
-        if(cache.isExpired(d_ptr->m_cachePolicy, now)){
-            continue;
-        }
-
-        // Cache not expired, keep the network
-        d_ptr->m_mapNets.insert(net.getSsid(), net);
-    }
 }
 
 /*****************************/

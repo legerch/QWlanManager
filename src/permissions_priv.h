@@ -27,22 +27,28 @@ public:
 
 public:
     WlanPerm getStatus() const;
-    void setStatus(WlanPerm idPerm);
+    WlanPerm updateStatus();
 
 public:
     virtual void initialize() = 0;
     virtual void terminate() = 0;
 
 public:
-    virtual WlanPerm updateStatus() = 0;
     virtual WlanError prompt() = 0;
     virtual WlanError openParams() = 0;
 
 protected:
-    mutable QMutex m_mutex;
-    WlanPerm m_currentPerm;
+    virtual WlanPerm statusRetrieve() = 0;
 
+private:
+    void setStatus(WlanPerm idPerm);
+
+protected:
     Permissions *q_ptr;
+
+private:
+    mutable QMutex m_mutex;
+    WlanPerm m_currentPerm;     /*!< Permission status, only managed by this class: backends report it via statusRetrieve() */
 };
 
 /*****************************/

@@ -73,12 +73,14 @@ void EngineWinNative::terminate()
 }
 
 /*!
- * \brief EngineWinNative::interfaceListRefresh
+ * \brief EngineWinNative::interfaceListRetrieve
  * \note
  * https://learn.microsoft.com/fr-fr/windows/win32/api/iphlpapi/nf-iphlpapi-getadaptersaddresses
  */
-void EngineWinNative::interfaceListRefresh()
+ListInterfaces EngineWinNative::interfaceListRetrieve()
 {
+    ListInterfaces listIfaces;
+
     /* Prepare arguments used to retrieve interfaces */
     constexpr int MAX_TRIALS = 3;
     ULONG bufSize = 15000;
@@ -128,24 +130,16 @@ void EngineWinNative::interfaceListRefresh()
             continue;
         }
 
-        // Manage known interface
-        const QUuid uid = QUuid(pAdapter->AdapterName);
-
+        // Register interface
         Interface iface;
-        if(m_prevIfaces.contains(uid)){
-            iface = m_prevIfaces.value(uid);
+        InterfaceMutator miface(iface);
 
-        // Register an interface
-        }else{
-            InterfaceMutator miface(iface);
+        miface.setUid(QUuid(pAdapter->AdapterName));
+        miface.setHwAddress(pAdapter->PhysicalAddress, pAdapter->PhysicalAddressLength);
+        miface.setName(QString::fromWCharArray(pAdapter->FriendlyName));
+        miface.setDescription(desc);
 
-            miface.setUid(uid);
-            miface.setHwAddress(pAdapter->PhysicalAddress, pAdapter->PhysicalAddressLength);
-            miface.setName(QString::fromWCharArray(pAdapter->FriendlyName));
-            miface.setDescription(desc);
-        }
-
-        m_currentIfaces.insert(iface.getUid(), iface);
+        listIfaces.append(iface);
     }
 
 stat_free:
@@ -153,7 +147,7 @@ stat_free:
     listAdapters = nullptr;
 
 stat_return:
-    return;
+    return listIfaces;
 }
 
 /*!
@@ -297,6 +291,24 @@ void EngineWinNative::eventUnregister()
 }
 
 /*!
+ * \brief Post a function to be executed on the manager thread
+ * \details
+ * WlanAPI notification callbacks are called from a system thread pool,
+ * not from the thread owning the manager. To avoid any data race, callbacks
+ * must not touch engine state directly: they copy needed notification datas
+ * (which are only valid during the callback) and post the work with this method.
+ *
+ * \param[in] fct
+ * Function to execute on the manager thread. \n
+ * If the manager is destroyed before the event is processed,
+ * the function is discarded.
+ */
+void EngineWinNative::eventPost(std::function<void()> fct)
+{
+    QMetaObject::invokeMethod(q_ptr, std::move(fct), Qt::QueuedConnection);
+}
+
+/*!
  * \brief Use to known if device adapter is virtual or not
  * \details
  * Use interface description to get this information
@@ -315,22 +327,30 @@ bool EngineWinNative::interfaceIsVirtual(const QString &description)
         || description.contains("vmware", Qt::CaseInsensitive);
 }
 
-WlanError EngineWinNative::interfaceNetworksUpdate(Interface interface)
+/*!
+ * \brief Retrieve networks found by the last scan
+ *
+ * \param[in] interface
+ * Interface to use.
+ * \param[out] connectedSsid
+ * SSID of the network currently connected, empty if none.
+ * \param[out] listScans
+ * Networks found by the scan (new objects, not shared).
+ *
+ * \return
+ * Returns \c WlanError::WERR_NO_ERROR if succeed.
+ */
+WlanError EngineWinNative::interfaceNetworksRetrieve(const Interface &interface, QString &connectedSsid, ListNetworks &listScans)
 {
-    InterfaceMutator miface(interface);
-    MapNetworks &mapNets = miface.getMapNetworksRef();
-
-    /* Prepare list of networks */
-    MapNetworks prevNets = mapNets;
-
-    miface.setConnectedSsid();
-    mapNets.clear();
-
     /* Prepare arguments needed to perform request */
     constexpr DWORD flags = 0;
     const GUID ifaceUuid = interface.getUid();
     PWLAN_AVAILABLE_NETWORK_LIST apiNetList = nullptr;
-    QString connectedSsid = ""; // Empty means "no network connected"
+
+    connectedSsid.clear(); // Empty means "no network connected"
+    listScans.clear();
+
+    QSet<QString> ssidsFound;
 
     /* Perform request */
     DWORD res = WlanGetAvailableNetworkList(m_handle, &ifaceUuid, flags, nullptr, &apiNetList);
@@ -341,7 +361,6 @@ WlanError EngineWinNative::interfaceNetworksUpdate(Interface interface)
     }
 
     /* Register networks */
-    const QDateTime now = QDateTime::currentDateTimeUtc();
     for(apiNetList->dwIndex = 0; apiNetList->dwIndex < apiNetList->dwNumberOfItems; ++apiNetList->dwIndex){
         PWLAN_AVAILABLE_NETWORK apiNet = &apiNetList->Network[apiNetList->dwIndex];
 
@@ -357,9 +376,10 @@ WlanError EngineWinNative::interfaceNetworksUpdate(Interface interface)
          * Also filter hidden networks
          */
         const QString ssid = QString::fromUtf8(reinterpret_cast<char *>(apiNet->dot11Ssid.ucSSID), apiNet->dot11Ssid.uSSIDLength);
-        if(ssid.isEmpty() || mapNets.contains(ssid)){
+        if(ssid.isEmpty() || ssidsFound.contains(ssid)){
             continue;
         }
+        ssidsFound.insert(ssid);
 
         // Parse profile infos
         QString profile;
@@ -372,13 +392,8 @@ WlanError EngineWinNative::interfaceNetworksUpdate(Interface interface)
             connectedSsid = ssid;
         }
 
-        // Manage known network
+        // Set network properties
         Network net;
-        if(prevNets.contains(ssid)){
-            net = prevNets.take(ssid);
-        }
-
-        // Update network properties
         NetworkMutator munet(net);
 
         munet.setSsid(ssid);
@@ -387,14 +402,8 @@ WlanError EngineWinNative::interfaceNetworksUpdate(Interface interface)
         munet.setCipherAlgo(WinNative::convertCipherFromApi(apiNet->dot11DefaultCipherAlgorithm));
         munet.setSignalQuality(apiNet->wlanSignalQuality);
 
-        munet.getCacheRef().markSeen(now);
-
-        mapNets.insert(ssid, net);
+        listScans.append(net);
     }
-
-    /* Update interface properties */
-    miface.setConnectedSsid(connectedSsid);
-    miface.updateNetworksCached(prevNets, now);
 
     /* Clean used ressources */
     WlanFreeMemory(apiNetList);
@@ -479,12 +488,14 @@ void EngineWinNative::interfaceScanFinished(const QUuid &idInterface, WlanError 
     Interface iface = m_currentIfaces.value(idInterface);
 
     /* Retrieve list of scanned networks */
+    QString connectedSsid;
+    ListNetworks listScans;
     if(result == WlanError::WERR_NO_ERROR){
-        result = interfaceNetworksUpdate(iface);
+        result = interfaceNetworksRetrieve(iface, connectedSsid, listScans);
     }
 
     /* Manage end of request */
-    handleScanDone(iface, result);
+    handleScanDone(iface, result, connectedSsid, listScans);
 }
 
 void EngineWinNative::interfaceConnectionFinished(const QUuid &idInterface, const QString &ssid, WlanError result)
@@ -564,62 +575,69 @@ void EngineWinNative::cbNotif(PWLAN_NOTIFICATION_DATA ptrDataNotif, PVOID ptrDat
 void EngineWinNative::cbNotifAcm(PWLAN_NOTIFICATION_DATA ptrDataNotif, PVOID ptrDataCtx)
 {
     EngineWinNative *engine = static_cast<EngineWinNative*>(ptrDataCtx);
+    const QUuid idInterface = QUuid(ptrDataNotif->InterfaceGuid);
 
     switch(ptrDataNotif->NotificationCode)
     {
         case wlan_notification_acm_interface_arrival:
         case wlan_notification_acm_interface_removal:{
-            engine->interfaceListUpdate();
+            engine->eventPost([engine]{
+                engine->interfaceListUpdate();
+            });
         }break;
 
         case wlan_notification_acm_scan_complete:{
-            const QUuid idInterface = QUuid(ptrDataNotif->InterfaceGuid);
-            engine->interfaceScanFinished(idInterface, WlanError::WERR_NO_ERROR);
+            engine->eventPost([engine, idInterface]{
+                engine->interfaceScanFinished(idInterface, WlanError::WERR_NO_ERROR);
+            });
         }break;
 
         case wlan_notification_acm_scan_fail:{
-            WLAN_REASON_CODE *apiErr = static_cast<WLAN_REASON_CODE*>(ptrDataNotif->pData);
+            const WLAN_REASON_CODE apiErr = *static_cast<WLAN_REASON_CODE*>(ptrDataNotif->pData);
 
             /* Do we have a scan failure due to passkey exchanged */
-            if(*apiErr == API_ERR_CODE_SCAN_FAIL_PASSKEY){
+            if(apiErr == API_ERR_CODE_SCAN_FAIL_PASSKEY){
                 qDebug("Scan failure has been ignored, triggered by a passkey exchange during connection");
                 goto stat_return;
             }
 
             /* Manage scan failure */
-            const QUuid idInterface = QUuid(ptrDataNotif->InterfaceGuid);
-            const WlanError idErr = WinNative::convertErrWlanFromApi(*apiErr);
-
-            engine->interfaceScanFinished(idInterface, idErr);
+            engine->eventPost([engine, idInterface, apiErr]{
+                const WlanError idErr = WinNative::convertErrWlanFromApi(apiErr);
+                engine->interfaceScanFinished(idInterface, idErr);
+            });
         }break;
 
-        case  wlan_notification_acm_connection_attempt_fail:{
-            const QUuid idInterface = QUuid(ptrDataNotif->InterfaceGuid);
+        case wlan_notification_acm_connection_attempt_fail:{
             const PWLAN_CONNECTION_NOTIFICATION_DATA connectData = static_cast<PWLAN_CONNECTION_NOTIFICATION_DATA>(ptrDataNotif->pData);
+            const WLAN_REASON_CODE apiErr = connectData->wlanReasonCode;
 
-            engine->m_errConnect.insert(idInterface, connectData->wlanReasonCode);
+            engine->eventPost([engine, idInterface, apiErr]{
+                engine->m_errConnect.insert(idInterface, apiErr);
+            });
         }break;
 
         case wlan_notification_acm_connection_complete:{
             const PWLAN_CONNECTION_NOTIFICATION_DATA connectData = static_cast<PWLAN_CONNECTION_NOTIFICATION_DATA>(ptrDataNotif->pData);
-
-            const QUuid idInterface = QUuid(ptrDataNotif->InterfaceGuid);
             const QString ssid = QString::fromUtf8(reinterpret_cast<char *>(connectData->dot11Ssid.ucSSID), connectData->dot11Ssid.uSSIDLength);
+            const WLAN_REASON_CODE apiReason = connectData->wlanReasonCode;
 
-            const WLAN_REASON_CODE apiErr = engine->m_errConnect.value(idInterface, connectData->wlanReasonCode);
-            const WlanError idErr = WinNative::convertErrWlanFromApi(apiErr);
-            engine->m_errConnect.remove(idInterface);
+            engine->eventPost([engine, idInterface, ssid, apiReason]{
+                const WLAN_REASON_CODE apiErr = engine->m_errConnect.value(idInterface, apiReason);
+                const WlanError idErr = WinNative::convertErrWlanFromApi(apiErr);
+                engine->m_errConnect.remove(idInterface);
 
-            engine->interfaceConnectionFinished(idInterface, ssid, idErr);
+                engine->interfaceConnectionFinished(idInterface, ssid, idErr);
+            });
         }break;
 
         case wlan_notification_acm_disconnected:{
             const PWLAN_CONNECTION_NOTIFICATION_DATA connectData = static_cast<PWLAN_CONNECTION_NOTIFICATION_DATA>(ptrDataNotif->pData);
-
-            const QUuid idInterface = QUuid(ptrDataNotif->InterfaceGuid);
             const WlanError idErr = WinNative::convertErrWlanFromApi(connectData->wlanReasonCode);
 
-            engine->interfaceDisconnectionFinished(idInterface, idErr);
+            engine->eventPost([engine, idInterface, idErr]{
+                engine->interfaceDisconnectionFinished(idInterface, idErr);
+            });
         }break;
 
         default: break;
@@ -628,7 +646,7 @@ void EngineWinNative::cbNotifAcm(PWLAN_NOTIFICATION_DATA ptrDataNotif, PVOID ptr
 stat_return:;
 }
 
-void EngineWinNative::cbNotifMsm(QWLANMAN_VAR_UNUSED PWLAN_NOTIFICATION_DATA ptrDataNotif, PVOID ptrDataCtx)
+void EngineWinNative::cbNotifMsm(PWLAN_NOTIFICATION_DATA ptrDataNotif, PVOID ptrDataCtx)
 {
     EngineWinNative *engine = static_cast<EngineWinNative*>(ptrDataCtx);
 
@@ -636,9 +654,11 @@ void EngineWinNative::cbNotifMsm(QWLANMAN_VAR_UNUSED PWLAN_NOTIFICATION_DATA ptr
     {
         case wlan_notification_msm_signal_quality_change:{
             const QUuid idInterface = QUuid(ptrDataNotif->InterfaceGuid);
-            const ULONG *apiQuality = static_cast<ULONG *>(ptrDataNotif->pData);
+            const ULONG apiQuality = *static_cast<ULONG *>(ptrDataNotif->pData);
 
-            engine->interfaceSignalQualityReceived(idInterface, *apiQuality);
+            engine->eventPost([engine, idInterface, apiQuality]{
+                engine->interfaceSignalQualityReceived(idInterface, apiQuality);
+            });
         }break;
 
         default: break;

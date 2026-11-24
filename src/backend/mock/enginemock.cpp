@@ -41,11 +41,8 @@ void EngineMock::terminate()
     qDebug("Engine mock termination called");
 }
 
-void EngineMock::interfaceListRefresh()
+ListInterfaces EngineMock::interfaceListRetrieve()
 {
-    /* Reset list of interfaces */
-    m_currentIfaces.clear();
-
     /* Fill with mock values */
     Interface iface1;
     InterfaceMutator miface1(iface1);
@@ -61,9 +58,7 @@ void EngineMock::interfaceListRefresh()
     miface2.setName("Wifi 2");
     miface2.setDescription("Example of adapter 2");
 
-    /* Add interface to map */
-    m_currentIfaces.insert(iface1.getUid(), iface1);
-    m_currentIfaces.insert(iface2.getUid(), iface2);
+    return {iface1, iface2};
 }
 
 void EngineMock::interfaceScanNetworksAsync(Interface interface)

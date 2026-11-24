@@ -71,8 +71,7 @@ namespace qwm::CoreWlan
 
 - (void)locationManagerDidChangeAuthorization:(CLLocationManager *)manager
 {
-    const qwm::WlanPerm idPerm = qwm::CoreWlan::convertPermFromApi(manager.authorizationStatus);
-    m_permCoreWlan->setStatus(idPerm);
+    m_permCoreWlan->updateStatus();
 }
 
 @end
@@ -164,14 +163,12 @@ void PermissionCoreWlan::terminate()
     /* Nothing to do */
 }
 
-WlanPerm PermissionCoreWlan::updateStatus()
+WlanPerm PermissionCoreWlan::statusRetrieve()
 {
     CLLocationManager *locManager = CoreWlan::getLocationManager(m_manager);
     const CLAuthorizationStatus apiPerm = [locManager authorizationStatus];
 
-    setStatus(CoreWlan::convertPermFromApi(apiPerm));
-
-    return m_currentPerm;
+    return CoreWlan::convertPermFromApi(apiPerm);
 }
 
 WlanError PermissionCoreWlan::prompt()

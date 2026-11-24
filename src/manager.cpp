@@ -19,6 +19,14 @@
  * Also note that some OSes require permissions to be granted to perform
  * \c wlan operations, see qwm::Permissions for more details.
  *
+ * \note
+ * This class is thread-safe: its methods can be called from any thread. \n
+ * - Getters return copies (interfaces are shared objects, see qwm::Interface).
+ * - Requests (doScan(), doConnect(), doDisconnect(), doForget()) are always
+ *   performed by the thread owning the manager: when called from another thread,
+ *   they are queued and the method returns immediately. \n
+ * All signals are emitted from the thread owning the manager.
+ *
  * \sa qwm::Permissions
  */
 
@@ -268,6 +276,7 @@ Manager::~Manager()
  */
 void Manager::setOptions(WlanOptions opts)
 {
+    QMutexLocker locker(&d_ptr->m_mutex);
     d_ptr->m_opts = opts;
 }
 
@@ -281,6 +290,7 @@ void Manager::setOptions(WlanOptions opts)
  */
 WlanOptions Manager::getOptions() const
 {
+    QMutexLocker locker(&d_ptr->m_mutex);
     return d_ptr->m_opts;
 }
 
@@ -294,6 +304,7 @@ WlanOptions Manager::getOptions() const
  */
 ListInterfaces Manager::getInterfaces() const
 {
+    QMutexLocker locker(&d_ptr->m_mutex);
     return d_ptr->m_currentIfaces.values();
 }
 
@@ -312,6 +323,7 @@ ListInterfaces Manager::getInterfaces() const
  */
 Interface Manager::getInterface(const QUuid &idInterface) const
 {
+    QMutexLocker locker(&d_ptr->m_mutex);
     return d_ptr->m_currentIfaces.value(idInterface);
 }
 
@@ -329,19 +341,22 @@ Interface Manager::getInterface(const QUuid &idInterface) const
  */
 void Manager::doScan(const QUuid &idInterface)
 {
-    /* Emit start signal */
-    emit sScanStarted(idInterface);
+    d_ptr->callOnManagerThread([this, idInterface]
+    {
+        /* Emit start signal */
+        emit sScanStarted(idInterface);
 
-    /* Retrieve associated interface */
-    Interface iface = getInterface(idInterface);
-    if(!iface.isValid()){
-        qWarning("Unable to perform scan, unknown interface ID [uuid: %s]", qUtf8Printable(idInterface.toString()));
-        emit sScanFailed(idInterface, WlanError::WERR_ITEM_INVALID);
-        return;
-    }
+        /* Retrieve associated interface */
+        Interface iface = getInterface(idInterface);
+        if(!iface.isValid()){
+            qWarning("Unable to perform scan, unknown interface ID [uuid: %s]", qUtf8Printable(idInterface.toString()));
+            emit sScanFailed(idInterface, WlanError::WERR_ITEM_INVALID);
+            return;
+        }
 
-    /* Start scan request */
-    d_ptr->interfaceScanNetworks(iface);
+        /* Start scan request */
+        d_ptr->interfaceScanNetworks(iface);
+    });
 }
 
 /*!
@@ -383,27 +398,30 @@ void Manager::doScan(const QUuid &idInterface)
  */
 void Manager::doConnect(const QUuid &idInterface, const QString &ssid, const QString &password)
 {
-    /* Emit start signal */
-    emit sConnectionStarted(idInterface, ssid);
+    d_ptr->callOnManagerThread([this, idInterface, ssid, password]
+    {
+        /* Emit start signal */
+        emit sConnectionStarted(idInterface, ssid);
 
-    /* Retrieve associated interface */
-    Interface iface = getInterface(idInterface);
-    if(!iface.isValid()){
-        qWarning("Unable to perform connection, unknown interface ID [uuid: %s]", qUtf8Printable(idInterface.toString()));
-        emit sConnectionFailed(idInterface, ssid, WlanError::WERR_ITEM_INVALID);
-        return;
-    }
+        /* Retrieve associated interface */
+        Interface iface = getInterface(idInterface);
+        if(!iface.isValid()){
+            qWarning("Unable to perform connection, unknown interface ID [uuid: %s]", qUtf8Printable(idInterface.toString()));
+            emit sConnectionFailed(idInterface, ssid, WlanError::WERR_ITEM_INVALID);
+            return;
+        }
 
-    /* Retrieve associated network */
-    Network net = iface.getNetwork(ssid);
-    if(!net.isValid()){
-        qWarning("Unable to perform connection, unknown network SSID [ssid: %s]", qUtf8Printable(ssid));
-        emit sConnectionFailed(idInterface, ssid, WlanError::WERR_ITEM_INVALID);
-        return;
-    }
+        /* Retrieve associated network */
+        Network net = iface.getNetwork(ssid);
+        if(!net.isValid()){
+            qWarning("Unable to perform connection, unknown network SSID [ssid: %s]", qUtf8Printable(ssid));
+            emit sConnectionFailed(idInterface, ssid, WlanError::WERR_ITEM_INVALID);
+            return;
+        }
 
-    /* Start connection request */
-    d_ptr->interfaceConnect(iface, net, password);
+        /* Start connection request */
+        d_ptr->interfaceConnect(iface, net, password);
+    });
 }
 
 /*!
@@ -422,19 +440,22 @@ void Manager::doConnect(const QUuid &idInterface, const QString &ssid, const QSt
  */
 void Manager::doDisconnect(const QUuid &idInterface)
 {
-    /* Emit start signal */
-    emit sDisconnectionStarted(idInterface);
+    d_ptr->callOnManagerThread([this, idInterface]
+    {
+        /* Emit start signal */
+        emit sDisconnectionStarted(idInterface);
 
-    /* Retrieve associated interface */
-    Interface iface = getInterface(idInterface);
-    if(!iface.isValid()){
-        qWarning("Unable to perform disconnection, unknown interface ID [uuid: %s]", qUtf8Printable(idInterface.toString()));
-        emit sDisconnectionFailed(idInterface, WlanError::WERR_ITEM_INVALID);
-        return;
-    }
+        /* Retrieve associated interface */
+        Interface iface = getInterface(idInterface);
+        if(!iface.isValid()){
+            qWarning("Unable to perform disconnection, unknown interface ID [uuid: %s]", qUtf8Printable(idInterface.toString()));
+            emit sDisconnectionFailed(idInterface, WlanError::WERR_ITEM_INVALID);
+            return;
+        }
 
-    /* Start disconnection request */
-    d_ptr->interfaceDisconnect(iface);
+        /* Start disconnection request */
+        d_ptr->interfaceDisconnect(iface);
+    });
 }
 
 /*!
@@ -456,27 +477,30 @@ void Manager::doDisconnect(const QUuid &idInterface)
  */
 void Manager::doForget(const QUuid &idInterface, const QString &ssid)
 {
-    /* Emit start signal */
-    emit sForgetStarted(idInterface, ssid);
+    d_ptr->callOnManagerThread([this, idInterface, ssid]
+    {
+        /* Emit start signal */
+        emit sForgetStarted(idInterface, ssid);
 
-    /* Retrieve associated interface */
-    Interface iface = getInterface(idInterface);
-    if(!iface.isValid()){
-        qWarning("Unable to forget network, unknown interface ID [uuid: %s]", qUtf8Printable(idInterface.toString()));
-        emit sForgetFailed(idInterface, ssid, WlanError::WERR_ITEM_INVALID);
-        return;
-    }
+        /* Retrieve associated interface */
+        Interface iface = getInterface(idInterface);
+        if(!iface.isValid()){
+            qWarning("Unable to forget network, unknown interface ID [uuid: %s]", qUtf8Printable(idInterface.toString()));
+            emit sForgetFailed(idInterface, ssid, WlanError::WERR_ITEM_INVALID);
+            return;
+        }
 
-    /* Retrieve associated network */
-    Network net = iface.getNetwork(ssid);
-    if(!net.isValid()){
-        qWarning("Unable to forget network, unknown network SSID [ssid: %s]", qUtf8Printable(ssid));
-        emit sForgetFailed(idInterface, ssid, WlanError::WERR_ITEM_INVALID);
-        return;
-    }
+        /* Retrieve associated network */
+        Network net = iface.getNetwork(ssid);
+        if(!net.isValid()){
+            qWarning("Unable to forget network, unknown network SSID [ssid: %s]", qUtf8Printable(ssid));
+            emit sForgetFailed(idInterface, ssid, WlanError::WERR_ITEM_INVALID);
+            return;
+        }
 
-    /* Start connection request */
-    d_ptr->interfaceForget(iface, net);
+        /* Start connection request */
+        d_ptr->interfaceForget(iface, net);
+    });
 }
 
 /*****************************/

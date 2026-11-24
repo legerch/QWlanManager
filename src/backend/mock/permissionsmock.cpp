@@ -41,7 +41,7 @@ void PermissionsMock::terminate()
     qDebug("Permissions mock termination called");
 }
 
-WlanPerm PermissionsMock::updateStatus()
+WlanPerm PermissionsMock::statusRetrieve()
 {
     qCritical("Unable to retrieve wlan permissions, not implemented for mock permissions");
     return WlanPerm::WPERM_UNSUPPORTED;

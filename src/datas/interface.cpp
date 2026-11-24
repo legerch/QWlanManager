@@ -19,6 +19,11 @@
  * - Passing this class by value is cheap
  * This class is also compatible with \b QML.
  *
+ * \note
+ * This class is thread-safe. \n
+ * An interface object is "alive": all its copies share the same datas and
+ * always reflect last known properties.
+ *
  * \sa Manager::getInterfaces()
  *
  * \cond INTERNAL
@@ -117,7 +122,7 @@ IfaceOptions Interface::getOptions() const
  * \return
  * Returns UUID of the interface
  */
-const QUuid& Interface::getUid() const
+QUuid Interface::getUid() const
 {
     QMutexLocker locker(&d_ptr->m_mutex);
     return d_ptr->m_uid;
@@ -131,7 +136,7 @@ const QUuid& Interface::getUid() const
  * The hardware address will be formatted as:
  * \c AA:11:BB:22:CC:33
  */
-const QString& Interface::getHwAddress() const
+QString Interface::getHwAddress() const
 {
     QMutexLocker locker(&d_ptr->m_mutex);
     return d_ptr->m_hwAddress;
@@ -143,7 +148,7 @@ const QString& Interface::getHwAddress() const
  * \return
  * Returns name of the interface
  */
-const QString& Interface::getName() const
+QString Interface::getName() const
 {
     QMutexLocker locker(&d_ptr->m_mutex);
     return d_ptr->m_name;
@@ -155,7 +160,7 @@ const QString& Interface::getName() const
  * \return
  * Returns description of the interface
  */
-const QString& Interface::getDescription() const
+QString Interface::getDescription() const
 {
     QMutexLocker locker(&d_ptr->m_mutex);
     return d_ptr->m_description;
@@ -167,7 +172,7 @@ const QString& Interface::getDescription() const
  * \return
  * Returns cache policy of the interface
  */
-const CachePolicy& Interface::getCachePolicy() const
+CachePolicy Interface::getCachePolicy() const
 {
     QMutexLocker locker(&d_ptr->m_mutex);
     return d_ptr->m_cachePolicy;
@@ -183,8 +188,9 @@ const CachePolicy& Interface::getCachePolicy() const
  * \sa getListNetworks()
  * \sa Manager::doScan()
  */
-const MapNetworks& Interface::getMapNetworks() const
+MapNetworks Interface::getMapNetworks() const
 {
+    QMutexLocker locker(&d_ptr->m_mutex);
     return d_ptr->m_mapNets;
 }
 
@@ -297,7 +303,7 @@ bool Interface::operator==(const Interface &other) const
         return false;
     }
 
-    /* Compare content */
+    /* Compare content (datas manage their own lock) */
     return *d_ptr == *other.d_ptr;
 }
 

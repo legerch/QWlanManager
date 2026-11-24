@@ -6,6 +6,8 @@
 
 #include <QSet>
 
+#include <functional>
+
 /*****************************/
 /* Namespace instructions    */
 /*****************************/
@@ -28,7 +30,7 @@ public:
     void terminate() override;
 
 public:
-    void interfaceListRefresh() override;
+    ListInterfaces interfaceListRetrieve() override;
 
 protected:
     void interfaceScanNetworksAsync(Interface interface) override;
@@ -42,10 +44,11 @@ private:
 
     bool eventRegister();
     void eventUnregister();
+    void eventPost(std::function<void()> fct);
 
     bool interfaceIsVirtual(const QString &description);
 
-    WlanError interfaceNetworksUpdate(Interface interface);
+    WlanError interfaceNetworksRetrieve(const Interface &interface, QString &connectedSsid, ListNetworks &listScans);
     WlanError interfaceNetworkProfileCreate(Interface interface, Network network, const QString &password);
     WlanError interfaceNetworkProfileDelete(Interface interface, Network network);
 

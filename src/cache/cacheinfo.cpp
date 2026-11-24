@@ -43,7 +43,7 @@ bool CacheInfo::isExpired(const CachePolicy &policy, const QDateTime &now) const
     }
 
     /* Verify if we reach maximum delays since we seen it */
-    if(m_lastSeen.secsTo(now) > policy.getMaxDelay()){
+    if(m_lastSeen.msecsTo(now) > policy.getMaxDelay()){
         return true;
     }
 

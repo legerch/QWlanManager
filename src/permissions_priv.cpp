@@ -22,7 +22,7 @@ namespace qwm
 PermissionsPrivate::PermissionsPrivate(Permissions *parent)
     : q_ptr(parent)
 {
-    /* Nothing to do */
+    m_currentPerm = WlanPerm::WPERM_UNKNOWN;
 }
 
 PermissionsPrivate::~PermissionsPrivate()
@@ -36,18 +36,41 @@ WlanPerm PermissionsPrivate::getStatus() const
     return m_currentPerm;
 }
 
+/*!
+ * \brief Update permission status
+ * \details
+ * Backends only report current status: storage and change
+ * notification are performed here.
+ *
+ * \return
+ * Returns current permission status.
+ */
+WlanPerm PermissionsPrivate::updateStatus()
+{
+    const WlanPerm idPerm = statusRetrieve();
+    setStatus(idPerm);
+
+    return idPerm;
+}
+
 void PermissionsPrivate::setStatus(WlanPerm idPerm)
 {
-    QMutexLocker locker(&m_mutex);
+    /* Update permission status */
+    {
+        QMutexLocker locker(&m_mutex);
 
-    /* Do status has changed ? */
-    if(idPerm == m_currentPerm){
-        return;
+        // Do status has changed ?
+        if(idPerm == m_currentPerm){
+            return;
+        }
+
+        m_currentPerm = idPerm;
     }
 
-    /* Update permission status */
-    m_currentPerm = idPerm;
-    emit q_ptr->sPermissionsChanged(m_currentPerm);
+    /* Notify change (outside lock, from thread owning permissions object) */
+    QMetaObject::invokeMethod(q_ptr, [this, idPerm]{
+        emit q_ptr->sPermissionsChanged(idPerm);
+    }, Qt::AutoConnection);
 }
 
 /*****************************/

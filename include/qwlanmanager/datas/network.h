@@ -44,8 +44,8 @@ public:
 public:
     bool isValid() const;
 
-    const QString& getSsid() const;
-    const QString& getProfileName() const;
+    QString getSsid() const;
+    QString getProfileName() const;
     AuthAlgo getAuthAlgo() const;
     CipherAlgo getCipherAlgo() const;
     uint getSignalQuality() const;

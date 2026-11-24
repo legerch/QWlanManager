@@ -19,6 +19,10 @@
  * only if cache has expired. \n
  * This class is also compatible with \b QML.
  *
+ * \warning
+ * This class is a simple value type and is not thread-safe: the same
+ * instance must not be modified or read concurrently.
+ *
  * \sa Interface::setCachePolicy()
  */
 

@@ -30,17 +30,59 @@ ManagerPrivate::~ManagerPrivate()
     /* Nothing to do */
 }
 
+/*!
+ * \brief Execute a function on the manager thread
+ * \details
+ * If called from the manager thread, function is executed immediately. \n
+ * Otherwise, it is queued and executed later by the manager thread
+ * (discarded if manager is destroyed before).
+ *
+ * \param[in] fct
+ * Function to execute.
+ */
+void ManagerPrivate::callOnManagerThread(std::function<void()> fct)
+{
+    QMetaObject::invokeMethod(q_ptr, std::move(fct), Qt::AutoConnection);
+}
+
+/*!
+ * \brief Update list of available interfaces
+ * \details
+ * Backends only report available interfaces (as new objects): already
+ * known interfaces objects are reused here, so shared datas already
+ * referenced by the application stay the same.
+ */
 void ManagerPrivate::interfaceListUpdate()
 {
-    /* Prepare list of interfaces */
-    m_prevIfaces = m_currentIfaces;
-    m_currentIfaces.clear();
+    /* Retrieve available interfaces */
+    const ListInterfaces ifacesFound = interfaceListRetrieve();
 
-    /* Fill list of interfaces */
-    interfaceListRefresh();
+    /* Register interfaces */
+    MapInterfaces ifacesKnown = m_currentIfaces;
 
-    /* Manage interfaces events */
-    handleInterfacesListUpdateDone();
+    MapInterfaces ifacesMap;
+    ListInterfaces ifacesAdded;
+
+    for(const Interface &found : ifacesFound){
+        const QUuid uid = found.getUid();
+
+        // Reuse known interface object (shared datas must stay the same)
+        if(ifacesKnown.contains(uid)){
+            ifacesMap.insert(uid, ifacesKnown.take(uid));
+        }else{
+            ifacesMap.insert(uid, found);
+            ifacesAdded.append(found);
+        }
+    }
+
+    /* Update list of interfaces */
+    {
+        QMutexLocker locker(&m_mutex);
+        m_currentIfaces = ifacesMap;
+    }
+
+    /* Manage interfaces events (remaining known interfaces have been removed) */
+    handleInterfacesListUpdateDone(ifacesAdded, ifacesKnown.values());
 }
 
 void ManagerPrivate::interfaceScanNetworks(Interface interface)
@@ -153,30 +195,50 @@ void ManagerPrivate::interfaceForget(Interface interface, Network network)
     interfaceForgetAsync(interface, network);
 }
 
-void ManagerPrivate::handleInterfacesListUpdateDone()
+/*!
+ * \brief Emit signals related to interfaces list update
+ *
+ * \param[in] ifacesAdded
+ * Interfaces added since previous update.
+ * \param[in] ifacesRemoved
+ * Interfaces removed since previous update.
+ */
+void ManagerPrivate::handleInterfacesListUpdateDone(const ListInterfaces &ifacesAdded, const ListInterfaces &ifacesRemoved)
 {
-    /* Retrieve keys allowing to perform comparaisons */
-    const auto newIds = QSet<QUuid>(m_currentIfaces.keyBegin(), m_currentIfaces.keyEnd());
-    const auto oldIds = QSet<QUuid>(m_prevIfaces.keyBegin(), m_prevIfaces.keyEnd());
-
-    /* Do interfaces has been added ? */
-    const QSet<QUuid> setAdded = newIds - oldIds;
-    for(auto it = setAdded.cbegin(); it != setAdded.cend(); ++it){
-        emit q_ptr->sInterfaceAdded(m_currentIfaces.value(*it));
+    for(const Interface &iface : ifacesAdded){
+        emit q_ptr->sInterfaceAdded(iface);
     }
 
-    /* Do interfaces has been removed ? */
-    const QSet<QUuid> setRemoved = oldIds - newIds;
-    for(auto it = setRemoved.cbegin(); it != setRemoved.cend(); ++it){
-        emit q_ptr->sInterfaceRemoved(m_prevIfaces.value(*it));
+    for(const Interface &iface : ifacesRemoved){
+        emit q_ptr->sInterfaceRemoved(iface);
     }
-
-    /* Clear previous interfaces references */
-    m_prevIfaces.clear();
 }
 
-void ManagerPrivate::handleScanDone(const Interface &interface, WlanError idErr)
+/*!
+ * \brief Manage end of a scan request
+ * \details
+ * Backends only report scan results: merging with known networks
+ * and cache management are performed here.
+ *
+ * \param[in] interface
+ * Interface which performed the scan.
+ * \param[in] idErr
+ * Scan result.
+ * \param[in] connectedSsid
+ * SSID of the network currently connected, empty if none. \n
+ * Only used if scan succeed.
+ * \param[in] listScans
+ * Networks found by the scan. Must be new objects (not shared with
+ * any other object). \n
+ * Only used if scan succeed.
+ */
+void ManagerPrivate::handleScanDone(const Interface &interface, WlanError idErr, const QString &connectedSsid, const ListNetworks &listScans)
 {
+    /* Merge scan results */
+    if(idErr == WlanError::WERR_NO_ERROR){
+        interfaceNetworksMerge(interface, connectedSsid, listScans);
+    }
+
     requestHandleDone(interface, [this, &interface, idErr]
     {
         const QUuid idInterface = interface.getUid();
@@ -264,6 +326,71 @@ void ManagerPrivate::handleForgetDone(const Interface &interface, const Network 
     munet.setProfileName("");
 
     emit q_ptr->sForgetSucceed(interface.getUid(), network.getSsid());
+}
+
+/*!
+ * \brief Merge scan results into interface networks
+ * \details
+ * This method must be called from the manager thread. \n
+ * - Already known networks objects are reused (so shared datas already
+ *   referenced by the application stay the same and see updated values),
+ *   and their properties are updated from the scanned ones.
+ * - Networks not seen during this scan are kept while their cache
+ *   is not expired (see interface cache policy).
+ *
+ * \param[in] interface
+ * Interface to update.
+ * \param[in] connectedSsid
+ * SSID of the network currently connected, empty if none.
+ * \param[in] listScans
+ * Networks found by the scan (new objects, not shared).
+ */
+void ManagerPrivate::interfaceNetworksMerge(const Interface &interface, const QString &connectedSsid, const ListNetworks &listScans)
+{
+    InterfaceMutator miface(interface);
+
+    /* Prepare list of networks */
+    MapNetworks prevNets = interface.getMapNetworks();
+    MapNetworks mapNets;
+
+    /* Register scanned networks */
+    const QDateTime now = QDateTime::currentDateTimeUtc();
+    for(const Network &scanned : listScans){
+        const QString ssid = scanned.getSsid();
+
+        // Reuse known network object (shared datas must stay the same)
+        Network net = scanned;
+        if(prevNets.contains(ssid)){
+            net = prevNets.take(ssid);
+
+            NetworkMutator munet(net);
+            munet.updateFrom(scanned);
+        }
+
+        NetworkMutator munet(net);
+        munet.getCacheRef().markSeen(now);
+
+        mapNets.insert(ssid, net);
+    }
+
+    /* Keep unseen networks while their cache is not expired */
+    const CachePolicy policy = interface.getCachePolicy();
+    for(auto it = prevNets.cbegin(); it != prevNets.cend(); ++it){
+        Network net = it.value();
+        NetworkMutator munet(net);
+
+        CacheInfo &cache = munet.getCacheRef();
+        cache.markUnseen();
+
+        if(cache.isExpired(policy, now)){
+            continue;
+        }
+
+        mapNets.insert(it.key(), net);
+    }
+
+    /* Update interface networks */
+    miface.setNetworks(mapNets, connectedSsid);
 }
 
 void ManagerPrivate::requestAdd(const Interface &interface, const Request &req)
