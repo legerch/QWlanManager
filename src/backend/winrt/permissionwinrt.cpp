@@ -51,12 +51,10 @@ void PermissionWinRt::terminate()
     eventsUnregister();
 }
 
-WlanPerm PermissionWinRt::updateStatus()
+WlanPerm PermissionWinRt::statusRetrieve()
 {
     const WinRt::PermissionId apiPerm = m_permsWlan.CheckAccess();
-    setStatus(WinRt::convertPermFromApi(apiPerm));
-
-    return m_currentPerm;
+    return WinRt::convertPermFromApi(apiPerm);
 }
 
 WlanError PermissionWinRt::prompt()

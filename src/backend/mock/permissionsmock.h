@@ -25,9 +25,11 @@ public:
     void terminate() override;
 
 public:
-    WlanPerm updateStatus() override;
     WlanError prompt() override;
     WlanError openParams() override;
+
+protected:
+    WlanPerm statusRetrieve() override;
 };
 
 /*****************************/

@@ -36,6 +36,23 @@ WlanPerm PermissionsPrivate::getStatus() const
     return m_currentPerm;
 }
 
+/*!
+ * \brief Update permission status
+ * \details
+ * Backends only report current status: storage and change
+ * notification are performed here.
+ *
+ * \return
+ * Returns current permission status.
+ */
+WlanPerm PermissionsPrivate::updateStatus()
+{
+    const WlanPerm idPerm = statusRetrieve();
+    setStatus(idPerm);
+
+    return idPerm;
+}
+
 void PermissionsPrivate::setStatus(WlanPerm idPerm)
 {
     /* Update permission status */
