@@ -457,13 +457,12 @@ WlanError EngineWinNative::interfaceNetworkProfileCreate(Interface interface, Ne
 
 WlanError EngineWinNative::interfaceNetworkProfileDelete(Interface interface, Network network)
 {
-    /* Prepare profile informations */
-    const ProfileWinNative profile(network, QString());
-    const QString profileApi = profile.getNameFmt();
+    /* Prepare profile informations (use real profile name, may differ from SSID) */
+    const QString profileName = network.getProfileName();
 
     /* Prepare argument request */
     const GUID ifaceUuid = interface.getUid();
-    const std::wstring wstrProfile = profileApi.toStdWString();
+    const std::wstring wstrProfile = profileName.toStdWString();
     const LPCWSTR strProfile = static_cast<LPCWSTR>(wstrProfile.c_str());
 
     /* Perform request */
