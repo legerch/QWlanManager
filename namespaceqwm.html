@@ -263,6 +263,9 @@ QWLANMAN_EXPORT QDebug&#160;</td><td class="memItemRight" valign="bottom"><b>ope
 <tr class="memitem:a253a1f60c3694c109f60b8924b3e7826" id="r_a253a1f60c3694c109f60b8924b3e7826"><td class="memItemLeft" align="right" valign="top">QWLANMAN_EXPORT QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a253a1f60c3694c109f60b8924b3e7826">authAlgoToString</a> (<a class="el" href="#ac25ed5e73583b9bafeb7fbc4266f4fc1">AuthAlgo</a> idAuth)</td></tr>
 <tr class="memdesc:a253a1f60c3694c109f60b8924b3e7826"><td class="mdescLeft">&#160;</td><td class="mdescRight">Use to convert authentication algorithms to string.  <br /></td></tr>
 <tr class="separator:a253a1f60c3694c109f60b8924b3e7826"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aecadcbaf48e4b4061c33b6e626a62d7f" id="r_aecadcbaf48e4b4061c33b6e626a62d7f"><td class="memItemLeft" align="right" valign="top">QWLANMAN_EXPORT bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aecadcbaf48e4b4061c33b6e626a62d7f">authAlgoRequiresPassword</a> (<a class="el" href="#ac25ed5e73583b9bafeb7fbc4266f4fc1">AuthAlgo</a> idAuth)</td></tr>
+<tr class="memdesc:aecadcbaf48e4b4061c33b6e626a62d7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Use to know if an authentication algorithm requires a password (or any credentials).  <br /></td></tr>
+<tr class="separator:aecadcbaf48e4b4061c33b6e626a62d7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab21a7c2216d68c652d53d2af5c48b250" id="r_ab21a7c2216d68c652d53d2af5c48b250"><td class="memItemLeft" align="right" valign="top"><a id="ab21a7c2216d68c652d53d2af5c48b250" name="ab21a7c2216d68c652d53d2af5c48b250"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>Q_ENUM_NS</b> (<a class="el" href="#abe54bd49a2287794117589c5aba92bad">CipherAlgo</a>)</td></tr>
 <tr class="separator:ab21a7c2216d68c652d53d2af5c48b250"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -549,7 +552,7 @@ Options are flags, so they can be combined.</p>
 <p>Represents the authentication mechanism used by a wireless network. <br  />
 It reflects the mechanism advertised in the RSN (Robust Security <a class="el" href="classqwm_1_1_network.html" title="Class containing network properties.">Network</a>) Information Element of a beacon or probe response frame, as defined by the IEEE 802.11 standards (802.11i, 802.11r, 802.11ax, etc.).</p>
 <dl class="section note"><dt>Note</dt><dd>These enums are focused on client-side support (i.e., supplicant) and align with typical usage scenarios such as connecting to Wi-Fi networks in WPA2/WPA3 Personal or Enterprise modes.</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a253a1f60c3694c109f60b8924b3e7826" title="Use to convert authentication algorithms to string.">authAlgoToString()</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a253a1f60c3694c109f60b8924b3e7826" title="Use to convert authentication algorithms to string.">authAlgoToString()</a>, <a class="el" href="#aecadcbaf48e4b4061c33b6e626a62d7f" title="Use to know if an authentication algorithm requires a password (or any credentials).">authAlgoRequiresPassword()</a> </dd></dl>
 <table class="fieldtable">
 <tr><th colspan="3">Enumerator</th></tr><tr><td class="fieldname"><a id="ac25ed5e73583b9bafeb7fbc4266f4fc1ab5a805735315d299e0bd9c61648b8908" name="ac25ed5e73583b9bafeb7fbc4266f4fc1ab5a805735315d299e0bd9c61648b8908"></a>AUTH_ALGO_UNKNOWN&#160;</td><td class="fieldinit">0&#160;</td><td class="fielddoc"><p>Authentication algorithm is unknown (thus unsupported) </p>
 </td></tr>
@@ -795,6 +798,33 @@ If unknown, string "Unknown authentication algorithm" will be returned.</td></tr
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Returns string equivalent. </dd></dl>
+
+</div>
+</div>
+<a id="aecadcbaf48e4b4061c33b6e626a62d7f" name="aecadcbaf48e4b4061c33b6e626a62d7f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aecadcbaf48e4b4061c33b6e626a62d7f">&#9670;&#160;</a></span>authAlgoRequiresPassword()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool qwm::authAlgoRequiresPassword </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="#ac25ed5e73583b9bafeb7fbc4266f4fc1">AuthAlgo</a></td>          <td class="paramname"><span class="paramname"><em>idAuth</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Use to know if an authentication algorithm requires a password (or any credentials). </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">idAuth</td><td>Authentication algorithm ID to verify.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Returns <code>false</code> only for algorithms without credentials, <code>true</code> otherwise.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="#a253a1f60c3694c109f60b8924b3e7826" title="Use to convert authentication algorithms to string.">authAlgoToString()</a> </dd></dl>
 
 </div>
 </div>

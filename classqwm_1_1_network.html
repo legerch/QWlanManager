@@ -119,12 +119,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a2337e26429fc63c103fae964ce7c9598" id="r_a2337e26429fc63c103fae964ce7c9598"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2337e26429fc63c103fae964ce7c9598">isValid</a> () const</td></tr>
 <tr class="memdesc:a2337e26429fc63c103fae964ce7c9598"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allow to know if a network instance is valid.  <br /></td></tr>
 <tr class="separator:a2337e26429fc63c103fae964ce7c9598"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae79c412a7a7dbdce4c54daa96b594720" id="r_ae79c412a7a7dbdce4c54daa96b594720"><td class="memItemLeft" align="right" valign="top">const QString &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae79c412a7a7dbdce4c54daa96b594720">getSsid</a> () const</td></tr>
-<tr class="memdesc:ae79c412a7a7dbdce4c54daa96b594720"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieve network SSID.  <br /></td></tr>
-<tr class="separator:ae79c412a7a7dbdce4c54daa96b594720"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9a53a26db6f7d5055346f600fa9131ad" id="r_a9a53a26db6f7d5055346f600fa9131ad"><td class="memItemLeft" align="right" valign="top">const QString &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9a53a26db6f7d5055346f600fa9131ad">getProfileName</a> () const</td></tr>
-<tr class="memdesc:a9a53a26db6f7d5055346f600fa9131ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieve network profile name.  <br /></td></tr>
-<tr class="separator:a9a53a26db6f7d5055346f600fa9131ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a76f448bd964514c594c4bc6d95f76ad7" id="r_a76f448bd964514c594c4bc6d95f76ad7"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a76f448bd964514c594c4bc6d95f76ad7">getSsid</a> () const</td></tr>
+<tr class="memdesc:a76f448bd964514c594c4bc6d95f76ad7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieve network SSID.  <br /></td></tr>
+<tr class="separator:a76f448bd964514c594c4bc6d95f76ad7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a75a355d170ce46389f4d2531c994cdf6" id="r_a75a355d170ce46389f4d2531c994cdf6"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a75a355d170ce46389f4d2531c994cdf6">getProfileName</a> () const</td></tr>
+<tr class="memdesc:a75a355d170ce46389f4d2531c994cdf6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieve network profile name.  <br /></td></tr>
+<tr class="separator:a75a355d170ce46389f4d2531c994cdf6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9565f0e47ee9d162817bb7ed40a049ad" id="r_a9565f0e47ee9d162817bb7ed40a049ad"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceqwm.html#ac25ed5e73583b9bafeb7fbc4266f4fc1">AuthAlgo</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9565f0e47ee9d162817bb7ed40a049ad">getAuthAlgo</a> () const</td></tr>
 <tr class="memdesc:a9565f0e47ee9d162817bb7ed40a049ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieve network authentication algorithm.  <br /></td></tr>
 <tr class="separator:a9565f0e47ee9d162817bb7ed40a049ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -179,6 +179,8 @@ This class use <b>implicit sharing</b> memory (via <em>shared pointer</em>), thi
 <li>When setting properties, they are propagated to all instances</li>
 <li>Passing this class by value is cheap This class is also compatible with <b>QML</b>.</li>
 </ul>
+<dl class="section note"><dt>Note</dt><dd>This class is thread-safe. <br  />
+An interface object is "alive": all its copies share the same datas and always reflect last known properties.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="classqwm_1_1_manager.html" title="Use to manage all wlan related operations.">qwm::Manager</a>, <a class="el" href="classqwm_1_1_interface.html" title="Class containing interface properties.">qwm::Interface</a> </dd></dl>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a2337e26429fc63c103fae964ce7c9598" name="a2337e26429fc63c103fae964ce7c9598"></a>
@@ -201,14 +203,14 @@ This class use <b>implicit sharing</b> memory (via <em>shared pointer</em>), thi
 
 </div>
 </div>
-<a id="ae79c412a7a7dbdce4c54daa96b594720" name="ae79c412a7a7dbdce4c54daa96b594720"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae79c412a7a7dbdce4c54daa96b594720">&#9670;&#160;</a></span>getSsid()</h2>
+<a id="a76f448bd964514c594c4bc6d95f76ad7" name="a76f448bd964514c594c4bc6d95f76ad7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a76f448bd964514c594c4bc6d95f76ad7">&#9670;&#160;</a></span>getSsid()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">const QString &amp; qwm::Network::getSsid </td>
+          <td class="memname">QString qwm::Network::getSsid </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td> const</td>
@@ -221,14 +223,14 @@ This class use <b>implicit sharing</b> memory (via <em>shared pointer</em>), thi
 
 </div>
 </div>
-<a id="a9a53a26db6f7d5055346f600fa9131ad" name="a9a53a26db6f7d5055346f600fa9131ad"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9a53a26db6f7d5055346f600fa9131ad">&#9670;&#160;</a></span>getProfileName()</h2>
+<a id="a75a355d170ce46389f4d2531c994cdf6" name="a75a355d170ce46389f4d2531c994cdf6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a75a355d170ce46389f4d2531c994cdf6">&#9670;&#160;</a></span>getProfileName()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">const QString &amp; qwm::Network::getProfileName </td>
+          <td class="memname">QString qwm::Network::getProfileName </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td> const</td>

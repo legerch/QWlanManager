@@ -118,9 +118,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab3d99a3256da6b9f703247b322a8b4b5" id="r_ab3d99a3256da6b9f703247b322a8b4b5"><td class="memItemLeft" align="right" valign="top"><a id="ab3d99a3256da6b9f703247b322a8b4b5" name="ab3d99a3256da6b9f703247b322a8b4b5"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>CachePolicy</b> (const <a class="el" href="classqwm_1_1_cache_policy.html">CachePolicy</a> &amp;other)</td></tr>
 <tr class="separator:ab3d99a3256da6b9f703247b322a8b4b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a826aace43892e586317578cb275cc053" id="r_a826aace43892e586317578cb275cc053"><td class="memItemLeft" align="right" valign="top"><a id="a826aace43892e586317578cb275cc053" name="a826aace43892e586317578cb275cc053"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>CachePolicy</b> (<a class="el" href="classqwm_1_1_cache_policy.html">CachePolicy</a> &amp;&amp;other)</td></tr>
-<tr class="separator:a826aace43892e586317578cb275cc053"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab8836590fd36cee1526379ff4a73f167" id="r_ab8836590fd36cee1526379ff4a73f167"><td class="memItemLeft" align="right" valign="top"><a id="ab8836590fd36cee1526379ff4a73f167" name="ab8836590fd36cee1526379ff4a73f167"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>CachePolicy</b> (<a class="el" href="classqwm_1_1_cache_policy.html">CachePolicy</a> &amp;&amp;other) noexcept</td></tr>
+<tr class="separator:ab8836590fd36cee1526379ff4a73f167"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a482002b7295c34f8286cd196b4a87b23" id="r_a482002b7295c34f8286cd196b4a87b23"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a482002b7295c34f8286cd196b4a87b23">getMaxScans</a> () const</td></tr>
 <tr class="memdesc:a482002b7295c34f8286cd196b4a87b23"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieve maximum number of scans to miss to consider a network as <em>unavailable</em>.  <br /></td></tr>
 <tr class="separator:a482002b7295c34f8286cd196b4a87b23"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -161,6 +161,9 @@ qint64&#160;</td><td class="memItemRight" valign="bottom"><b>maxDelay</b></td></
 For example, we can perform a scan and retrieve 20 networks, later performing the same scan (all networks are still available) but due to some internal behaviour, scan can returns [0-4] networks over the 20 available. <br  />
 The cache policy allow to set a network cache, allowing to remove a network from our available list only if cache has expired. <br  />
 This class is also compatible with <b>QML</b>.</p>
+<dl class="section warning"><dt>Warning</dt><dd>This class is a simple value type and is not thread-safe: the same instance must not be modified or read concurrently.</dd>
+<dd>
+A moved-from object can only be assigned to or destroyed (same as Qt value classes).</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="classqwm_1_1_interface.html#a4752a4f3b98c47799170d65c06b54de8" title="Allow to set the cache policy of an interface.">Interface::setCachePolicy()</a> </dd></dl>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="af2f05733bc0d208d64b28610de4f280f" name="af2f05733bc0d208d64b28610de4f280f"></a>

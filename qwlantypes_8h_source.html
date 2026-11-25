@@ -222,80 +222,81 @@ $(function(){ initResizable(false); });
 <div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span>    Q_ENUM_NS(<a class="code hl_enumeration" href="namespaceqwm.html#ac25ed5e73583b9bafeb7fbc4266f4fc1">AuthAlgo</a>);</div>
 <div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span> </div>
 <div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span>    QWLANMAN_EXPORT QString <a class="code hl_function" href="namespaceqwm.html#a253a1f60c3694c109f60b8924b3e7826">authAlgoToString</a>(<a class="code hl_enumeration" href="namespaceqwm.html#ac25ed5e73583b9bafeb7fbc4266f4fc1">AuthAlgo</a> idAuth);</div>
-<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span> </div>
-<div class="foldopen" id="foldopen00202" data-start="{" data-end="};">
-<div class="line"><a id="l00202" name="l00202"></a><span class="lineno"><a class="line" href="namespaceqwm.html#abe54bd49a2287794117589c5aba92bad">  202</a></span>    <span class="keyword">enum class</span> <a class="code hl_enumeration" href="namespaceqwm.html#abe54bd49a2287794117589c5aba92bad">CipherAlgo</a></div>
-<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span>    {</div>
-<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span>        <a class="code hl_enumvalue" href="namespaceqwm.html#abe54bd49a2287794117589c5aba92bada64ec74750530e009f26e3b79ed9cd645">CIPHER_ALGO_UNKNOWN</a> = 0,    </div>
-<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span>        <a class="code hl_enumvalue" href="namespaceqwm.html#abe54bd49a2287794117589c5aba92bada75dae04ac5a7d555d2c8843d0215635c">CIPHER_ALGO_NONE</a>,           </div>
-<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span>        <a class="code hl_enumvalue" href="namespaceqwm.html#abe54bd49a2287794117589c5aba92bada7f6de725e5354f7cfde8b1515318d4c7">CIPHER_ALGO_TKIP</a>,           </div>
-<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span>        <a class="code hl_enumvalue" href="namespaceqwm.html#abe54bd49a2287794117589c5aba92bada480a5bc0144e384905d251b7d76b1369">CIPHER_ALGO_AES</a>,            </div>
-<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>        <a class="code hl_enumvalue" href="namespaceqwm.html#abe54bd49a2287794117589c5aba92bada48764aa0b5e26169b7dafa19524f8690">CIPHER_ALGO_GCMP</a>            </div>
-<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>    };</div>
+<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>    QWLANMAN_EXPORT <span class="keywordtype">bool</span> <a class="code hl_function" href="namespaceqwm.html#aecadcbaf48e4b4061c33b6e626a62d7f">authAlgoRequiresPassword</a>(<a class="code hl_enumeration" href="namespaceqwm.html#ac25ed5e73583b9bafeb7fbc4266f4fc1">AuthAlgo</a> idAuth);</div>
+<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span> </div>
+<div class="foldopen" id="foldopen00203" data-start="{" data-end="};">
+<div class="line"><a id="l00203" name="l00203"></a><span class="lineno"><a class="line" href="namespaceqwm.html#abe54bd49a2287794117589c5aba92bad">  203</a></span>    <span class="keyword">enum class</span> <a class="code hl_enumeration" href="namespaceqwm.html#abe54bd49a2287794117589c5aba92bad">CipherAlgo</a></div>
+<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span>    {</div>
+<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span>        <a class="code hl_enumvalue" href="namespaceqwm.html#abe54bd49a2287794117589c5aba92bada64ec74750530e009f26e3b79ed9cd645">CIPHER_ALGO_UNKNOWN</a> = 0,    </div>
+<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span>        <a class="code hl_enumvalue" href="namespaceqwm.html#abe54bd49a2287794117589c5aba92bada75dae04ac5a7d555d2c8843d0215635c">CIPHER_ALGO_NONE</a>,           </div>
+<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span>        <a class="code hl_enumvalue" href="namespaceqwm.html#abe54bd49a2287794117589c5aba92bada7f6de725e5354f7cfde8b1515318d4c7">CIPHER_ALGO_TKIP</a>,           </div>
+<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>        <a class="code hl_enumvalue" href="namespaceqwm.html#abe54bd49a2287794117589c5aba92bada480a5bc0144e384905d251b7d76b1369">CIPHER_ALGO_AES</a>,            </div>
+<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>        <a class="code hl_enumvalue" href="namespaceqwm.html#abe54bd49a2287794117589c5aba92bada48764aa0b5e26169b7dafa19524f8690">CIPHER_ALGO_GCMP</a>            </div>
+<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>    };</div>
 </div>
-<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>    Q_ENUM_NS(<a class="code hl_enumeration" href="namespaceqwm.html#abe54bd49a2287794117589c5aba92bad">CipherAlgo</a>);</div>
-<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span> </div>
-<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span>    QWLANMAN_EXPORT QString <a class="code hl_function" href="namespaceqwm.html#a600b808cb0d22350e87e0126ee026742">cipherAlgoToString</a>(<a class="code hl_enumeration" href="namespaceqwm.html#abe54bd49a2287794117589c5aba92bad">CipherAlgo</a> idCipher);</div>
-<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span> </div>
-<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span><span class="comment">/*****************************/</span></div>
-<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span><span class="comment">/* Library methods           */</span></div>
-<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span><span class="comment">/*****************************/</span></div>
-<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span> </div>
-<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>    QWLANMAN_EXPORT QVersionNumber <a class="code hl_function" href="namespaceqwm.html#a40a2980bcb348036ab9af6b6aa44a404">getLibraryVersion</a>();</div>
-<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span> </div>
-<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span><span class="comment">/*****************************/</span></div>
-<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span><span class="comment">/* Qt related methods        */</span></div>
-<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span><span class="comment">/*****************************/</span></div>
-<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span> </div>
-<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span><span class="preprocessor">#if QT_VERSION &lt; QT_VERSION_CHECK(6, 0, 0)</span></div>
-<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span> </div>
-<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span><span class="keyword">inline</span> uint qHash(<a class="code hl_enumeration" href="namespaceqwm.html#ab2ca2fb5f6924b72e9c8d2c8cae93bd8">qwm::WlanError</a> key, uint seed = 0)</div>
-<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span>{</div>
-<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span>    return ::qHash(<span class="keyword">static_cast&lt;</span>std::underlying_type&lt;qwm::WlanError&gt;::type<span class="keyword">&gt;</span>(key), seed);</div>
-<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span>}</div>
-<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span> </div>
-<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span><span class="keyword">inline</span> uint qHash(<a class="code hl_enumeration" href="namespaceqwm.html#abc2ba4a9d7e6f2b0b891d7326aab85fd">qwm::WlanPerm</a> key, uint seed = 0)</div>
-<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span>{</div>
-<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>    return ::qHash(<span class="keyword">static_cast&lt;</span>std::underlying_type&lt;qwm::WlanPerm&gt;::type<span class="keyword">&gt;</span>(key), seed);</div>
-<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>}</div>
-<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span> </div>
-<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span><span class="keyword">inline</span> uint qHash(<a class="code hl_enumeration" href="namespaceqwm.html#a23ce791ec7ca0b9b2536daa51640200b">qwm::RequestType</a> key, uint seed = 0)</div>
-<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>{</div>
-<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>    return ::qHash(<span class="keyword">static_cast&lt;</span>std::underlying_type&lt;qwm::RequestType&gt;::type<span class="keyword">&gt;</span>(key), seed);</div>
-<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>}</div>
-<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span> </div>
-<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span><span class="keyword">inline</span> uint qHash(<a class="code hl_enumeration" href="namespaceqwm.html#a152b6d2696310614e3bddc58f11b9dd2">qwm::IfaceState</a> key, uint seed = 0)</div>
-<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span>{</div>
-<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>    return ::qHash(<span class="keyword">static_cast&lt;</span>std::underlying_type&lt;qwm::IfaceState&gt;::type<span class="keyword">&gt;</span>(key), seed);</div>
-<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>}</div>
-<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span> </div>
-<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span><span class="keyword">inline</span> uint qHash(<a class="code hl_enumeration" href="namespaceqwm.html#ac25ed5e73583b9bafeb7fbc4266f4fc1">qwm::AuthAlgo</a> key, uint seed = 0)</div>
-<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span>{</div>
-<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span>    return ::qHash(<span class="keyword">static_cast&lt;</span>std::underlying_type&lt;qwm::AuthAlgo&gt;::type<span class="keyword">&gt;</span>(key), seed);</div>
-<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span>}</div>
-<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span> </div>
-<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span><span class="keyword">inline</span> uint qHash(<a class="code hl_enumeration" href="namespaceqwm.html#abe54bd49a2287794117589c5aba92bad">qwm::CipherAlgo</a> key, uint seed = 0)</div>
-<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span>{</div>
-<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span>    return ::qHash(<span class="keyword">static_cast&lt;</span>std::underlying_type&lt;qwm::CipherAlgo&gt;::type<span class="keyword">&gt;</span>(key), seed);</div>
-<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span>}</div>
-<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span> </div>
-<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span> </div>
-<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span><span class="comment">/*****************************/</span></div>
-<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span><span class="comment">/* End namespaces            */</span></div>
-<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span><span class="comment">/*****************************/</span></div>
-<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span> </div>
-<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>} <span class="comment">// namespace qwm</span></div>
-<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span> </div>
-<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span><span class="comment">/*****************************/</span></div>
-<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span><span class="comment">/* Qt specific meta-system   */</span></div>
-<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span><span class="comment">/*****************************/</span></div>
-<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span> </div>
-<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>Q_DECLARE_OPERATORS_FOR_FLAGS(<a class="code hl_enumeration" href="namespaceqwm.html#a1f88acf5a89426af4e653d3ec6251861">qwm::IfaceOptions</a>)</div>
-<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>Q_DECLARE_OPERATORS_FOR_FLAGS(<a class="code hl_enumeration" href="namespaceqwm.html#a6ba3407172b603d5e31dc24d72ad6831">qwm::WlanOptions</a>)</div>
-<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span> </div>
-<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span><span class="preprocessor">#endif </span><span class="comment">// QWLANMAN_QWLANTYPES_H</span></div>
-<div class="ttc" id="anamespaceqwm_html"><div class="ttname"><a href="namespaceqwm.html">qwm</a></div><div class="ttdoc">Namespace used for QWlanManager library.</div><div class="ttdef"><b>Definition</b> cachepolicy.h:13</div></div>
+<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span>    Q_ENUM_NS(<a class="code hl_enumeration" href="namespaceqwm.html#abe54bd49a2287794117589c5aba92bad">CipherAlgo</a>);</div>
+<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span> </div>
+<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>    QWLANMAN_EXPORT QString <a class="code hl_function" href="namespaceqwm.html#a600b808cb0d22350e87e0126ee026742">cipherAlgoToString</a>(<a class="code hl_enumeration" href="namespaceqwm.html#abe54bd49a2287794117589c5aba92bad">CipherAlgo</a> idCipher);</div>
+<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span> </div>
+<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span><span class="comment">/*****************************/</span></div>
+<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span><span class="comment">/* Library methods           */</span></div>
+<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span><span class="comment">/*****************************/</span></div>
+<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span> </div>
+<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>    QWLANMAN_EXPORT QVersionNumber <a class="code hl_function" href="namespaceqwm.html#a40a2980bcb348036ab9af6b6aa44a404">getLibraryVersion</a>();</div>
+<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span> </div>
+<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span><span class="comment">/*****************************/</span></div>
+<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span><span class="comment">/* Qt related methods        */</span></div>
+<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span><span class="comment">/*****************************/</span></div>
+<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span> </div>
+<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span><span class="preprocessor">#if QT_VERSION &lt; QT_VERSION_CHECK(6, 0, 0)</span></div>
+<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span> </div>
+<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span><span class="keyword">inline</span> uint qHash(<a class="code hl_enumeration" href="namespaceqwm.html#ab2ca2fb5f6924b72e9c8d2c8cae93bd8">qwm::WlanError</a> key, uint seed = 0)</div>
+<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span>{</div>
+<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span>    return ::qHash(<span class="keyword">static_cast&lt;</span>std::underlying_type&lt;qwm::WlanError&gt;::type<span class="keyword">&gt;</span>(key), seed);</div>
+<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>}</div>
+<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span> </div>
+<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span><span class="keyword">inline</span> uint qHash(<a class="code hl_enumeration" href="namespaceqwm.html#abc2ba4a9d7e6f2b0b891d7326aab85fd">qwm::WlanPerm</a> key, uint seed = 0)</div>
+<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>{</div>
+<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>    return ::qHash(<span class="keyword">static_cast&lt;</span>std::underlying_type&lt;qwm::WlanPerm&gt;::type<span class="keyword">&gt;</span>(key), seed);</div>
+<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>}</div>
+<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span> </div>
+<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span><span class="keyword">inline</span> uint qHash(<a class="code hl_enumeration" href="namespaceqwm.html#a23ce791ec7ca0b9b2536daa51640200b">qwm::RequestType</a> key, uint seed = 0)</div>
+<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>{</div>
+<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>    return ::qHash(<span class="keyword">static_cast&lt;</span>std::underlying_type&lt;qwm::RequestType&gt;::type<span class="keyword">&gt;</span>(key), seed);</div>
+<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>}</div>
+<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span> </div>
+<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span><span class="keyword">inline</span> uint qHash(<a class="code hl_enumeration" href="namespaceqwm.html#a152b6d2696310614e3bddc58f11b9dd2">qwm::IfaceState</a> key, uint seed = 0)</div>
+<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>{</div>
+<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>    return ::qHash(<span class="keyword">static_cast&lt;</span>std::underlying_type&lt;qwm::IfaceState&gt;::type<span class="keyword">&gt;</span>(key), seed);</div>
+<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>}</div>
+<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span> </div>
+<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span><span class="keyword">inline</span> uint qHash(<a class="code hl_enumeration" href="namespaceqwm.html#ac25ed5e73583b9bafeb7fbc4266f4fc1">qwm::AuthAlgo</a> key, uint seed = 0)</div>
+<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span>{</div>
+<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span>    return ::qHash(<span class="keyword">static_cast&lt;</span>std::underlying_type&lt;qwm::AuthAlgo&gt;::type<span class="keyword">&gt;</span>(key), seed);</div>
+<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span>}</div>
+<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span> </div>
+<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span><span class="keyword">inline</span> uint qHash(<a class="code hl_enumeration" href="namespaceqwm.html#abe54bd49a2287794117589c5aba92bad">qwm::CipherAlgo</a> key, uint seed = 0)</div>
+<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span>{</div>
+<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span>    return ::qHash(<span class="keyword">static_cast&lt;</span>std::underlying_type&lt;qwm::CipherAlgo&gt;::type<span class="keyword">&gt;</span>(key), seed);</div>
+<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span>}</div>
+<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span> </div>
+<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span> </div>
+<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span><span class="comment">/*****************************/</span></div>
+<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span><span class="comment">/* End namespaces            */</span></div>
+<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span><span class="comment">/*****************************/</span></div>
+<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span> </div>
+<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>} <span class="comment">// namespace qwm</span></div>
+<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span> </div>
+<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span><span class="comment">/*****************************/</span></div>
+<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span><span class="comment">/* Qt specific meta-system   */</span></div>
+<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span><span class="comment">/*****************************/</span></div>
+<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span> </div>
+<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>Q_DECLARE_OPERATORS_FOR_FLAGS(<a class="code hl_enumeration" href="namespaceqwm.html#a1f88acf5a89426af4e653d3ec6251861">qwm::IfaceOptions</a>)</div>
+<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>Q_DECLARE_OPERATORS_FOR_FLAGS(<a class="code hl_enumeration" href="namespaceqwm.html#a6ba3407172b603d5e31dc24d72ad6831">qwm::WlanOptions</a>)</div>
+<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span> </div>
+<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span><span class="preprocessor">#endif </span><span class="comment">// QWLANMAN_QWLANTYPES_H</span></div>
+<div class="ttc" id="anamespaceqwm_html"><div class="ttname"><a href="namespaceqwm.html">qwm</a></div><div class="ttdoc">Namespace used for QWlanManager library.</div><div class="ttdef"><b>Definition</b> cachepolicy.h:15</div></div>
 <div class="ttc" id="anamespaceqwm_html_a152b6d2696310614e3bddc58f11b9dd2"><div class="ttname"><a href="namespaceqwm.html#a152b6d2696310614e3bddc58f11b9dd2">qwm::IfaceState</a></div><div class="ttdeci">IfaceState</div><div class="ttdoc">Interface states.</div><div class="ttdef"><b>Definition</b> qwlantypes.h:120</div></div>
 <div class="ttc" id="anamespaceqwm_html_a152b6d2696310614e3bddc58f11b9dd2a4814575393276aa6b3abd6c4e80f61f1"><div class="ttname"><a href="namespaceqwm.html#a152b6d2696310614e3bddc58f11b9dd2a4814575393276aa6b3abd6c4e80f61f1">qwm::IfaceState::IFACE_STS_IDLE</a></div><div class="ttdeci">@ IFACE_STS_IDLE</div></div>
 <div class="ttc" id="anamespaceqwm_html_a152b6d2696310614e3bddc58f11b9dd2a74aac843b63a24df5ca1ee3b6264c01f"><div class="ttname"><a href="namespaceqwm.html#a152b6d2696310614e3bddc58f11b9dd2a74aac843b63a24df5ca1ee3b6264c01f">qwm::IfaceState::IFACE_STS_DISCONNECTING</a></div><div class="ttdeci">@ IFACE_STS_DISCONNECTING</div></div>
@@ -314,8 +315,8 @@ $(function(){ initResizable(false); });
 <div class="ttc" id="anamespaceqwm_html_a302b0b7d162cb73de065c166a616ae7aa7f216f6d912f2218a77ea8918720abca"><div class="ttname"><a href="namespaceqwm.html#a302b0b7d162cb73de065c166a616ae7aa7f216f6d912f2218a77ea8918720abca">qwm::WOPT_NONE</a></div><div class="ttdeci">@ WOPT_NONE</div><div class="ttdef"><b>Definition</b> qwlantypes.h:77</div></div>
 <div class="ttc" id="anamespaceqwm_html_a302b0b7d162cb73de065c166a616ae7aabb4ed0d848f3a96c7e716e3cb02f9b8d"><div class="ttname"><a href="namespaceqwm.html#a302b0b7d162cb73de065c166a616ae7aabb4ed0d848f3a96c7e716e3cb02f9b8d">qwm::WOPT_ALLOW_ADMIN_REQUESTS</a></div><div class="ttdeci">@ WOPT_ALLOW_ADMIN_REQUESTS</div><div class="ttdef"><b>Definition</b> qwlantypes.h:79</div></div>
 <div class="ttc" id="anamespaceqwm_html_a3c0aecd3216f220b8114c5db56484420"><div class="ttname"><a href="namespaceqwm.html#a3c0aecd3216f220b8114c5db56484420">qwm::ifaceOptionsToString</a></div><div class="ttdeci">QWLANMAN_EXPORT QString ifaceOptionsToString(IfaceOptions opts)</div><div class="ttdoc">Use to convert interface options to string.</div><div class="ttdef"><b>Definition</b> qwlantypes.cpp:151</div></div>
-<div class="ttc" id="anamespaceqwm_html_a40a2980bcb348036ab9af6b6aa44a404"><div class="ttname"><a href="namespaceqwm.html#a40a2980bcb348036ab9af6b6aa44a404">qwm::getLibraryVersion</a></div><div class="ttdeci">QWLANMAN_EXPORT QVersionNumber getLibraryVersion()</div><div class="ttdoc">Used to retrieve QWlanManager library version.</div><div class="ttdef"><b>Definition</b> qwlantypes.cpp:210</div></div>
-<div class="ttc" id="anamespaceqwm_html_a600b808cb0d22350e87e0126ee026742"><div class="ttname"><a href="namespaceqwm.html#a600b808cb0d22350e87e0126ee026742">qwm::cipherAlgoToString</a></div><div class="ttdeci">QWLANMAN_EXPORT QString cipherAlgoToString(CipherAlgo idCipher)</div><div class="ttdoc">Use to convert cipher algorithms to string.</div><div class="ttdef"><b>Definition</b> qwlantypes.cpp:190</div></div>
+<div class="ttc" id="anamespaceqwm_html_a40a2980bcb348036ab9af6b6aa44a404"><div class="ttname"><a href="namespaceqwm.html#a40a2980bcb348036ab9af6b6aa44a404">qwm::getLibraryVersion</a></div><div class="ttdeci">QWLANMAN_EXPORT QVersionNumber getLibraryVersion()</div><div class="ttdoc">Used to retrieve QWlanManager library version.</div><div class="ttdef"><b>Definition</b> qwlantypes.cpp:228</div></div>
+<div class="ttc" id="anamespaceqwm_html_a600b808cb0d22350e87e0126ee026742"><div class="ttname"><a href="namespaceqwm.html#a600b808cb0d22350e87e0126ee026742">qwm::cipherAlgoToString</a></div><div class="ttdeci">QWLANMAN_EXPORT QString cipherAlgoToString(CipherAlgo idCipher)</div><div class="ttdoc">Use to convert cipher algorithms to string.</div><div class="ttdef"><b>Definition</b> qwlantypes.cpp:208</div></div>
 <div class="ttc" id="anamespaceqwm_html_a660d506c3bc824a408dae97af68b5490"><div class="ttname"><a href="namespaceqwm.html#a660d506c3bc824a408dae97af68b5490">qwm::requestTypeToString</a></div><div class="ttdeci">QWLANMAN_EXPORT QString requestTypeToString(RequestType idReq)</div><div class="ttdoc">Use to convert request type to string.</div><div class="ttdef"><b>Definition</b> qwlantypes.cpp:108</div></div>
 <div class="ttc" id="anamespaceqwm_html_a6ba3407172b603d5e31dc24d72ad6831"><div class="ttname"><a href="namespaceqwm.html#a6ba3407172b603d5e31dc24d72ad6831">qwm::WlanOptions</a></div><div class="ttdeci">WlanOptions</div><div class="ttdoc">QFlags type for qwm::WlanOption enum</div><div class="ttdef"><b>Definition</b> qwlantypes.h:92</div></div>
 <div class="ttc" id="anamespaceqwm_html_aa5c5f56b670f2c9d6adeb3d070f7ad5d"><div class="ttname"><a href="namespaceqwm.html#aa5c5f56b670f2c9d6adeb3d070f7ad5d">qwm::IfaceOption</a></div><div class="ttdeci">IfaceOption</div><div class="ttdoc">Available interface options.</div><div class="ttdef"><b>Definition</b> qwlantypes.h:141</div></div>
@@ -341,7 +342,7 @@ $(function(){ initResizable(false); });
 <div class="ttc" id="anamespaceqwm_html_abc2ba4a9d7e6f2b0b891d7326aab85fdaa0ec7b8956e3086df291b9102376ef61"><div class="ttname"><a href="namespaceqwm.html#abc2ba4a9d7e6f2b0b891d7326aab85fdaa0ec7b8956e3086df291b9102376ef61">qwm::WlanPerm::WPERM_UNKNOWN</a></div><div class="ttdeci">@ WPERM_UNKNOWN</div></div>
 <div class="ttc" id="anamespaceqwm_html_abc2ba4a9d7e6f2b0b891d7326aab85fdaa10083c8855a2255023de7c269c4b756"><div class="ttname"><a href="namespaceqwm.html#abc2ba4a9d7e6f2b0b891d7326aab85fdaa10083c8855a2255023de7c269c4b756">qwm::WlanPerm::WPERM_UNSUPPORTED</a></div><div class="ttdeci">@ WPERM_UNSUPPORTED</div></div>
 <div class="ttc" id="anamespaceqwm_html_abc2ba4a9d7e6f2b0b891d7326aab85fdaddf9dbf3c3b8399f643be4dabd69e3bc"><div class="ttname"><a href="namespaceqwm.html#abc2ba4a9d7e6f2b0b891d7326aab85fdaddf9dbf3c3b8399f643be4dabd69e3bc">qwm::WlanPerm::WPERM_PROMPT_REQUIRED</a></div><div class="ttdeci">@ WPERM_PROMPT_REQUIRED</div></div>
-<div class="ttc" id="anamespaceqwm_html_abe54bd49a2287794117589c5aba92bad"><div class="ttname"><a href="namespaceqwm.html#abe54bd49a2287794117589c5aba92bad">qwm::CipherAlgo</a></div><div class="ttdeci">CipherAlgo</div><div class="ttdoc">Enumeration of supported wireless encryption (cipher) algorithms.</div><div class="ttdef"><b>Definition</b> qwlantypes.h:203</div></div>
+<div class="ttc" id="anamespaceqwm_html_abe54bd49a2287794117589c5aba92bad"><div class="ttname"><a href="namespaceqwm.html#abe54bd49a2287794117589c5aba92bad">qwm::CipherAlgo</a></div><div class="ttdeci">CipherAlgo</div><div class="ttdoc">Enumeration of supported wireless encryption (cipher) algorithms.</div><div class="ttdef"><b>Definition</b> qwlantypes.h:204</div></div>
 <div class="ttc" id="anamespaceqwm_html_abe54bd49a2287794117589c5aba92bada480a5bc0144e384905d251b7d76b1369"><div class="ttname"><a href="namespaceqwm.html#abe54bd49a2287794117589c5aba92bada480a5bc0144e384905d251b7d76b1369">qwm::CipherAlgo::CIPHER_ALGO_AES</a></div><div class="ttdeci">@ CIPHER_ALGO_AES</div></div>
 <div class="ttc" id="anamespaceqwm_html_abe54bd49a2287794117589c5aba92bada48764aa0b5e26169b7dafa19524f8690"><div class="ttname"><a href="namespaceqwm.html#abe54bd49a2287794117589c5aba92bada48764aa0b5e26169b7dafa19524f8690">qwm::CipherAlgo::CIPHER_ALGO_GCMP</a></div><div class="ttdeci">@ CIPHER_ALGO_GCMP</div></div>
 <div class="ttc" id="anamespaceqwm_html_abe54bd49a2287794117589c5aba92bada64ec74750530e009f26e3b79ed9cd645"><div class="ttname"><a href="namespaceqwm.html#abe54bd49a2287794117589c5aba92bada64ec74750530e009f26e3b79ed9cd645">qwm::CipherAlgo::CIPHER_ALGO_UNKNOWN</a></div><div class="ttdeci">@ CIPHER_ALGO_UNKNOWN</div></div>
@@ -356,6 +357,7 @@ $(function(){ initResizable(false); });
 <div class="ttc" id="anamespaceqwm_html_ac25ed5e73583b9bafeb7fbc4266f4fc1aea7d6c34e6d8242377b7f0919661e266"><div class="ttname"><a href="namespaceqwm.html#ac25ed5e73583b9bafeb7fbc4266f4fc1aea7d6c34e6d8242377b7f0919661e266">qwm::AuthAlgo::AUTH_ALGO_WPA3_ENTERPRISE</a></div><div class="ttdeci">@ AUTH_ALGO_WPA3_ENTERPRISE</div></div>
 <div class="ttc" id="anamespaceqwm_html_ae0c862fb0cbb968774cb406b79c83f12"><div class="ttname"><a href="namespaceqwm.html#ae0c862fb0cbb968774cb406b79c83f12">qwm::wlanErrorToString</a></div><div class="ttdeci">QWLANMAN_EXPORT QString wlanErrorToString(WlanError idErr)</div><div class="ttdoc">Use to convert wlan errors to string.</div><div class="ttdef"><b>Definition</b> qwlantypes.cpp:43</div></div>
 <div class="ttc" id="anamespaceqwm_html_aea67ea13d5410db93ebca93b6b4b420d"><div class="ttname"><a href="namespaceqwm.html#aea67ea13d5410db93ebca93b6b4b420d">qwm::ifaceStateToString</a></div><div class="ttdeci">QWLANMAN_EXPORT QString ifaceStateToString(IfaceState idState)</div><div class="ttdoc">Use to convert interface states to string.</div><div class="ttdef"><b>Definition</b> qwlantypes.cpp:130</div></div>
+<div class="ttc" id="anamespaceqwm_html_aecadcbaf48e4b4061c33b6e626a62d7f"><div class="ttname"><a href="namespaceqwm.html#aecadcbaf48e4b4061c33b6e626a62d7f">qwm::authAlgoRequiresPassword</a></div><div class="ttdeci">QWLANMAN_EXPORT bool authAlgoRequiresPassword(AuthAlgo idAuth)</div><div class="ttdoc">Use to know if an authentication algorithm requires a password (or any credentials).</div><div class="ttdef"><b>Definition</b> qwlantypes.cpp:193</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

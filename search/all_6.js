@@ -8,5 +8,6 @@ var searchData=
   ['auth_5falgo_5fwpa3_5fenterprise_5',['AUTH_ALGO_WPA3_ENTERPRISE',['../namespaceqwm.html#ac25ed5e73583b9bafeb7fbc4266f4fc1aea7d6c34e6d8242377b7f0919661e266',1,'qwm']]],
   ['auth_5falgo_5fwpa3_5fpersonal_6',['AUTH_ALGO_WPA3_PERSONAL',['../namespaceqwm.html#ac25ed5e73583b9bafeb7fbc4266f4fc1a6b9d06f6feff074351b7a67969cbff4d',1,'qwm']]],
   ['authalgo_7',['AuthAlgo',['../namespaceqwm.html#ac25ed5e73583b9bafeb7fbc4266f4fc1',1,'qwm']]],
-  ['authalgotostring_8',['authAlgoToString',['../namespaceqwm.html#a253a1f60c3694c109f60b8924b3e7826',1,'qwm']]]
+  ['authalgorequirespassword_8',['authAlgoRequiresPassword',['../namespaceqwm.html#aecadcbaf48e4b4061c33b6e626a62d7f',1,'qwm']]],
+  ['authalgotostring_9',['authAlgoToString',['../namespaceqwm.html#a253a1f60c3694c109f60b8924b3e7826',1,'qwm']]]
 ];
