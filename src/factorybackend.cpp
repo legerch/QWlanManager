@@ -99,7 +99,7 @@ void FactoryBackend::registerTypesQt()
         isInit = true;
 
         qRegisterMetaType<qwm::WlanError>("qwm::WlanError");
-        qRegisterMetaType<qwm::WlanError>("qwm::WlanPerm");
+        qRegisterMetaType<qwm::WlanPerm>("qwm::WlanPerm");
         qRegisterMetaType<qwm::WlanOptions>("qwm::WlanOptions");
         qRegisterMetaType<qwm::RequestType>("qwm::RequestType");
         qRegisterMetaType<qwm::IfaceState>("qwm::IfaceState");
@@ -107,12 +107,15 @@ void FactoryBackend::registerTypesQt()
         qRegisterMetaType<qwm::AuthAlgo>("qwm::AuthAlgo");
         qRegisterMetaType<qwm::CipherAlgo>("qwm::CipherAlgo");
 
+        qRegisterMetaType<qwm::Interface>("qwm::Interface");
         qRegisterMetaType<qwm::ListInterfaces>("qwm::ListInterfaces");
         qRegisterMetaType<qwm::MapInterfaces>("qwm::MapInterfaces");
 
+        qRegisterMetaType<qwm::Network>("qwm::Network");
         qRegisterMetaType<qwm::ListNetworks>("qwm::ListNetworks");
         qRegisterMetaType<qwm::MapNetworks>("qwm::MapNetworks");
-    }
+
+        qRegisterMetaType<qwm::CachePolicy>("qwm::CachePolicy");
 #endif
 }
 
