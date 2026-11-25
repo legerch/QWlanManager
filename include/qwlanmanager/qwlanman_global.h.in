@@ -5,8 +5,8 @@
  * \file qwlanman_global.h
  *
  * \note
- * Based on <a href="https://github.com/legerch/library-template">Library template repository</a>. \n
- * Template file version: 2025-03-11
+ * Based on <a href="https://github.com/legerch/projects-template">Projects template repository</a>.
+ * Template file version: 2026-11-25
  */
 
 #include <QtGlobal>
@@ -22,7 +22,7 @@
  *********************************/
 
 /*!
- * \brief Use to perform compilation version comparaisons
+ * \brief Use to perform compilation version comparisons
  * \details
  * For example:
  * \code{.cpp}
@@ -33,7 +33,7 @@
  * #endif
  * \endcode
  */
-#define QWLANMAN_VERSION_ENCODE(major, minor, path)    ((major) * 10000 + (minor) * 100 + (patch))
+#define QWLANMAN_VERSION_ENCODE(major, minor, patch)    ((major) * 10000 + (minor) * 100 + (patch))
 
 #define QWLANMAN_VERSION_MAJOR @PROJECT_VERSION_MAJOR@
 #define QWLANMAN_VERSION_MINOR @PROJECT_VERSION_MINOR@
@@ -127,8 +127,7 @@
 /**********************************
  * Helpers
  *********************************/
-
-#define QWLANMAN_E2I(enumValue)     (static_cast<int>(enumValue))
+#define QWLANMAN_E2I(enumValue)  (static_cast<int>(enumValue))
 
 /*!
  * \endcond
