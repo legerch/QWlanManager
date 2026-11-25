@@ -387,17 +387,17 @@ void WorkerCoreWlan::performConnect(const Interface &interface, const Network &n
     CWInterface *apiIface = CoreWlan::getApiInterface(interface);
     CWNetwork *apiNet = CoreWlan::getApiNetwork(network);
 
-    /* Do provided password is valid ? */
+    /* Prepare password (manager ensures that secured networks have a password or a known profile) */
     NSString *apiPwd = nil;
-    if(passwd.isEmpty()){
+
+    // Open network: no password required (keep "nil")
+    if(!authAlgoRequiresPassword(network.getAuthAlgo())){
+        /* Nothing to do */
+
+    // Use stored credentials
+    }else if(passwd.isEmpty()){
         // Do we allow to ask for admin access ?
         if(!opts.testFlag(WlanOption::WOPT_ALLOW_ADMIN_REQUESTS)){
-            emit sConnectDone(interface, network, WlanError::WERR_NET_PASSKEY);
-            return;
-        }
-
-        // Do we have a known network profile ?
-        if(network.getProfileName().isEmpty()){
             emit sConnectDone(interface, network, WlanError::WERR_NET_PASSKEY);
             return;
         }

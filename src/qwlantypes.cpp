@@ -178,6 +178,24 @@ QString authAlgoToString(AuthAlgo idAuth)
 }
 
 /*!
+ * \brief Use to know if an authentication algorithm requires a password
+ * (or any credentials).
+ *
+ * \param[in] idAuth
+ * Authentication algorithm ID to verify.
+ *
+ * \return
+ * Returns \c false only for algorithms without credentials,
+ * \c true otherwise.
+ *
+ * \sa authAlgoToString()
+ */
+bool authAlgoRequiresPassword(AuthAlgo idAuth)
+{
+    return (idAuth != AuthAlgo::AUTH_ALGO_OPEN);
+}
+
+/*!
  * \brief Use to convert cipher algorithms to string.
  *
  * \param[in] idCipher

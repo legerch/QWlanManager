@@ -171,8 +171,14 @@ void EngineWinNative::interfaceScanNetworksAsync(Interface interface)
 
 void EngineWinNative::interfaceConnectAsync(Interface interface, Network network, const QString &password)
 {
-    /* Do profile must be created/updated ? */
-    if(!password.isEmpty()){
+    /*
+     * Do profile must be created/updated ?
+     * - Password provided: create/update profile with it
+     * - Open network without profile: create it (no password needed)
+     */
+    const bool isOpenUnknown = !authAlgoRequiresPassword(network.getAuthAlgo()) && network.getProfileName().isEmpty();
+
+    if(!password.isEmpty() || isOpenUnknown){
         const WlanError errProfile = interfaceNetworkProfileCreate(interface, network, password);
         if(errProfile != WlanError::WERR_NO_ERROR){
             handleConnectDone(interface, network.getSsid(), errProfile);
@@ -180,12 +186,7 @@ void EngineWinNative::interfaceConnectAsync(Interface interface, Network network
         }
     }
 
-    /* Do we have a valid profile ? */
-    const QString &profileName = network.getProfileName();
-    if(profileName.isEmpty()){
-        handleConnectDone(interface, network.getSsid(), WlanError::WERR_NET_PASSKEY);
-        return;
-    }
+    const QString profileName = network.getProfileName();
 
     /* Prepare request arguments */
     const GUID ifaceUuid = interface.getUid();

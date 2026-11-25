@@ -122,6 +122,19 @@ void ManagerPrivate::interfaceConnect(Interface interface, Network network, cons
         return;
     }
 
+    /*
+     * Verify the need of password only for secured networks :
+     * either via provided password or a known profile (stored credentials)
+     * Backends rely on this verification.
+     */
+    const bool isPasswordRequired = authAlgoRequiresPassword(network.getAuthAlgo());
+    if(isPasswordRequired && password.isEmpty() && network.getProfileName().isEmpty()){
+        qWarning("Unable to perform connection, password required [ssid: %s]", qUtf8Printable(network.getSsid()));
+
+        emit q_ptr->sConnectionFailed(interface.getUid(), network.getSsid(), WlanError::WERR_NET_PASSKEY);
+        return;
+    }
+
     /* Verify that interface can perform connection */
     if(interface.isBusy()){
         if(interface.getOptions() & IFACE_OPT_REQUEST){

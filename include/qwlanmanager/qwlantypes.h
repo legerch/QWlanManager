@@ -168,7 +168,7 @@ namespace qwm
      * These enums are focused on client-side support (i.e., supplicant) and align with typical usage
      * scenarios such as connecting to Wi-Fi networks in WPA2/WPA3 Personal or Enterprise modes.
      *
-     * \sa authAlgoToString()
+     * \sa authAlgoToString(), authAlgoRequiresPassword()
      */
     enum class AuthAlgo
     {
@@ -193,6 +193,7 @@ namespace qwm
     Q_ENUM_NS(AuthAlgo);
 
     QWLANMAN_EXPORT QString authAlgoToString(AuthAlgo idAuth);
+    QWLANMAN_EXPORT bool authAlgoRequiresPassword(AuthAlgo idAuth);
 
     /*!
      * \brief Enumeration of supported wireless encryption (cipher) algorithms.
