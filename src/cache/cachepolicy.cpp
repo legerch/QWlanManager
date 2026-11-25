@@ -23,6 +23,9 @@
  * This class is a simple value type and is not thread-safe: the same
  * instance must not be modified or read concurrently.
  *
+ * \warning
+ * A moved-from object can only be assigned to or destroyed (same as Qt value classes).
+ *
  * \sa Interface::setCachePolicy()
  */
 
@@ -71,10 +74,12 @@ CachePolicy::CachePolicy(int maxScans, qint64 maxDelay)
 }
 
 CachePolicy::CachePolicy(const CachePolicy &other)
-    : d_ptr(std::make_unique<CachePolicyPrivate>(*other.d_ptr)){}
+    : d_ptr(std::make_unique<CachePolicyPrivate>(*other.d_ptr))
+{
+    /* Nothing to do */
+}
 
-CachePolicy::CachePolicy(CachePolicy &&other)
-    : d_ptr(std::move(other.d_ptr)){}
+CachePolicy::CachePolicy(CachePolicy &&other) noexcept = default;
 
 CachePolicy::~CachePolicy() = default;
 
@@ -166,11 +171,7 @@ CachePolicy& CachePolicy::operator=(const CachePolicy &other)
     return *this;
 }
 
-CachePolicy& CachePolicy::operator=(CachePolicy &&other) noexcept
-{
-    d_ptr = std::move(other.d_ptr);
-    return *this;
-}
+CachePolicy& CachePolicy::operator=(CachePolicy &&other) noexcept = default;
 
 /*****************************/
 /* Qt specific methods       */

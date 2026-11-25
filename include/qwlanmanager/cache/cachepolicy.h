@@ -6,6 +6,8 @@
 #include <QDebug>
 #include <QObject>
 
+#include <memory>
+
 /*****************************/
 /* Namespace instructions    */
 /*****************************/
@@ -29,7 +31,7 @@ public:
     CachePolicy(int maxScans, qint64 maxDelay);
 
     CachePolicy(const CachePolicy &other);
-    CachePolicy(CachePolicy &&other);
+    CachePolicy(CachePolicy &&other) noexcept;
 
     ~CachePolicy();
 
