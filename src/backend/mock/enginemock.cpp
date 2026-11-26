@@ -43,17 +43,21 @@ void EngineMock::terminate()
 
 ListInterfaces EngineMock::interfaceListRetrieve()
 {
+    /* Use fixed UIDs: same interfaces must be reported between each retrieval */
+    static const QUuid UID_IFACE1("{3f1c2a6e-8d4b-4c1a-9b2e-000000000001}");
+    static const QUuid UID_IFACE2("{3f1c2a6e-8d4b-4c1a-9b2e-000000000002}");
+
     /* Fill with mock values */
     Interface iface1;
     InterfaceMutator miface1(iface1);
-    miface1.setUid(QUuid::createUuid());
+    miface1.setUid(UID_IFACE1);
     miface1.setHwAddress("11:22:33:44:55:66");
     miface1.setName("Wifi 1");
     miface1.setDescription("Example of adapter 1");
 
     Interface iface2;
     InterfaceMutator miface2(iface2);
-    miface2.setUid(QUuid::createUuid());
+    miface2.setUid(UID_IFACE2);
     miface2.setHwAddress("77:88:99:00:AA:BB");
     miface2.setName("Wifi 2");
     miface2.setDescription("Example of adapter 2");
