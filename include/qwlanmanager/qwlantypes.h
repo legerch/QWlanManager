@@ -72,7 +72,7 @@ namespace qwm
      *
      * \sa IfaceOption
      */
-    enum WlanOption
+    enum class WlanOption
     {
         WOPT_NONE                   = 0,        /**< No option set */
 
@@ -120,7 +120,7 @@ namespace qwm
      * \sa qwm::Interface
      * \sa WlanOption
      */
-    enum IfaceOption
+    enum class IfaceOption
     {
         IFACE_OPT_NONE      = 0,        /**< No option set */
 

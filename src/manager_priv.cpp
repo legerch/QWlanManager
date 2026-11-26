@@ -89,7 +89,7 @@ void ManagerPrivate::interfaceScanNetworks(Interface interface)
 {
     /* Verify that interface can perform a scan */
     if(interface.isBusy()){
-        if(interface.getOptions() & IFACE_OPT_REQUEST){
+        if(interface.getOptions() & IfaceOption::IFACE_OPT_REQUEST){
             requestAdd(interface, Request::createReqScan());
         }else{
             qWarning("Unable to perform scan, interface is busy [uuid: %s, state: %s (%d)]",
@@ -115,7 +115,7 @@ void ManagerPrivate::interfaceConnect(Interface interface, Network network, cons
 {
     /* Verify that interface is not already connected */
     const Network current = interface.getNetworkConnected();
-    if(interface.getNetworkConnected() == network){
+    if(current == network){
         qDebug("Interface '%s' is already connected to '%s', nothing to perform", qUtf8Printable(interface.getName()), qUtf8Printable(network.getSsid()));
 
         emit q_ptr->sConnectionSucceed(interface.getUid(), network.getSsid());
@@ -137,7 +137,7 @@ void ManagerPrivate::interfaceConnect(Interface interface, Network network, cons
 
     /* Verify that interface can perform connection */
     if(interface.isBusy()){
-        if(interface.getOptions() & IFACE_OPT_REQUEST){
+        if(interface.getOptions() & IfaceOption::IFACE_OPT_REQUEST){
             requestAdd(interface, Request::createReqConnect(network, password));
         }else{
             qWarning("Unable to perform connection, interface is busy [uuid: %s, state: %s (%d)]",
@@ -172,7 +172,7 @@ void ManagerPrivate::interfaceDisconnect(Interface interface)
 
     /* Verify that interface can perform disconnection */
     if(interface.isBusy()){
-        if(interface.getOptions() & IFACE_OPT_REQUEST){
+        if(interface.getOptions() & IfaceOption::IFACE_OPT_REQUEST){
             requestAdd(interface, Request::createReqDisconnect());
         }else{
             qWarning("Unable to perform disconnection, interface is busy [uuid: %s, state: %s (%d)]",
