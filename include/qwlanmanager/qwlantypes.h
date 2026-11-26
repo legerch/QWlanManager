@@ -26,7 +26,7 @@ namespace qwm
     enum class WlanError
     {
         WERR_NO_ERROR = 0,          /**< No error, operation succeed */
-        WERR_UNKNOWN,               /**< Unknown error */
+        WERR_UNKNOWN,               /**< Error not identified by the library (unmapped error) */
 
         WERR_OPERATION_UNSUPPORTED, /**< Operation is not supported on this platform version */
         WERR_OPERATION_CANCEL,      /**< Operation has been cancelled */
@@ -36,7 +36,7 @@ namespace qwm
         WERR_IFACE_BUSY,            /**< Interface is already busy, cannot perform. Setting option \c IfaceOption::IFACE_OPT_REQUEST will help to get ride of this error */
         WERR_NET_UNAVAILABLE,       /**< Trying to connect to an unailable network */
         WERR_NET_PASSKEY,           /**< Provided passkey is invalid */
-        WERR_API_INTERNAL           /**< Triggered by internal API errors, please refer to logs for more details */
+        WERR_API_INTERNAL           /**< Failure of a system API (WlanAPI, CoreWLAN, etc...), please refer to logs for more details */
     };
     Q_ENUM_NS(WlanError)
 

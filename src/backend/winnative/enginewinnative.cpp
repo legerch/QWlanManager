@@ -368,7 +368,7 @@ WlanError EngineWinNative::interfaceNetworksRetrieve(const Interface &interface,
     if(res != ERROR_SUCCESS){
         const WlanError idErr = WinNative::convertErrWinFromApi(res);
         qCritical("Unable to retrieve list of networks [uuid: %s, id-err: %d]", qUtf8Printable(interface.getUid().toString()), QWLANMAN_E2I(idErr));
-        return WlanError::WERR_API_INTERNAL;
+        return idErr;
     }
 
     /* Register networks */
