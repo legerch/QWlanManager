@@ -1,6 +1,13 @@
 #include "enginecorewlan.h"
 
-extern "C" {  // Otherwise it won't find CWKeychain* symbols at link time
+#import <Foundation/Foundation.h>
+
+/*
+ * CoreWLAN CWKeychain* functions are declared without C linkage guards,
+ * so they would be mangled by Objective-C++ (link errors).
+ * Foundation is imported first, so only CoreWLAN headers are under extern "C".
+ */
+extern "C" {
 #   import <CoreWLAN/CoreWLAN.h>
 }
 
