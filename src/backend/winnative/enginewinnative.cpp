@@ -68,6 +68,12 @@ void EngineWinNative::initialize()
 
 void EngineWinNative::terminate()
 {
+    /* Do API handle is open ? */
+    if(!m_handle){
+        return;
+    }
+
+    /* Release ressources used */
     eventUnregister();
     apiClose();
 }
@@ -235,20 +241,26 @@ bool EngineWinNative::apiOpen()
 {
     DWORD verAsked = WLAN_API_VERSION;
     DWORD verReturned = 0;
+    HANDLE handle = nullptr;
 
-    const DWORD res = WlanOpenHandle(verAsked, NULL, &verReturned, &m_handle);
+    /* Try to open handle */
+    const DWORD res = WlanOpenHandle(verAsked, NULL, &verReturned, &handle);
     if(res != ERROR_SUCCESS){
         const WlanError idErr = WinNative::convertErrWinFromApi(res);
         qCritical("Unable to open WLAN API [id-err: %d, version-asked: %d, version-returned: %d]", idErr, verAsked, verReturned);
         return false;
     }
 
+    /* Handle opened, save it */
+    m_handle = handle;
     return true;
 }
 
 void EngineWinNative::apiClose()
 {
     const DWORD res = WlanCloseHandle(m_handle, NULL);
+    m_handle = nullptr; // Handle is no longer usable, even if close failed
+
     if(res != ERROR_SUCCESS){
         const WlanError idErr = WinNative::convertErrWinFromApi(res);
         qCritical("Unable to close WLAN API [id-err: %d]", idErr);

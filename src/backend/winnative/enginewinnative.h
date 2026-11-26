@@ -65,7 +65,7 @@ private:
     static void WINAPI cbNotifMsm(PWLAN_NOTIFICATION_DATA ptrDataNotif, PVOID ptrDataCtx);
 
 private:
-    Qt::HANDLE m_handle;
+    HANDLE m_handle = nullptr;
     QHash<QUuid, WLAN_REASON_CODE> m_errConnect;
 };
 
