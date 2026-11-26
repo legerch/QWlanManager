@@ -26,7 +26,7 @@ RequestsQueue::RequestsQueue()
 
 void RequestsQueue::enqueue(const Request &request)
 {
-    const RequestType idType = request.getType();
+    const Internal::RequestType idType = request.getType();
 
     /* Verify duplicates */
     if(m_reqs.contains(idType)){
@@ -46,7 +46,7 @@ std::optional<Request> RequestsQueue::dequeue()
     }
 
     /* Dequeue request */
-    const RequestType idType = m_queue.takeFirst();
+    const Internal::RequestType idType = m_queue.takeFirst();
     const Request req = m_reqs.take(idType);
 
     return req;

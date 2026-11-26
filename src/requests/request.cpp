@@ -20,12 +20,12 @@ namespace qwm
 /*****************************/
 
 Request::Request()
-    : Request(RequestType::REQ_INVALID)
+    : Request(Internal::RequestType::REQ_INVALID)
 {
     /* Nothing to do, use constructor delegation */
 }
 
-Request::Request(RequestType idReq, const QVariant &data)
+Request::Request(Internal::RequestType idReq, const QVariant &data)
     : m_type(idReq), m_data(data)
 {
     /* Nothing to do */
@@ -33,10 +33,10 @@ Request::Request(RequestType idReq, const QVariant &data)
 
 bool Request::isValid() const
 {
-    return m_type != RequestType::REQ_INVALID;
+    return m_type != Internal::RequestType::REQ_INVALID;
 }
 
-RequestType Request::getType() const
+Internal::RequestType Request::getType() const
 {
     return m_type;
 }
@@ -48,7 +48,7 @@ const QVariant &Request::getData() const
 
 Request Request::createReqScan()
 {
-    return Request(RequestType::REQ_SCAN);
+    return Request(Internal::RequestType::REQ_SCAN);
 }
 
 Request Request::createReqConnect(const Network &net, const QString &password)
@@ -59,12 +59,12 @@ Request Request::createReqConnect(const Network &net, const QString &password)
     map["password"] = password;
 
     /* Create request */
-    return Request(RequestType::REQ_CONNECT, map);
+    return Request(Internal::RequestType::REQ_CONNECT, map);
 }
 
 Request Request::createReqDisconnect()
 {
-    return Request(RequestType::REQ_DISCONNECT);
+    return Request(Internal::RequestType::REQ_DISCONNECT);
 }
 
 /*****************************/

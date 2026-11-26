@@ -97,28 +97,6 @@ QString wlanOptionsToString(WlanOptions opts)
 }
 
 /*!
- * \brief Use to convert request type to string.
- *
- * \param[in] idReq
- * Request ID to convert. \n
- * If unknown or invalid, string "invalid" will be returned.
- *
- * \return
- * Returns string equivalent.
- */
-QString requestTypeToString(RequestType idReq)
-{
-    static const QHash<RequestType, QString> MAP_STR_REQS =
-    {
-        {RequestType::REQ_SCAN, "scan"},
-        {RequestType::REQ_CONNECT, "connect"},
-        {RequestType::REQ_DISCONNECT, "disconnect"},
-    };
-
-    return MAP_STR_REQS.value(idReq, "invalid");
-}
-
-/*!
  * \brief Use to convert interface states to string.
  *
  * \param[in] idState

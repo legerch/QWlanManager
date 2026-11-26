@@ -30,8 +30,8 @@ public:
     bool isEmpty() const;
 
 private:
-    QHash<RequestType, Request> m_reqs;
-    QQueue<RequestType> m_queue;
+    QHash<Internal::RequestType, Request> m_reqs;
+    QQueue<Internal::RequestType> m_queue;
 };
 
 /*****************************/

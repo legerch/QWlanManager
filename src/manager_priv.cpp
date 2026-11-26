@@ -418,11 +418,11 @@ void ManagerPrivate::requestPerform(const Interface &interface, const Request &r
 {
     switch(req.getType())
     {
-    case RequestType::REQ_SCAN:{
+    case Internal::RequestType::REQ_SCAN:{
         interfaceScanNetworks(interface);
     }break;
 
-    case RequestType::REQ_CONNECT:{
+    case Internal::RequestType::REQ_CONNECT:{
         const QVariantMap data = req.getData().toMap();
         const Network net = data.value("network").value<Network>();
         const QString passwd =  data.value("password").toString();
@@ -430,7 +430,7 @@ void ManagerPrivate::requestPerform(const Interface &interface, const Request &r
         interfaceConnect(interface, net, passwd);
     }break;
 
-    case qwm::RequestType::REQ_DISCONNECT:{
+    case Internal::RequestType::REQ_DISCONNECT:{
         interfaceDisconnect(interface);
     }break;
 

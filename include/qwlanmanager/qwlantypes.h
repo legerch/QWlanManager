@@ -95,23 +95,6 @@ namespace qwm
     QWLANMAN_EXPORT QString wlanOptionsToString(WlanOptions opts);
 
     /*!
-     * \brief Type of interface asynchrone request
-     *
-     * \sa requestTypeToString()
-     */
-    enum class RequestType
-    {
-        REQ_INVALID = 0,    /**< Invalid request */
-
-        REQ_SCAN,           /**< Scan request */
-        REQ_CONNECT,        /**< Connection request */
-        REQ_DISCONNECT      /**< Disconnection request */
-    };
-    Q_ENUM_NS(RequestType);
-
-    QWLANMAN_EXPORT QString requestTypeToString(RequestType idReq);
-
-    /*!
      * \brief Interface states
      *
      * \sa ifaceStateToString()
@@ -233,11 +216,6 @@ inline uint qHash(qwm::WlanError key, uint seed = 0)
 inline uint qHash(qwm::WlanPerm key, uint seed = 0)
 {
     return ::qHash(static_cast<std::underlying_type<qwm::WlanPerm>::type>(key), seed);
-}
-
-inline uint qHash(qwm::RequestType key, uint seed = 0)
-{
-    return ::qHash(static_cast<std::underlying_type<qwm::RequestType>::type>(key), seed);
 }
 
 inline uint qHash(qwm::IfaceState key, uint seed = 0)

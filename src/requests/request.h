@@ -4,6 +4,8 @@
 #include "qwlanmanager/datas/network.h"
 #include "qwlanmanager/qwlantypes.h"
 
+#include "qwlantypes_priv.h"
+
 #include <QVariant>
 
 /*****************************/
@@ -20,16 +22,16 @@ class Request
 {
 public:
     Request();
-    Request(RequestType idReq, const QVariant &data = QVariant());
+    Request(Internal::RequestType idReq, const QVariant &data = QVariant());
 
 public:
     bool isValid() const;
 
-    RequestType getType() const;
+    Internal::RequestType getType() const;
     const QVariant& getData() const;
 
 private:
-    RequestType m_type;
+    Internal::RequestType m_type;
     QVariant m_data;
 
 public:
