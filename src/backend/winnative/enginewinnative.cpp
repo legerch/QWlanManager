@@ -22,8 +22,6 @@
  */
 #define API_ERR_CODE_SCAN_FAIL_PASSKEY  (0xC001000C)
 
-#define API_ERR_CODE_FMT                "0x%08X"
-
 /*****************************/
 /* Class documentations      */
 /*****************************/
@@ -101,7 +99,7 @@ ListInterfaces EngineWinNative::interfaceListRetrieve()
         // Allocate memory fo adapter list
         listAdapters = (IP_ADAPTER_ADDRESSES *)malloc(bufSize);
         if(!listAdapters){
-            qCritical("Failed to allocate memory for adapters list [buffer-size: %ul]", bufSize);
+            qCritical("Failed to allocate memory for adapters list [buffer-size: %lu]", bufSize);
             goto stat_return;
         }
 
@@ -110,7 +108,7 @@ ListInterfaces EngineWinNative::interfaceListRetrieve()
         if(res == ERROR_BUFFER_OVERFLOW){
             free(listAdapters);
             listAdapters = nullptr;
-            qWarning("Buffer size too small for adapters list [better-size: %ul, nb-trials: %d]", bufSize, nbTrials);
+            qWarning("Buffer size too small for adapters list [better-size: %lu, nb-trials: %d]", bufSize, nbTrials);
         }
 
         ++nbTrials;
@@ -119,7 +117,7 @@ ListInterfaces EngineWinNative::interfaceListRetrieve()
 
     /* Verify status */
     if(res != ERROR_SUCCESS){
-        qCritical("Failed to retrieve adapters list [err: %d]", res);
+        qCritical("Failed to retrieve adapters list [err: %lu]", res);
         goto stat_free;
     }
 
@@ -247,7 +245,7 @@ bool EngineWinNative::apiOpen()
     const DWORD res = WlanOpenHandle(verAsked, NULL, &verReturned, &handle);
     if(res != ERROR_SUCCESS){
         const WlanError idErr = WinNative::convertErrWinFromApi(res);
-        qCritical("Unable to open WLAN API [id-err: %d, version-asked: %d, version-returned: %d]", idErr, verAsked, verReturned);
+        qCritical("Unable to open WLAN API [id-err: %d, version-asked: %lu, version-returned: %lu]", QWLANMAN_E2I(idErr), verAsked, verReturned);
         return false;
     }
 
@@ -263,7 +261,7 @@ void EngineWinNative::apiClose()
 
     if(res != ERROR_SUCCESS){
         const WlanError idErr = WinNative::convertErrWinFromApi(res);
-        qCritical("Unable to close WLAN API [id-err: %d]", idErr);
+        qCritical("Unable to close WLAN API [id-err: %d]", QWLANMAN_E2I(idErr));
         return;
     }
 }
@@ -283,7 +281,7 @@ bool EngineWinNative::eventRegister()
 
     if(res != ERROR_SUCCESS){
         const WlanError idErr = WinNative::convertErrWinFromApi(res);
-        qCritical("Unable to register for WLAN notifications events [id-err: %d]", idErr);
+        qCritical("Unable to register for WLAN notifications events [id-err: %d]", QWLANMAN_E2I(idErr));
         return false;
     }
 
@@ -298,7 +296,7 @@ void EngineWinNative::eventUnregister()
 
     if(res != ERROR_SUCCESS){
         const WlanError idErr = WinNative::convertErrWinFromApi(res);
-        qCritical("Unable to unregister WLAN notifications events [id-err: %d]", idErr);
+        qCritical("Unable to unregister WLAN notifications events [id-err: %d]", QWLANMAN_E2I(idErr));
         return;
     }
 }
@@ -369,7 +367,7 @@ WlanError EngineWinNative::interfaceNetworksRetrieve(const Interface &interface,
     DWORD res = WlanGetAvailableNetworkList(m_handle, &ifaceUuid, flags, nullptr, &apiNetList);
     if(res != ERROR_SUCCESS){
         const WlanError idErr = WinNative::convertErrWinFromApi(res);
-        qCritical("Unable to retrieve list of networks [uuid: %s, id-err: %d]", qUtf8Printable(interface.getUid().toString()), idErr);
+        qCritical("Unable to retrieve list of networks [uuid: %s, id-err: %d]", qUtf8Printable(interface.getUid().toString()), QWLANMAN_E2I(idErr));
         return WlanError::WERR_API_INTERNAL;
     }
 
@@ -453,7 +451,7 @@ WlanError EngineWinNative::interfaceNetworkProfileCreate(Interface interface, Ne
     /* Perform request */
     const DWORD res = WlanSetProfile(m_handle, &ifaceUuid, flags, strProfile, nullptr, true, nullptr, &idStatus);
     if(res != ERROR_SUCCESS){
-        qCritical("Unable to set profile [uuid: %s, ssid: %s, id-result: %d, id-reason: " API_ERR_CODE_FMT "]",
+        qCritical("Unable to set profile [uuid: %s, ssid: %s, id-result: %lu, id-reason: " WIN_API_ERR_CODE_FMT "]",
                   qUtf8Printable(interface.getUid().toString()),
                   qUtf8Printable(network.getSsid()),
                   res, idStatus
@@ -486,7 +484,7 @@ WlanError EngineWinNative::interfaceNetworkProfileDelete(Interface interface, Ne
         qCritical("Unable to delete profile [uuid: %s, ssid: %s, id-err: %d]",
                   qUtf8Printable(interface.getUid().toString()),
                   qUtf8Printable(network.getSsid()),
-                  idErr
+                  QWLANMAN_E2I(idErr)
         );
         return idErr;
     }

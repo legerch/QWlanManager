@@ -137,7 +137,7 @@ CoreWlan::WlanDelegatePtr CoreWlan::createApiPtrWlanDelegate(EngineCoreWlan *eng
         [client startMonitoringEventWithType:*it error:&apiErr];
         if(apiErr){
             const WlanError idErr = CoreWlan::convertErrFromApi(apiErr);
-            qWarning("Unable to monitor event [id-event: %d, id-err: %d]", static_cast<int>(*it), idErr);
+            qWarning("Unable to monitor event [id-event: %d, id-err: %d]", static_cast<int>(*it), QWLANMAN_E2I(idErr));
         }
     }
 
@@ -421,7 +421,7 @@ void WorkerCoreWlan::performConnect(const Interface &interface, const Network &n
     if(!succeed){
         const WlanError idErr = CoreWlan::convertErrFromApi(apiErr);
 
-        qCritical("Failed to perform connection request [err: %d]", idErr);
+        qCritical("Failed to perform connection request [err: %d]", QWLANMAN_E2I(idErr));
         emit sConnectDone(interface, network, idErr);
         return;
     }

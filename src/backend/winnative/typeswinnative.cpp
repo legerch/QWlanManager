@@ -88,7 +88,7 @@ WlanError convertErrWlanFromApi(WLAN_REASON_CODE apiErr)
                 strErr = QString::fromWCharArray(buffer);
             }
 
-            qWarning("Unable to convert WLAN error ID from API [id: 0x%08X, string: '%s']", apiErr, qUtf8Printable(strErr));
+            qWarning("Unable to convert WLAN error ID from API [id: " WIN_API_ERR_CODE_FMT ", string: '%s']", apiErr, qUtf8Printable(strErr));
         }break;
     }
 
@@ -144,7 +144,7 @@ WlanError convertErrWinFromApi(DWORD apiErr)
                 strErr = QString::fromWCharArray(buffer).trimmed();
             }
 
-            qWarning("Unable to convert system error ID from API [id: 0x%08X, string: '%s']", apiErr, qUtf8Printable(strErr));
+            qWarning("Unable to convert system error ID from API [id: " WIN_API_ERR_CODE_FMT ", string: '%s']", apiErr, qUtf8Printable(strErr));
         }break;
     }
 

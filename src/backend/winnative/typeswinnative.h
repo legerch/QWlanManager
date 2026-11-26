@@ -31,6 +31,16 @@
 #include "qwlanmanager/qwlantypes.h"
 
 /*****************************/
+/* Macro definitions         */
+/*****************************/
+
+/*!
+ * Format to use when logging Windows API error codes
+ * (\c DWORD values, such as \c WLAN_REASON_CODE or system errors)
+ */
+#define WIN_API_ERR_CODE_FMT    "0x%08lX"
+
+/*****************************/
 /* Namespace instructions    */
 /*****************************/
 namespace qwm::WinNative
