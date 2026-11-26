@@ -73,6 +73,7 @@ QString wlanPermToString(WlanPerm idPerm)
 {
     static const QHash<WlanPerm, QString> MAP_STR_PERMISSIONS =
     {
+        {WlanPerm::WPERM_UNSUPPORTED, "unsupported"},
         {WlanPerm::WPERM_PROMPT_REQUIRED, "prompt required"},
         {WlanPerm::WPERM_GRANTED, "granted"},
         {WlanPerm::WPERM_DENIED, "denied"},
@@ -133,7 +134,8 @@ QString ifaceStateToString(IfaceState idState)
     {
         {IfaceState::IFACE_STS_IDLE, "idle"},
         {IfaceState::IFACE_STS_SCANNING, "scanning"},
-        {IfaceState::IFACE_STS_CONNECTING, "connecting"}
+        {IfaceState::IFACE_STS_CONNECTING, "connecting"},
+        {IfaceState::IFACE_STS_DISCONNECTING, "disconnecting"}
     };
 
     return MAP_STR_IFACE_STS.value(idState, "unknown state");
