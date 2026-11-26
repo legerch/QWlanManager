@@ -422,7 +422,7 @@ If the password isn't registered internally or is wrong, signal <code><a class="
 </dl>
 <dl class="section note"><dt>Note</dt><dd>Recommended scenario is to call this method once with empty password and ask the user for the password only if <code><a class="el" href="namespaceqwm.html#ab2ca2fb5f6924b72e9c8d2c8cae93bd8ae887a88a683ce84a7d8da5dd34f954e2">WlanError::WERR_NET_PASSKEY</a></code> error is received.</dd></dl>
 <dl class="section remark"><dt>Remarks</dt><dd>On <b>CoreWlan</b> backend, when an empty password is provided in order to use internal credentials, a temporary admin access will be asked in order to retrieve the network passkey from the keychain subsystem (and only for that). <br  />
-Otherwise, option <code><a class="el" href="namespaceqwm.html#a302b0b7d162cb73de065c166a616ae7aabb4ed0d848f3a96c7e716e3cb02f9b8d">WlanOption::WOPT_ALLOW_ADMIN_REQUESTS</a></code> can be disabled, if so, caller will always have to provide network password.</dd></dl>
+Otherwise, option <code><a class="el" href="namespaceqwm.html#a302b0b7d162cb73de065c166a616ae7aa5084d05175158e566438e86c0f0a9d00">WlanOption::WOPT_ALLOW_ADMIN_REQUESTS</a></code> can be disabled, if so, caller will always have to provide network password.</dd></dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="#a29763c3b56eb763a0c36d045d1c9431d" title="Emitted when trying to connect to a network.">sConnectionStarted()</a> </dd>
 <dd>
 <a class="el" href="#ab44f806dbb42eab3c5d1dc9c58768ead" title="Emitted when network connection succeed.">sConnectionSucceed()</a>, <a class="el" href="#a1ad6a5c3302b69889b8eb6fbe1535b10" title="Emitted when network connection failed.">sConnectionFailed()</a> </dd>
